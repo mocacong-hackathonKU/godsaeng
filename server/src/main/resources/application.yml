@@ -1,0 +1,31 @@
+spring:
+  datasource:
+    url: jdbc:h2:~/godsaeng;MODE=MYSQL;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=FALSE;
+    username: sa
+  jpa:
+    hibernate:
+      ddl-auto: create-drop
+    open-in-view: false
+    properties:
+      hibernate:
+        create_empty_composites:
+          enabled: true
+        format_sql: true
+        default_batch_fetch_size: 100
+  h2:
+    console:
+      enabled: true
+      settings:
+        web-allow-others: true
+security.jwt.token:
+  secret-key: testtesttesttesttesttesttesttesttesttest
+  expire-length: 864000
+springdoc:
+  default-consumes-media-type: application/json
+  default-produces-media-type: application/json
+  swagger-ui:
+    path: /swagger-ui.html
+    disable-swagger-default-url: true
+    display-request-duration: true
+    operations-sorter: alpha
+    tags-sorter: alpha
