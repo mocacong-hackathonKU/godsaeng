@@ -8,11 +8,16 @@ spring:
     open-in-view: false
     properties:
       hibernate:
-        show_sql: true
+        create_empty_composites:
+          enabled: true
         format_sql: true
+        default_batch_fetch_size: 100
+
   h2:
     console:
       enabled: true
+      settings:
+        web-allow-others: true
 
 security.jwt.token:
   secret-key: testtesttesttesttesttesttesttesttesttest
