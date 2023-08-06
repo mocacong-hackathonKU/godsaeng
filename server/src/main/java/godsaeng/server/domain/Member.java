@@ -1,5 +1,6 @@
-package domain;
+package godsaeng.server.domain;
 
+import godsaeng.server.exception.badrequest.InvalidNicknameException;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;

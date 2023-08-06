@@ -1,4 +1,4 @@
-package domain;
+package godsaeng.server.domain;
 
 import lombok.AccessLevel;
 import lombok.Getter;

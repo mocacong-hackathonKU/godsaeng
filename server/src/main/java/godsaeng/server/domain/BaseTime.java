@@ -1,4 +1,4 @@
-package domain;
+package godsaeng.server.domain;
 
 import lombok.Getter;
 import org.springframework.data.annotation.CreatedDate;

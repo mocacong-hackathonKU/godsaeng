@@ -1,9 +1,9 @@
-package domain;
+package godsaeng.server.domain;
 
+import godsaeng.server.exception.badrequest.InvalidPlatformException;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import mocacong.server.exception.badrequest.InvalidPlatformException;
 
 import java.util.Arrays;
 import java.util.Objects;
