@@ -29,6 +29,7 @@ jobs:
         run: chmod +x ./server/gradlew
 
       - name: Build with Gradle (without Test)
+
         run: |
           cd ./server
           ./gradlew clean build -x test --stacktrace
