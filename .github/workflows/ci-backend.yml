@@ -5,16 +5,12 @@ on:
     branches:
       - main
       - develop-back
-    paths:
-      - server/**
-      - .github/**
+
   pull_request:
     branches:
       - main
       - develop-back
-    paths:
-      - server/**
-      - .github/**
+
 
 jobs:
   build:
@@ -30,7 +26,11 @@ jobs:
           distribution: 'temurin'
 
       - name: Grant execute permisson for gradlew
-        run: chmod +x gradlew
+        run: |
+          cd ./server
+          chmod +x gradlew
 
       - name: Build with Gradle
-        run: ./gradlew clean build
+        run: |
+          cd ./server
+          ./gradlew clean build
