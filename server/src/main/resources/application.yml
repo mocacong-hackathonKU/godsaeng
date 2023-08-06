@@ -32,3 +32,9 @@ springdoc:
     display-request-duration: true
     operations-sorter: alpha
     tags-sorter: alpha
+
+oauth:
+  kakao:
+    client-id: test
+    client-secret: test
+    redirect-uri: test
