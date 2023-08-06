@@ -1,4 +1,4 @@
-package security.auth;
+package godsaeng.server.security.auth;
 
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;

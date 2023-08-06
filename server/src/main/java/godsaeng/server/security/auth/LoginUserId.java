@@ -1,4 +1,4 @@
-package security.auth;
+package godsaeng.server.security.auth;
 
 import io.swagger.v3.oas.annotations.Hidden;
 

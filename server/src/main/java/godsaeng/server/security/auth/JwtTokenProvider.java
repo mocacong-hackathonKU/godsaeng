@@ -1,4 +1,4 @@
-package security.auth;
+package godsaeng.server.security.auth;
 
 import godsaeng.server.exception.unauthorized.InvalidTokenException;
 import godsaeng.server.exception.unauthorized.TokenExpiredException;

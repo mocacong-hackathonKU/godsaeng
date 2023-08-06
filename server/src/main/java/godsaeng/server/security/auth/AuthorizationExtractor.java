@@ -1,4 +1,4 @@
-package security.auth;
+package godsaeng.server.security.auth;
 
 import godsaeng.server.exception.badrequest.BlankTokenException;
 import godsaeng.server.exception.unauthorized.InvalidBearerException;

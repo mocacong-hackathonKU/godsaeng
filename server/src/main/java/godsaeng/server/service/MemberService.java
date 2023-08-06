@@ -16,8 +16,6 @@ import java.util.regex.Pattern;
 @RequiredArgsConstructor
 public class MemberService {
 
-    private static final Pattern PASSWORD_REGEX = Pattern.compile("^(?=.*[a-z])(?=.*\\d)[a-z\\d]{8,20}$");
-
     private final MemberRepository memberRepository;
 
     @Transactional

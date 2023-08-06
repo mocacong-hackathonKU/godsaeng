@@ -5,8 +5,8 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.web.method.support.HandlerMethodArgumentResolver;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
-import security.auth.AuthenticationPrincipalArgumentResolver;
-import security.auth.LoginInterceptor;
+import godsaeng.server.security.auth.AuthenticationPrincipalArgumentResolver;
+import godsaeng.server.security.auth.LoginInterceptor;
 
 import java.util.List;
 

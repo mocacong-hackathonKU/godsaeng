@@ -1,4 +1,4 @@
-package security.auth;
+package godsaeng.server.security.auth;
 
 import org.springframework.http.HttpMethod;
 import org.springframework.stereotype.Component;

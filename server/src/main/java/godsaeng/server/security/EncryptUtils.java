@@ -1,4 +1,4 @@
-package security;
+package godsaeng.server.security;
 
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
