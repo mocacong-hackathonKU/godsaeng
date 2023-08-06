@@ -70,4 +70,8 @@ public class Member extends BaseTime {
             throw new InvalidNicknameException();
         }
     }
+
+    public boolean isRegisteredOAuthMember() {
+        return nickname != null;
+    }
 }
