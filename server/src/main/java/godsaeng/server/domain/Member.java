@@ -27,9 +27,6 @@ public class Member extends BaseTime {
     @Column(name = "email", nullable = false)
     private String email;
 
-    @Column(name = "password")
-    private String password;
-
     @Column(name = "nickname", unique = true)
     private String nickname;
 
@@ -44,13 +41,18 @@ public class Member extends BaseTime {
     @Column(name = "platform_id")
     private String platformId;
 
-    public Member(String email, String password, String nickname, MemberProfileImage memberProfileImage,
+    public Member(String email, String nickname, MemberProfileImage memberProfileImage,
                   Platform platform, String platformId) {
         validateNickname(nickname);
         this.email = email;
-        this.password = password;
         this.nickname = nickname;
         this.memberProfileImage = memberProfileImage;
+        this.platform = platform;
+        this.platformId = platformId;
+    }
+
+    public Member(String email, Platform platform, String platformId) {
+        this.email = email;
         this.platform = platform;
         this.platformId = platformId;
     }
@@ -67,9 +69,5 @@ public class Member extends BaseTime {
         if (!NICKNAME_REGEX.matcher(nickname).matches()) {
             throw new InvalidNicknameException();
         }
-    }
-
-    public boolean isRegisteredOAuthMember() {
-        return nickname != null;
     }
 }
