@@ -70,4 +70,8 @@ public class Member extends BaseTime {
             throw new InvalidNicknameException();
         }
     }
+
+    public String getImgUrl() {
+        return this.memberProfileImage != null ? this.memberProfileImage.getImgUrl() : null;
+    }
 }
