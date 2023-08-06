@@ -3,8 +3,10 @@ package godsaeng.server.service;
 import godsaeng.server.domain.Member;
 import godsaeng.server.domain.Platform;
 import godsaeng.server.dto.request.OAuthMemberSignUpRequest;
+import godsaeng.server.dto.response.IsDuplicateNicknameResponse;
 import godsaeng.server.exception.notfound.NotFoundMemberException;
 import godsaeng.server.repository.MemberRepository;
+import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -51,5 +53,32 @@ public class MemberServiceTest {
 
         assertThatThrownBy(() -> memberService.signUpByOAuthMember(request))
                 .isInstanceOf(NotFoundMemberException.class);
+    }
+
+    @Test
+    @DisplayName("이미 존재하는 닉네임인 경우 True를 반환한다")
+    void isDuplicateNicknameReturnTrue() {
+        String email = "dlawotn3@naver.com";
+        String platformId = "1234321";
+        String nickname = "메리";
+        memberRepository.save(new Member(email, Platform.KAKAO, platformId));
+        OAuthMemberSignUpRequest request = new OAuthMemberSignUpRequest(null, nickname,
+                Platform.KAKAO.getValue(), platformId);
+        memberService.signUpByOAuthMember(request);
+        IsDuplicateNicknameResponse response = memberService.isDuplicateNickname(nickname);
+
+        memberService.signUpByOAuthMember(request);
+
+        Assertions.assertThat(response.isResult()).isTrue();
+    }
+
+    @Test
+    @DisplayName("존재하지 않는 닉네임인 경우 False를 반환한다")
+    void isDuplicateNicknameReturnFalse() {
+        String nickname = "메리";
+
+        IsDuplicateNicknameResponse response = memberService.isDuplicateNickname(nickname);
+
+        Assertions.assertThat(response.isResult()).isFalse();
     }
 }
