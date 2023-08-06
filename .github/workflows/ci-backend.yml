@@ -4,11 +4,17 @@ on:
   push:
     branches:
       - main
-      - develop
+      - develop-back
+    paths:
+      - server/**
+      - .github/**
   pull_request:
     branches:
       - main
-      - develop
+      - develop-back
+    paths:
+      - server/**
+      - .github/**
 
 jobs:
   build:

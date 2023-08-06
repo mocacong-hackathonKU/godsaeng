@@ -18,7 +18,7 @@ jobs:
           java-version: '11'
           distribution: 'temurin'
 
-      - name: make application-prod.yml
+      - name: make application-dev.yml
         run: |
           cd ./server/src/main/resources
           touch ./application-dev.yml
@@ -29,16 +29,19 @@ jobs:
         run: chmod +x ./server/gradlew
 
       - name: Build with Gradle (without Test)
-        run: ./server/gradlew clean build -x test --stacktrace
+        run:
+          cd ./server
+          ./gradlew clean build -x test --stacktrace
 
       - name: Docker Hub build & push
         run: |
+          cd ./server
           docker login -u ${{ secrets.DOCKER_USERNAME }} -p ${{ secrets.DOCKER_PASSWORD }}
           docker build -t ${{ secrets.DOCKER_USERNAME }}/${{ secrets.DOCKER_REPO }} .
           docker images
           docker push ${{ secrets.DOCKER_USERNAME }}/${{ secrets.DOCKER_REPO }}
 
-      - name: Deploy to Prod WAS Server
+      - name: Deploy to dev WAS Server
         uses: appleboy/ssh-action@master
         with:
           host: ${{ secrets.WAS_HOST }}
@@ -46,7 +49,7 @@ jobs:
           key: ${{ secrets.WAS_KEY }}
           port: ${{ secrets.WAS_SSH_PORT }}
           script: |
-            cd /home/ubuntu/godsaeng/
+            cd /home/ubuntu/godsaeng/server
             sudo docker login -u ${{ secrets.DOCKER_USERNAME }} -p ${{ secrets.DOCKER_PASSWORD }}
             sudo docker rm -f $(sudo docker ps -qa)
             sudo docker pull ${{ secrets.DOCKER_USERNAME }}/${{ secrets.DOCKER_REPO }}
