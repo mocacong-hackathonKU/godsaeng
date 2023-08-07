@@ -4,6 +4,7 @@ import godsaeng.server.domain.Member;
 import godsaeng.server.domain.Platform;
 import godsaeng.server.dto.request.OAuthMemberSignUpRequest;
 import godsaeng.server.dto.response.IsDuplicateNicknameResponse;
+import godsaeng.server.dto.response.MyPageResponse;
 import godsaeng.server.dto.response.OAuthMemberSignUpResponse;
 import godsaeng.server.exception.badrequest.InvalidNicknameException;
 import godsaeng.server.exception.notfound.NotFoundMemberException;
@@ -39,5 +40,11 @@ public class MemberService {
         if (nickname.isBlank()) {
             throw new InvalidNicknameException();
         }
+    }
+
+    public MyPageResponse findMyInfo(Long memberId) {
+        Member member = memberRepository.findById(memberId)
+                .orElseThrow(NotFoundMemberException::new);
+        return new MyPageResponse(member.getEmail(), member.getNickname(), member.getImgUrl());
     }
 }
