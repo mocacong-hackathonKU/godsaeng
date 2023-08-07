@@ -7,15 +7,26 @@
 
 import SwiftUI
 
+var screenWidth = UIScreen.main.bounds.width
+var screenHeight = UIScreen.main.bounds.height
+
 struct ContentView: View {
     var body: some View {
-        VStack {
-            Image(systemName: "globe")
-                .imageScale(.large)
-                .foregroundColor(.accentColor)
-            Text("Hello, world!")
+        TabView {
+            CalendarView()
+                .tabItem({
+                    Image(systemName: "calendar")
+                })
+            CollectionView()
+                .tabItem({
+                    Image(systemName: "magnifyingglass")
+                })
+            MyPageView()
+                .tabItem({
+                    Image(systemName: "person.fill")
+                })
         }
-        .padding()
+        .accentColor(Color.black)
     }
 }
 
