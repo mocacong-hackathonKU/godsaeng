@@ -32,3 +32,15 @@ springdoc:
     display-request-duration: true
     operations-sorter: alpha
     tags-sorter: alpha
+
+cloud:
+  aws:
+    s3:
+      bucket: ${S3_BUCKET_NAME}
+    region:
+      static: ${S3_REGION}
+    stack:
+      auto: false
+    credentials:
+      access-key: ${S3_ACCESS_KEY}
+      secret-key: ${S3_SECRET_KEY}
