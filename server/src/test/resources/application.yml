@@ -23,3 +23,16 @@ spring:
 security.jwt.token:
   secret-key: testtesttesttesttesttesttesttesttesttest
   expire-length: 864000
+
+cloud:
+  aws:
+    s3:
+      bucket: testtesttesttesttestttest
+    region:
+      static: ap-northeast-2
+      auto: false
+    stack:
+      auto: false
+    credentials:
+      access-key: test
+      secret-key: test

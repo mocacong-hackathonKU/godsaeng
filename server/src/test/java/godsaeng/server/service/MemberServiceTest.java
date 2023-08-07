@@ -9,16 +9,23 @@ import godsaeng.server.dto.response.MyPageResponse;
 import godsaeng.server.exception.notfound.NotFoundMemberException;
 import godsaeng.server.repository.MemberProfileImageRepository;
 import godsaeng.server.repository.MemberRepository;
+import godsaeng.server.support.AwsS3Uploader;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.mock.web.MockMultipartFile;
+
+import java.io.FileInputStream;
+import java.io.IOException;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertAll;
+import static org.mockito.Mockito.when;
 
 @SpringBootTest
 public class MemberServiceTest {
@@ -29,6 +36,9 @@ public class MemberServiceTest {
     private MemberProfileImageRepository memberProfileImageRepository;
     @Autowired
     private MemberService memberService;
+
+    @MockBean
+    private AwsS3Uploader awsS3Uploader;
 
     @BeforeEach
     void setUp() {
@@ -108,6 +118,51 @@ public class MemberServiceTest {
                 () -> Assertions.assertThat(actual.getEmail()).isEqualTo(email),
                 () -> Assertions.assertThat(actual.getImgUrl()).isEqualTo(imgUrl),
                 () -> Assertions.assertThat(actual.getNickname()).isEqualTo(nickname)
+        );
+    }
+
+    @Test
+    @DisplayName("회원의 프로필 이미지를 변경하면 s3 서버와 연동하여 이미지를 업로드한다")
+    void updateProfileImg() throws IOException {
+        String expected = "test_img.jpg";
+        Member savedMember = memberRepository.save(new Member("dlawotn3@naver.com", Platform.KAKAO,
+                "11111"));
+        OAuthMemberSignUpRequest request = new OAuthMemberSignUpRequest(null, "메리",
+                Platform.KAKAO.getValue(), "11111");
+        memberService.signUpByOAuthMember(request);
+        FileInputStream fileInputStream = new FileInputStream("src/test/resources/images/" + expected);
+        MockMultipartFile mockMultipartFile = new MockMultipartFile("test_img", expected, "jpg",
+                fileInputStream);
+
+        when(awsS3Uploader.uploadImage(mockMultipartFile)).thenReturn("test_img.jpg");
+        memberService.updateProfileImage(savedMember.getId(), mockMultipartFile);
+
+        Member actual = memberRepository.findById(savedMember.getId())
+                .orElseThrow();
+        assertAll(
+                () -> Assertions.assertThat(actual.getImgUrl()).isEqualTo(expected),
+                () -> Assertions.assertThat(actual.getMemberProfileImage().getIsUsed()).isTrue()
+        );
+    }
+
+    @Test
+    @DisplayName("회원이 프로필 이미지를 삭제하거나 null로 설정하면 프로필 이미지는 null로 설정된다")
+    void updateProfileImgWithNull() {
+        MemberProfileImage memberProfileImage = new MemberProfileImage("test.me.jpg");
+        memberProfileImageRepository.save(memberProfileImage);
+        Member member = memberRepository.save(new Member("dlawotn3@naver.com", memberProfileImage,
+                Platform.KAKAO, "11111"));
+        OAuthMemberSignUpRequest request = new OAuthMemberSignUpRequest(null, "메리",
+                Platform.KAKAO.getValue(), "11111");
+        memberService.signUpByOAuthMember(request);
+
+        memberService.updateProfileImage(member.getId(), null);
+
+        Member actual = memberRepository.findById(member.getId())
+                .orElseThrow();
+        assertAll(
+                () -> Assertions.assertThat(actual.getImgUrl()).isNull(),
+                () -> Assertions.assertThat(actual.getMemberProfileImage()).isNull()
         );
     }
 }
