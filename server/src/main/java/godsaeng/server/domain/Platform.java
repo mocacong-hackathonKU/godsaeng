@@ -13,6 +13,7 @@ import java.util.Objects;
 @Getter
 public enum Platform {
 
+    GODSAENG("godsaeng"),
     APPLE("apple"),
     KAKAO("kakao");
 
