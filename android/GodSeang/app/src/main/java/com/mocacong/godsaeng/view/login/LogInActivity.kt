@@ -10,7 +10,7 @@ import android.webkit.WebViewClient
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
-import com.mocacong.godsaeng.MainActivity
+import com.mocacong.godsaeng.view.main.MainActivity
 import com.mocacong.godsaeng.R
 import com.mocacong.godsaeng.data.MemberInfo
 import com.mocacong.godsaeng.data.remote.model.response.LogInResponse

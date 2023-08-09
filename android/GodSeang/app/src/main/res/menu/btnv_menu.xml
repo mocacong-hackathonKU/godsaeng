@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <item
+        android:id="@+id/menu_feed"
+        android:enabled="true"
+        android:title="피드"
+        app:showAsAction="always"
+        android:icon="@drawable/ic_calendar"
+        />
+    <item
+        android:id="@+id/menu_search"
+        android:enabled="true"
+        android:title="모아보기"
+        app:showAsAction="always"
+        android:icon="@drawable/ic_search"
+        />
+    <item
+        android:id="@+id/menu_mypage"
+        android:enabled="true"
+        android:title="my"
+        app:showAsAction="always"
+        android:icon="@drawable/ic_person"
+        />
+
+</menu>
