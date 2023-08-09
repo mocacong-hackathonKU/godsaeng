@@ -29,9 +29,18 @@ public class GodSaengController {
     }
 
     @Operation(summary = "같생 전부 조회")
+    @SecurityRequirement(name = "JWT")
     @GetMapping
-    public ResponseEntity<GodSaengsResponse> findAllGodSaeng(@RequestBody GodSaengSaveRequest request) {
+    public ResponseEntity<GodSaengsResponse> findAllGodSaeng(@LoginUserId Long memberId, @RequestBody GodSaengSaveRequest request) {
         GodSaengsResponse response = godSaengService.findAllGodSaeng();
         return ResponseEntity.ok(response);
+    }
+
+    @Operation(summary = "같생 참가 신청")
+    @SecurityRequirement(name = "JWT")
+    @PostMapping("/attemd/{godSaengId}")
+    public ResponseEntity<Void> attendGodSaeng(@LoginUserId Long memberId,@PathVariable Long godSaengId) {
+        godSaengService.attendGodSaeng(memberId, godSaengId);
+        return ResponseEntity.ok().build();
     }
 }
