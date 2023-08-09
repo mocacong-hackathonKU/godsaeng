@@ -3,6 +3,7 @@ package godsaeng.server.service;
 import godsaeng.server.domain.*;
 import godsaeng.server.dto.request.GodSaengSaveRequest;
 import godsaeng.server.dto.response.GodSaengSaveResponse;
+import godsaeng.server.exception.badrequest.DuplicateGodSaengException;
 import godsaeng.server.repository.GodSaengRepository;
 import godsaeng.server.repository.MemberRepository;
 import org.junit.jupiter.api.Assertions;
@@ -13,6 +14,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -30,6 +33,8 @@ class GodSaengServiceTest {
     @Autowired
     private MemberRepository memberRepository;
 
+    @PersistenceContext
+    private EntityManager em;
 
 
     @DisplayName("같생을 저장할 수 있다.")
@@ -48,7 +53,11 @@ class GodSaengServiceTest {
         Member savedMember = memberRepository.save(new Member(email, Platform.KAKAO, "11111"));
 
         godSaengService.save(savedMember.getId(), request);
+        em.clear();
+        em.flush();
+
         List<GodSaeng> actual = godSaengRepository.findAll();
+
 
         assertEquals(1, actual.size());
     }
@@ -99,8 +108,39 @@ class GodSaengServiceTest {
 
         godSaengService.attendGodSaeng(savedMember2.getId(), savedGodSaeng.getId());
 
+        em.clear();
+        em.flush();
+
         GodSaeng actual = godSaengRepository.findById(savedGodSaeng.getId()).orElseThrow();
 
         assertEquals(2, actual.getMembers().size());
+    }
+
+    @DisplayName("같은 같생에 중복 참가 신청할 수 없다.")
+    @Test
+    void validateDuplicateAttendGodSaeng() {
+        String title = "아침 6시 반 기상 갓생 살기";
+        String description = "아침 6시 반 기상 후 유의미한 일을 하고 인증해야합니다.";
+        List<Week> weeks = new ArrayList<>();
+        weeks.add(Week.MON);
+        weeks.add(Week.TUE);
+        weeks.add(Week.WED);
+
+        GodSaengSaveRequest request = new GodSaengSaveRequest(title, description, weeks);
+
+        String email1 = "rlawjddn103@naver.com";
+        Member savedMember1 = memberRepository.save(new Member(email1, Platform.KAKAO, "11111"));
+
+        String email2 = "rlawjddn102@naver.com";
+        Member savedMember2 = memberRepository.save(new Member(email2, Platform.KAKAO, "12121"));
+
+        GodSaeng savedGodSaeng = godSaengRepository.save(new GodSaeng(title, description, weeks, savedMember1));
+
+        godSaengService.attendGodSaeng(savedMember2.getId(), savedGodSaeng.getId());
+
+        em.clear();
+        em.flush();
+
+        assertThrows(DuplicateGodSaengException.class, () -> godSaengService.attendGodSaeng(savedMember2.getId(), savedGodSaeng.getId()));
     }
 }

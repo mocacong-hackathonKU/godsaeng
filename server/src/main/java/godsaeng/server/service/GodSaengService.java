@@ -1,6 +1,7 @@
 package godsaeng.server.service;
 
 import godsaeng.server.domain.GodSaeng;
+import godsaeng.server.domain.GodSaengMember;
 import godsaeng.server.domain.Member;
 import godsaeng.server.dto.request.GodSaengSaveRequest;
 import godsaeng.server.dto.response.GodSaengResponse;
@@ -9,6 +10,7 @@ import godsaeng.server.dto.response.GodSaengsResponse;
 import godsaeng.server.exception.badrequest.DuplicateGodSaengException;
 import godsaeng.server.exception.notfound.NotFoundGodSaengException;
 import godsaeng.server.exception.notfound.NotFoundMemberException;
+import godsaeng.server.repository.GodSaengMemberRepository;
 import godsaeng.server.repository.GodSaengRepository;
 import godsaeng.server.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
@@ -25,6 +27,7 @@ public class GodSaengService {
 
     private final GodSaengRepository godSaengRepository;
     private final MemberRepository memberRepository;
+    private final GodSaengMemberRepository godSaengMemberRepository;
 
     @Transactional
     public GodSaengSaveResponse save(Long memberId, GodSaengSaveRequest request) {
@@ -54,7 +57,7 @@ public class GodSaengService {
                 .orElseThrow(NotFoundGodSaengException::new);
 
         try {
-            godSaeng.addMember(member);
+            godSaengMemberRepository.save(new GodSaengMember(godSaeng, member));
         } catch (DataIntegrityViolationException e) {
             throw new DuplicateGodSaengException();
         }

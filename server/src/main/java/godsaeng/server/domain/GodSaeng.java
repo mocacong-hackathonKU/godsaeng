@@ -40,7 +40,7 @@ public class GodSaeng {
 
 
     @OneToMany(mappedBy = "godSaeng", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<GodSaengMember> members = new ArrayList<>();
+    private final List<GodSaengMember> members = new ArrayList<>();
 
     public GodSaeng(String title, String description, List<Week> weeks, Member member) {
         this.title = title;
@@ -51,9 +51,6 @@ public class GodSaeng {
         validateWeeks();
     }
 
-    public void addMember(Member member) {
-       members.add(new GodSaengMember(this, member));
-    }
 
     private void validateWeeks() {
         long count = weeks.stream().distinct().count();
