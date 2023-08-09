@@ -27,6 +27,9 @@ public class Member extends BaseTime {
     @Column(name = "email", nullable = false)
     private String email;
 
+    @Column(name="password")
+    private String password;
+
     @Column(name = "nickname", unique = true)
     private String nickname;
 
@@ -41,10 +44,11 @@ public class Member extends BaseTime {
     @Column(name = "platform_id")
     private String platformId;
 
-    public Member(String email, String nickname, MemberProfileImage memberProfileImage,
+    public Member(String email, String password, String nickname, MemberProfileImage memberProfileImage,
                   Platform platform, String platformId) {
         validateNickname(nickname);
         this.email = email;
+        this.password = password;
         this.nickname = nickname;
         this.memberProfileImage = memberProfileImage;
         this.platform = platform;
@@ -64,6 +68,10 @@ public class Member extends BaseTime {
         this.platformId = platformId;
     }
 
+    public Member(String email, String password, String nickname) {
+        this(email, password, nickname, null, Platform.GODSAENG, null);
+    }
+
     public void registerOAuthMember(String email, String nickname) {
         validateNickname(nickname);
         this.nickname = nickname;
@@ -76,6 +84,21 @@ public class Member extends BaseTime {
         if (!NICKNAME_REGEX.matcher(nickname).matches()) {
             throw new InvalidNicknameException();
         }
+    }
+
+    private void updateBeforeProfileImageNotUsedStatus() {
+        if (this.memberProfileImage != null) {
+            this.memberProfileImage.updateNotUsedStatus();
+        }
+    }
+
+    public void updateProfileImgUrl(MemberProfileImage memberProfileImage) {
+        updateBeforeProfileImageNotUsedStatus();
+        this.memberProfileImage = memberProfileImage;
+    }
+
+    public boolean isRegisteredOAuthMember() {
+        return nickname != null;
     }
 
     public String getImgUrl() {

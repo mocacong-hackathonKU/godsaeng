@@ -14,7 +14,7 @@ import java.util.List;
 @Table(name = "god_saeng")
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class GodSaeng {
+public class GodSaeng extends BaseTime {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "god_saeng_id")
