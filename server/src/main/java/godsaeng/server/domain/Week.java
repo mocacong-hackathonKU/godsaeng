@@ -11,15 +11,19 @@ import java.util.Objects;
 @NoArgsConstructor
 @AllArgsConstructor
 @Getter
-public enum Platform {
+public enum Week {
 
-    GODSAENG("godsaeng"),
-    APPLE("apple"),
-    KAKAO("kakao");
+    MON("MON"),
+    TUE("TUE"),
+    WED("WED"),
+    THR("THR"),
+    FRI("FRI"),
+    SAT("SAT"),
+    SUN("SUN");
 
     private String value;
 
-    public static Platform from(String value) {
+    public static Week from(String value) {
         return Arrays.stream(values())
                 .filter(it -> Objects.equals(it.value, value))
                 .findFirst()

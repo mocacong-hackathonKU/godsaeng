@@ -10,6 +10,12 @@ import godsaeng.server.security.auth.JwtTokenProvider;
 import godsaeng.server.security.auth.OAuthPlatformMemberResponse;
 import godsaeng.server.security.auth.kakao.KakaoOAuthUserProvider;
 import lombok.RequiredArgsConstructor;
+
+import godsaeng.server.dto.request.AuthLoginRequest;
+import godsaeng.server.dto.response.TokenResponse;
+import godsaeng.server.exception.badrequest.PasswordMismatchException;
+import org.springframework.security.crypto.password.PasswordEncoder;
+
 import org.springframework.stereotype.Service;
 
 @Service
@@ -18,7 +24,29 @@ public class AuthService {
 
     private final MemberRepository memberRepository;
     private final JwtTokenProvider jwtTokenProvider;
+
     private final KakaoOAuthUserProvider kakaoOAuthUserProvider;
+    private final PasswordEncoder passwordEncoder;
+
+    public TokenResponse login(AuthLoginRequest request) {
+        Member findMember = memberRepository.findByEmailAndPlatform(request.getEmail(), Platform.GODSAENG)
+                .orElseThrow(NotFoundMemberException::new);
+        validatePassword(findMember, request.getPassword());
+
+        String token = issueToken(findMember);
+
+        return TokenResponse.from(token);
+    }
+
+    private String issueToken(final Member findMember) {
+        return jwtTokenProvider.createToken(findMember.getId());
+    }
+
+    private void validatePassword(final Member findMember, final String password) {
+        if (!passwordEncoder.matches(password, findMember.getPassword())) {
+            throw new PasswordMismatchException();
+        }
+    }
 
     public OAuthTokenResponse kakaoOAuthLogin(KakaoLoginRequest request) {
         OAuthPlatformMemberResponse kakaoPlatformMember =
@@ -48,9 +76,5 @@ public class AuthService {
                     String token = issueToken(savedMember);
                     return new OAuthTokenResponse(token, email, false, platformId);
                 });
-    }
-
-    private String issueToken(final Member findMember) {
-        return jwtTokenProvider.createToken(findMember.getId());
     }
 }

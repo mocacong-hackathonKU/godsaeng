@@ -2,8 +2,11 @@ package godsaeng.server.service;
 
 import godsaeng.server.domain.Member;
 import godsaeng.server.domain.Platform;
+import godsaeng.server.dto.request.AuthLoginRequest;
 import godsaeng.server.dto.request.KakaoLoginRequest;
 import godsaeng.server.dto.response.OAuthTokenResponse;
+import godsaeng.server.dto.response.TokenResponse;
+import godsaeng.server.exception.badrequest.PasswordMismatchException;
 import godsaeng.server.repository.MemberRepository;
 import godsaeng.server.security.auth.OAuthPlatformMemberResponse;
 import godsaeng.server.security.auth.kakao.KakaoOAuthUserProvider;
@@ -13,9 +16,10 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
-import static org.junit.jupiter.api.Assertions.assertAll;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.when;
 
@@ -26,6 +30,8 @@ public class AuthServiceTest {
     private MemberRepository memberRepository;
     @Autowired
     private AuthService authService;
+    @Autowired
+    private PasswordEncoder passwordEncoder;
 
     @MockBean
     private KakaoOAuthUserProvider kakaoOAuthUserProvider;
@@ -33,6 +39,36 @@ public class AuthServiceTest {
     @BeforeEach
     void setUp() {
         memberRepository.deleteAll();
+    }
+
+    @Test
+    @DisplayName("회원 로그인 요청이 옳다면 토큰을 발급한다")
+    void login() {
+        String email = "dlawotn3@naver.com";
+        String password = "a1b2c3d4";
+        String encodedPassword = passwordEncoder.encode("a1b2c3d4");
+        Member member = new Member("dlawotn3@naver.com", encodedPassword, "메리");
+        memberRepository.save(member);
+        AuthLoginRequest loginRequest = new AuthLoginRequest(email, password);
+
+        TokenResponse tokenResponse = authService.login(loginRequest);
+
+        assertNotNull(tokenResponse.getToken());
+    }
+
+    @Test
+    @DisplayName("회원 로그인 요청이 올바르지 않다면 예외가 발생한다")
+    void loginWithException() {
+        String email = "dlawotn3@naver.com";
+        String password = "a1b2c3d4";
+        String encodedPassword = passwordEncoder.encode(password);
+        Member member = new Member(email, encodedPassword, "메리");
+        memberRepository.save(member);
+
+        AuthLoginRequest loginRequest = new AuthLoginRequest(email, "wrongPassword");
+
+        assertThrows(PasswordMismatchException.class,
+                () -> authService.login(loginRequest));
     }
 
     @Test
@@ -60,6 +96,7 @@ public class AuthServiceTest {
         String platformId = "1234321";
         Member member = new Member(
                 expected,
+                null,
                 "케이",
                 null,
                 Platform.KAKAO,

@@ -1,10 +1,16 @@
 package godsaeng.server.service;
 
 import godsaeng.server.domain.Member;
+import godsaeng.server.domain.MemberProfileImage;
 import godsaeng.server.domain.Platform;
+import godsaeng.server.dto.request.MemberSignUpRequest;
 import godsaeng.server.dto.request.OAuthMemberSignUpRequest;
 import godsaeng.server.dto.response.IsDuplicateNicknameResponse;
+import godsaeng.server.dto.response.MyPageResponse;
+import godsaeng.server.exception.badrequest.DuplicateMemberException;
+import godsaeng.server.exception.badrequest.DuplicateNicknameException;
 import godsaeng.server.exception.notfound.NotFoundMemberException;
+import godsaeng.server.repository.MemberProfileImageRepository;
 import godsaeng.server.repository.MemberRepository;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -13,8 +19,11 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
+import java.util.List;
+
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
+import static org.junit.jupiter.api.Assertions.assertAll;
 
 @SpringBootTest
 public class MemberServiceTest {
@@ -22,11 +31,49 @@ public class MemberServiceTest {
     @Autowired
     private MemberRepository memberRepository;
     @Autowired
+    private MemberProfileImageRepository memberProfileImageRepository;
+    @Autowired
     private MemberService memberService;
 
     @BeforeEach
     void setUp() {
         memberRepository.deleteAll();
+    }
+
+    @Test
+    @DisplayName("회원을 정상적으로 가입한다")
+    void signUp() {
+        String expected = "dlawotn3@naver.com";
+        MemberSignUpRequest request = new MemberSignUpRequest(expected, "a1b2c3d4", "메리");
+
+        memberService.signUp(request);
+
+        List<Member> actual = memberRepository.findAll();
+        Assertions.assertThat(actual).hasSize(1);
+        Assertions.assertThat(actual.get(0).getEmail()).isEqualTo(expected);
+    }
+
+    @Test
+    @DisplayName("이미 가입된 이메일이 존재하면 회원 가입 시에 예외를 반환한다")
+    void signUpByDuplicateEmailMember() {
+        String email = "dlawotn3@naver.com";
+        memberRepository.save(new Member(email, "1234", "메리"));
+        MemberSignUpRequest request = new MemberSignUpRequest(email, "a1b2c3d4", "메리");
+
+        Assertions.assertThatThrownBy(() -> memberService.signUp(request))
+                .isInstanceOf(DuplicateMemberException.class);
+    }
+
+    @Test
+    @DisplayName("이미 가입된 닉네임이 존재하면 회원 가입 시에 예외를 반환한다")
+    void signUpByDuplicateNicknameMember() {
+        String nickname = "메리";
+        memberRepository.save(new Member("dlawotn2@naver.com", "1234", nickname));
+        MemberSignUpRequest request = new MemberSignUpRequest("dlawotn3@naver.com", "a1b2c3d4",
+                nickname);
+
+        Assertions.assertThatThrownBy(() -> memberService.signUp(request))
+                .isInstanceOf(DuplicateNicknameException.class);
     }
 
     @Test
@@ -80,5 +127,28 @@ public class MemberServiceTest {
         IsDuplicateNicknameResponse response = memberService.isDuplicateNickname(nickname);
 
         Assertions.assertThat(response.isResult()).isFalse();
+    }
+
+    @Test
+    @DisplayName("마이페이지로 내 정보를 조회한다")
+    void findMyInfo() {
+        String imgUrl = "test_img.jpg";
+        String email = "kth990303@naver.com";
+        String nickname = "메리";
+        MemberProfileImage memberProfileImage = new MemberProfileImage(imgUrl);
+        memberProfileImageRepository.save(memberProfileImage);
+        Member savedMember = memberRepository.save(new Member(email, memberProfileImage, Platform.KAKAO,
+                "11111"));
+        OAuthMemberSignUpRequest request = new OAuthMemberSignUpRequest(null, "메리",
+                Platform.KAKAO.getValue(), "11111");
+        memberService.signUpByOAuthMember(request);
+
+        MyPageResponse actual = memberService.findMyInfo(savedMember.getId());
+
+        assertAll(
+                () -> Assertions.assertThat(actual.getEmail()).isEqualTo(email),
+                () -> Assertions.assertThat(actual.getImgUrl()).isEqualTo(imgUrl),
+                () -> Assertions.assertThat(actual.getNickname()).isEqualTo(nickname)
+        );
     }
 }

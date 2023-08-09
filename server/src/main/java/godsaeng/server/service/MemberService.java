@@ -2,21 +2,73 @@ package godsaeng.server.service;
 
 import godsaeng.server.domain.Member;
 import godsaeng.server.domain.Platform;
+import godsaeng.server.dto.request.MemberSignUpRequest;
 import godsaeng.server.dto.request.OAuthMemberSignUpRequest;
-import godsaeng.server.dto.response.IsDuplicateNicknameResponse;
-import godsaeng.server.dto.response.OAuthMemberSignUpResponse;
-import godsaeng.server.exception.badrequest.InvalidNicknameException;
+import godsaeng.server.dto.response.*;
+import godsaeng.server.exception.badrequest.*;
 import godsaeng.server.exception.notfound.NotFoundMemberException;
 import godsaeng.server.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.regex.Pattern;
 
 @Service
 @RequiredArgsConstructor
 public class MemberService {
 
+    private static final Pattern PASSWORD_REGEX = Pattern.compile("^(?=.*[a-z])(?=.*\\d)[a-z\\d]{8,20}$");
+
     private final MemberRepository memberRepository;
+    private final PasswordEncoder passwordEncoder;
+
+    @Transactional
+    public MemberSignUpResponse signUp(MemberSignUpRequest request) {
+        validatePassword(request.getPassword());
+        validateDuplicateMember(request);
+
+        String encodedPassword = passwordEncoder.encode(request.getPassword());
+        try {
+            Member member = new Member(request.getEmail(), encodedPassword, request.getNickname());
+            return new MemberSignUpResponse(memberRepository.save(member).getId());
+        } catch (DataIntegrityViolationException e) {
+            throw new DuplicateMemberException();
+        }
+    }
+
+    private void validateDuplicateMember(MemberSignUpRequest memberSignUpRequest) {
+        if (memberRepository.existsByEmailAndPlatform(memberSignUpRequest.getEmail(), Platform.GODSAENG)) {
+            throw new DuplicateMemberException();
+        }
+        validateDuplicateNickname(memberSignUpRequest.getNickname());
+    }
+
+    private void validateDuplicateNickname(String nickname) {
+        if (memberRepository.existsByNickname(nickname))
+            throw new DuplicateNicknameException();
+    }
+
+    private void validatePassword(String password) {
+        if (!PASSWORD_REGEX.matcher(password).matches()) {
+            throw new InvalidPasswordException();
+        }
+    }
+
+    public IsDuplicateEmailResponse isDuplicateEmail(String email) {
+        validateEmail(email);
+
+        boolean existsEmail = memberRepository.existsByEmailAndPlatform(email, Platform.GODSAENG);
+        return new IsDuplicateEmailResponse(existsEmail);
+    }
+
+    private void validateEmail(String email) {
+        if (email.isBlank()) {
+            throw new InvalidEmailException();
+        }
+    }
 
     @Transactional
     public OAuthMemberSignUpResponse signUpByOAuthMember(OAuthMemberSignUpRequest request) {
@@ -39,5 +91,11 @@ public class MemberService {
         if (nickname.isBlank()) {
             throw new InvalidNicknameException();
         }
+    }
+
+    public MyPageResponse findMyInfo(Long memberId) {
+        Member member = memberRepository.findById(memberId)
+                .orElseThrow(NotFoundMemberException::new);
+        return new MyPageResponse(member.getEmail(), member.getNickname(), member.getImgUrl());
     }
 }
