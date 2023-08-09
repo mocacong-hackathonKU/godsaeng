@@ -51,6 +51,10 @@ public class GodSaeng {
         validateWeeks();
     }
 
+    public void addMember(Member member) {
+       members.add(new GodSaengMember(this, member));
+    }
+
     private void validateWeeks() {
         long count = weeks.stream().distinct().count();
         if (count != weeks.size()) {

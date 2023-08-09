@@ -6,10 +6,13 @@ import godsaeng.server.dto.request.GodSaengSaveRequest;
 import godsaeng.server.dto.response.GodSaengResponse;
 import godsaeng.server.dto.response.GodSaengSaveResponse;
 import godsaeng.server.dto.response.GodSaengsResponse;
+import godsaeng.server.exception.badrequest.DuplicateGodSaengException;
+import godsaeng.server.exception.notfound.NotFoundGodSaengException;
 import godsaeng.server.exception.notfound.NotFoundMemberException;
 import godsaeng.server.repository.GodSaengRepository;
 import godsaeng.server.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -25,7 +28,8 @@ public class GodSaengService {
 
     @Transactional
     public GodSaengSaveResponse save(Long memberId, GodSaengSaveRequest request) {
-        Member member = validateExistMember(memberId);
+        Member member = memberRepository.findById(memberId)
+                .orElseThrow(NotFoundMemberException::new);
         GodSaeng godSaeng = new GodSaeng(request.getTitle(), request.getDescription(), request.getWeeks(), member);
         return new GodSaengSaveResponse(godSaengRepository.save(godSaeng).getId());
     }
@@ -42,9 +46,18 @@ public class GodSaengService {
         return new GodSaengsResponse(godSaengResponses);
     }
 
-    private Member validateExistMember(Long memberId) {
-        return memberRepository.findById(memberId)
+    @Transactional
+    public void attendGodSaeng(Long memberId, Long godSaengId) {
+        Member member = memberRepository.findById(memberId)
                 .orElseThrow(NotFoundMemberException::new);
+        GodSaeng godSaeng = godSaengRepository.findById(godSaengId)
+                .orElseThrow(NotFoundGodSaengException::new);
+
+        try {
+            godSaeng.addMember(member);
+        } catch (DataIntegrityViolationException e) {
+            throw new DuplicateGodSaengException();
+        }
     }
 
 }
