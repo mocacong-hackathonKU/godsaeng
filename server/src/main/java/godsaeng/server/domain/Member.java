@@ -57,6 +57,13 @@ public class Member extends BaseTime {
         this.platformId = platformId;
     }
 
+    public Member(String email, MemberProfileImage memberProfileImage, Platform platform, String platformId) {
+        this.email = email;
+        this.memberProfileImage = memberProfileImage;
+        this.platform = platform;
+        this.platformId = platformId;
+    }
+
     public void registerOAuthMember(String email, String nickname) {
         validateNickname(nickname);
         this.nickname = nickname;
@@ -73,5 +80,8 @@ public class Member extends BaseTime {
 
     public boolean isRegisteredOAuthMember() {
         return nickname != null;
+
+    public String getImgUrl() {
+        return this.memberProfileImage != null ? this.memberProfileImage.getImgUrl() : null;
     }
 }
