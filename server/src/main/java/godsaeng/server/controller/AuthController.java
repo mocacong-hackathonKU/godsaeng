@@ -1,8 +1,9 @@
 package godsaeng.server.controller;
 
+import godsaeng.server.dto.request.AppleLoginRequest;
+import godsaeng.server.dto.request.AuthLoginRequest;
 import godsaeng.server.dto.request.KakaoLoginRequest;
 import godsaeng.server.dto.response.OAuthTokenResponse;
-import godsaeng.server.dto.request.AuthLoginRequest;
 import godsaeng.server.dto.response.TokenResponse;
 import godsaeng.server.service.AuthService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -35,6 +36,13 @@ public class AuthController {
     @PostMapping("/kakao")
     public ResponseEntity<OAuthTokenResponse> loginKakao(@RequestBody @Valid KakaoLoginRequest request) {
         OAuthTokenResponse response = authService.kakaoOAuthLogin(request);
+        return ResponseEntity.ok(response);
+    }
+
+    @Operation(summary = "애플 OAuth 로그인")
+    @PostMapping("/apple")
+    public ResponseEntity<OAuthTokenResponse> loginApple(@RequestBody @Valid AppleLoginRequest request) {
+        OAuthTokenResponse response = authService.appleOAuthLogin(request);
         return ResponseEntity.ok(response);
     }
 }
