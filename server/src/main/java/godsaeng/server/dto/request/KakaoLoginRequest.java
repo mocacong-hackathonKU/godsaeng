@@ -12,6 +12,6 @@ import javax.validation.constraints.NotBlank;
 @Getter
 public class KakaoLoginRequest {
 
-    @NotBlank(message = "1007:공백일 수 없습니다.")
+    @NotBlank(message = "1012:공백일 수 없습니다.")
     private String code;
 }
