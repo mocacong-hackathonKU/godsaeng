@@ -29,3 +29,15 @@ oauth:
     client-id: test
     client-secret: test
     redirect-uri: test
+cloud:
+  aws:
+    s3:
+      bucket: testtesttesttesttestttest
+    region:
+      static: ap-northeast-2
+      auto: false
+    stack:
+      auto: false
+    credentials:
+      access-key: test
+      secret-key: test

@@ -12,8 +12,10 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.validation.Valid;
 
@@ -52,5 +54,16 @@ public class MemberController {
     public ResponseEntity<MyPageResponse> findMyInfo(@LoginUserId Long memberId) {
         MyPageResponse response = memberService.findMyInfo(memberId);
         return ResponseEntity.ok(response);
+    }
+
+    @Operation(summary = "마이페이지 - 프로필 이미지 수정")
+    @SecurityRequirement(name = "JWT")
+    @PutMapping(value = "/mypage/img", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ResponseEntity<Void> updateProfileImage(
+            @LoginUserId Long memberId,
+            @RequestParam(value = "file", required = false) MultipartFile multipartFile
+    ) {
+        memberService.updateProfileImage(memberId, multipartFile);
+        return ResponseEntity.ok().build();
     }
 }

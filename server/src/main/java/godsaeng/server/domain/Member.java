@@ -86,6 +86,17 @@ public class Member extends BaseTime {
         }
     }
 
+    private void updateBeforeProfileImageNotUsedStatus() {
+        if (this.memberProfileImage != null) {
+            this.memberProfileImage.updateNotUsedStatus();
+        }
+    }
+
+    public void updateProfileImgUrl(MemberProfileImage memberProfileImage) {
+        updateBeforeProfileImageNotUsedStatus();
+        this.memberProfileImage = memberProfileImage;
+    }
+
     public boolean isRegisteredOAuthMember() {
         return nickname != null;
     }
