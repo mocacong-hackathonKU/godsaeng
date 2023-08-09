@@ -10,7 +10,7 @@ import javax.persistence.*;
 @Table(name = "god_saeng_member")
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class GodSaengMember {
+public class GodSaengMember extends BaseTime {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "god_saeng_member_id")
