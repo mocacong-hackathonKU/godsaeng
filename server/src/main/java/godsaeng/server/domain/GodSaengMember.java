@@ -23,4 +23,9 @@ public class GodSaengMember {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "member_id")
     private Member member;
+
+    public GodSaengMember(GodSaeng godSaeng, Member member) {
+        this.godSaeng = godSaeng;
+        this.member = member;
+    }
 }

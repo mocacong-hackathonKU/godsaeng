@@ -1,10 +1,10 @@
 package godsaeng.server.service;
 
-import godsaeng.server.domain.GodSaeng;
-import godsaeng.server.domain.Week;
+import godsaeng.server.domain.*;
 import godsaeng.server.dto.request.GodSaengSaveRequest;
 import godsaeng.server.dto.response.GodSaengSaveResponse;
 import godsaeng.server.repository.GodSaengRepository;
+import godsaeng.server.repository.MemberRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -23,11 +23,8 @@ class GodSaengServiceTest {
     private GodSaengRepository godSaengRepository;
     @Autowired
     private GodSaengService godSaengService;
-
-    @BeforeEach
-    void setUp() {
-        godSaengRepository.deleteAll();
-    }
+    @Autowired
+    private MemberRepository memberRepository;
 
     @DisplayName("같생을 저장할 수 있다.")
     @Test
@@ -41,7 +38,10 @@ class GodSaengServiceTest {
 
         GodSaengSaveRequest request = new GodSaengSaveRequest(title, description, weeks);
 
-        godSaengService.save(request);
+        String email = "rlawjddn103@naver.com";
+        Member savedMember = memberRepository.save(new Member(email, Platform.KAKAO, "11111"));
+
+        godSaengService.save(savedMember.getId(), request);
         List<GodSaeng> actual = godSaengRepository.findAll();
 
         assertEquals(1, actual.size());

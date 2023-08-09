@@ -18,7 +18,9 @@ class GodSaengTest {
         weeks.add(Week.MON);
         weeks.add(Week.MON);
         weeks.add(Week.WED);
-        assertThrows(DuplicateWeekException.class, () -> new GodSaeng(title, description, weeks));
+        Member member = new Member();
+
+        assertThrows(DuplicateWeekException.class, () -> new GodSaeng(title, description, weeks, member));
     }
 
 }

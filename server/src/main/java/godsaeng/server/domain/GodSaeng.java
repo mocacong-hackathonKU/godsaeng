@@ -34,13 +34,20 @@ public class GodSaeng {
     @Enumerated(EnumType.STRING)
     private GodSaengStatus status;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "member_id")
+    private Member owner;
+
+
     @OneToMany(mappedBy = "godSaeng", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<GodSaengMember> members = new ArrayList<>();
 
-    public GodSaeng(String title, String description, List<Week> weeks) {
+    public GodSaeng(String title, String description, List<Week> weeks, Member member) {
         this.title = title;
         this.description = description;
         this.weeks = weeks;
+        // 같생을 만든 사람은 자동 참여
+        this.members.add(new GodSaengMember(this, member));
         validateWeeks();
     }
 
