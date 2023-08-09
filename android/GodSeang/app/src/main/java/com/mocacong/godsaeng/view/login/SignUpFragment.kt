@@ -1,8 +1,10 @@
 package com.mocacong.godsaeng.view.login
 
 import BaseFragment
+import android.Manifest
 import android.app.Activity
 import android.content.Intent
+import android.content.pm.PackageManager
 import android.database.Cursor
 import android.net.Uri
 import android.provider.MediaStore
@@ -10,9 +12,9 @@ import android.text.Editable
 import android.text.TextWatcher
 import android.util.Log
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.core.content.ContextCompat.checkSelfPermission
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.lifecycleScope
-import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.mocacong.godsaeng.R
 import com.mocacong.godsaeng.data.MemberInfo
 import com.mocacong.godsaeng.data.remote.model.request.SignUpRequest
@@ -35,7 +37,7 @@ class SignUpFragment : BaseFragment<FragmentSignUpBinding>(R.layout.fragment_sig
 
     override fun afterViewCreated() {
         binding.profileImageBtn.setOnClickListener {
-            getProfileImg()
+            pickImage()
         }
         binding.nicknameEditText.apply {
             handleEnterKey()
@@ -65,11 +67,7 @@ class SignUpFragment : BaseFragment<FragmentSignUpBinding>(R.layout.fragment_sig
         lifecycleScope.launch {
             val nickname = binding.nicknameEditText.text.toString()
             if (isDuplicated(nickname) == true) {
-                MaterialAlertDialogBuilder(requireContext())
-                    .setTitle("중복된 닉네임")
-                    .setMessage("중복된 닉네임입니다. 다시 입력해주세요.")
-                    .setPositiveButton("확인", null)
-                    .show()
+                showMessageDialog("중복된 닉네임", "중복된 닉네임입니다.")
                 return@launch
             } else {
                 //postSignup
@@ -113,10 +111,42 @@ class SignUpFragment : BaseFragment<FragmentSignUpBinding>(R.layout.fragment_sig
         }.await()
 
 
-    private fun getProfileImg() {
-        val pickImg = Intent(Intent.ACTION_PICK, MediaStore.Images.Media.INTERNAL_CONTENT_URI)
-        ProfileImageLauncher.launch(pickImg)
+    private val permissionLauncher =
+        registerForActivityResult(ActivityResultContracts.RequestPermission()) { isGranted: Boolean ->
+            if (isGranted) {
+                // 권한이 허용된 경우
+                val pickImg =
+                    Intent(Intent.ACTION_PICK, MediaStore.Images.Media.INTERNAL_CONTENT_URI)
+                ProfileImageLauncher.launch(pickImg)
+            } else {
+                // 권한이 거부된 경우
+                showToast("권한 거부됨")
+            }
+        }
+
+    private fun pickImage() {
+        when {
+            checkSelfPermission(
+                requireContext(),
+                Manifest.permission.READ_EXTERNAL_STORAGE
+            ) == PackageManager.PERMISSION_GRANTED -> {
+                // 이미 권한이 허용된 경우
+                val pickImg =
+                    Intent(Intent.ACTION_PICK, MediaStore.Images.Media.INTERNAL_CONTENT_URI)
+                ProfileImageLauncher.launch(pickImg)
+            }
+            shouldShowRequestPermissionRationale(Manifest.permission.READ_EXTERNAL_STORAGE) -> {
+                // 권한 요청에 대한 설명이 필요한 경우 (사용자가 이전에 거부한 적이 있는 경우)
+                // 여기에서 사용자에게 왜 권한이 필요한지 설명하고, 다시 권한 요청을 수행
+                showMessageDialog("권한", "프로필 사진 등록을 위해 권한이 필요합니다.")
+                permissionLauncher.launch(Manifest.permission.READ_EXTERNAL_STORAGE)
+            }
+            else -> {
+                permissionLauncher.launch(Manifest.permission.READ_EXTERNAL_STORAGE)
+            }
+        }
     }
+
 
     private val ProfileImageLauncher =
         registerForActivityResult(

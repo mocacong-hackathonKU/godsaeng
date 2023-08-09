@@ -33,11 +33,6 @@ class LogInActivity : BaseActivity<ActivityLogInBinding, LogInViewModel>(R.layou
 
 
     override fun initView() {
-        MaterialAlertDialogBuilder(this)
-            .setTitle("중복된 닉네임")
-            .setMessage("중복된 닉네임입니다. 다시 입력해주세요.")
-            .setPositiveButton("확인", null)
-            .show()
     }
 
     override fun initListener() {

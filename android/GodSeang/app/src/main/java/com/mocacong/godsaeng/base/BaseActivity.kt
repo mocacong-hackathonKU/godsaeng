@@ -6,6 +6,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
 import androidx.databinding.ViewDataBinding
 import androidx.lifecycle.ViewModel
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.mocacong.godsaeng.data.remote.model.response.ErrorResponse
 import com.mocacong.godsaeng.widget.utils.ApiState
 
@@ -52,6 +53,14 @@ abstract class BaseActivity<T : ViewDataBinding, VM : ViewModel>
                 onLoading?.invoke()
             }
         }
+    }
+
+    fun showMessageDialog(title:String, content: String){
+        MaterialAlertDialogBuilder(this)
+            .setTitle(title)
+            .setMessage(content)
+            .setPositiveButton("확인", null)
+            .show()
     }
 
     fun showToast(msg: String) {

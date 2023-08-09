@@ -8,6 +8,7 @@ import androidx.annotation.LayoutRes
 import androidx.databinding.DataBindingUtil
 import androidx.databinding.ViewDataBinding
 import androidx.fragment.app.Fragment
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.mocacong.godsaeng.data.remote.model.response.ErrorResponse
 import com.mocacong.godsaeng.widget.utils.ApiState
 
@@ -68,6 +69,15 @@ abstract class BaseFragment<T : ViewDataBinding>(
         intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
         startActivity(intent)
     }
+
+    fun showMessageDialog(title:String, content: String){
+        MaterialAlertDialogBuilder(requireContext())
+            .setTitle(title)
+            .setMessage(content)
+            .setPositiveButton("확인", null)
+            .show()
+    }
+
 
     fun showToast(msg: String) {
         toast?.cancel()
