@@ -1,5 +1,7 @@
 package godsaeng.server.controller;
 
+import godsaeng.server.dto.request.KakaoLoginRequest;
+import godsaeng.server.dto.response.OAuthTokenResponse;
 import godsaeng.server.dto.request.AuthLoginRequest;
 import godsaeng.server.dto.response.TokenResponse;
 import godsaeng.server.service.AuthService;
@@ -26,6 +28,13 @@ public class AuthController {
     @PostMapping
     public ResponseEntity<TokenResponse> login(@RequestBody @Valid AuthLoginRequest request) {
         TokenResponse response = authService.login(request);
+        return ResponseEntity.ok(response);
+    }
+
+    @Operation(summary = "카카오 OAuth 로그인")
+    @PostMapping("/kakao")
+    public ResponseEntity<OAuthTokenResponse> loginKakao(@RequestBody @Valid KakaoLoginRequest request) {
+        OAuthTokenResponse response = authService.kakaoOAuthLogin(request);
         return ResponseEntity.ok(response);
     }
 }

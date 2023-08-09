@@ -86,6 +86,10 @@ public class Member extends BaseTime {
         }
     }
 
+    public boolean isRegisteredOAuthMember() {
+        return nickname != null;
+    }
+
     public String getImgUrl() {
         return this.memberProfileImage != null ? this.memberProfileImage.getImgUrl() : null;
     }
