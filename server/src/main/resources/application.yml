@@ -10,6 +10,7 @@ spring:
       hibernate:
         create_empty_composites:
           enabled: true
+        show_sql: true
         format_sql: true
         default_batch_fetch_size: 100
   servlet:
@@ -36,6 +37,12 @@ springdoc:
     display-request-duration: true
     operations-sorter: alpha
     tags-sorter: alpha
+
+oauth:
+  kakao:
+    client-id: test
+    client-secret: test
+    redirect-uri: test
 
 cloud:
   aws:

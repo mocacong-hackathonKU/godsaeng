@@ -24,6 +24,11 @@ security.jwt.token:
   secret-key: testtesttesttesttesttesttesttesttesttest
   expire-length: 864000
 
+oauth:
+  kakao:
+    client-id: test
+    client-secret: test
+    redirect-uri: test
 cloud:
   aws:
     s3:
