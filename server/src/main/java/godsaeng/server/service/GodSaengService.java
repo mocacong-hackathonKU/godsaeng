@@ -110,9 +110,10 @@ public class GodSaengService {
 
     @Transactional
     public void validateProofCondition(Member member, GodSaeng godSaeng) {
-        if (godSaeng.getStatus() != GodSaengStatus.DOING) {
-            throw new InvalidProofStatusException();
-        }
+        // TODO: 같생 진행 여부에 따른 검증 코드 추가 필요
+//        if (godSaeng.getStatus() != GodSaengStatus.DOING) {
+//            throw new InvalidProofStatusException();
+//        }
         if (!godSaengMemberRepository.existsByGodSaengAndMember(godSaeng, member)) {
             throw new InvalidProofMemberException();
         }
@@ -128,7 +129,6 @@ public class GodSaengService {
 
         if (mostRecentProof.isPresent()) {
             LocalDateTime recentProofCreatedTime = mostRecentProof.get().getCreatedTime().toLocalDateTime();
-
             // 현재 시간과 가장 최근 갓생 인증글 생성 시간 비교
             if (now.toLocalDate().isEqual(recentProofCreatedTime.toLocalDate())) {
                 throw new DuplicateProofException();
