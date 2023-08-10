@@ -21,7 +21,6 @@ import org.springframework.web.multipart.MultipartFile;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/godsaeng")
-@Slf4j
 public class GodSaengController {
 
     private final GodSaengService godSaengService;
