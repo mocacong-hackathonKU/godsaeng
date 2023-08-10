@@ -39,5 +39,5 @@ cloud:
     stack:
       auto: false
     credentials:
-      access-key: test
-      secret-key: test
+      access-key: test1
+      secret-key: test1
