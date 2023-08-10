@@ -1,7 +1,6 @@
 package godsaeng.server.domain;
 
 
-import godsaeng.server.exception.badrequest.DuplicateWeekException;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -15,6 +14,7 @@ import java.util.List;
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class GodSaeng extends BaseTime {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "god_saeng_id")
@@ -22,6 +22,7 @@ public class GodSaeng extends BaseTime {
 
     @Column(name = "title", nullable = false)
     private String title;
+
     @Column(name = "description")
     private String description;
 
