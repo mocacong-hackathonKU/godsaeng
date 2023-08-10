@@ -9,8 +9,10 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 @Tag(name = "Godsaengs", description = "같생")
 @RestController
@@ -39,16 +41,19 @@ public class GodSaengController {
     @Operation(summary = "같생 참가 신청")
     @SecurityRequirement(name = "JWT")
     @PostMapping("/attend/{godSaengId}")
-    public ResponseEntity<Void> attendGodSaeng(@LoginUserId Long memberId,@PathVariable Long godSaengId) {
+    public ResponseEntity<Void> attendGodSaeng(@LoginUserId Long memberId, @PathVariable Long godSaengId) {
         godSaengService.attendGodSaeng(memberId, godSaengId);
         return ResponseEntity.ok().build();
     }
 
     @Operation(summary = "같생 인증 등록")
     @SecurityRequirement(name = "JWT")
-    @PostMapping("/proof/{godSaengId}")
-    public ResponseEntity<Void> saveProof(@LoginUserId Long memberId,@PathVariable Long godSaengId) {
-        godSaengService.saveProof(memberId, godSaengId);
+    @PostMapping("/proof/{godSaengId}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ResponseEntity<Void> saveProof(
+            @LoginUserId Long memberId,
+            @PathVariable Long godSaengId,
+            @RequestParam(value = "file", required = false) MultipartFile multipartFile) {
+        godSaengService.saveProof(memberId, godSaengId, multipartFile);
         return ResponseEntity.ok().build();
     }
 }

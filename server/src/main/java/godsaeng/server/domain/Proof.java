@@ -28,9 +28,14 @@ public class Proof extends BaseTime {
     @JoinColumn(name = "proof_image_id")
     private ProofImage proofImage;
 
-    public Proof(String content, GodSaeng godSaeng, ProofImage proofImage) {
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "member_id")
+    private Member member;
+
+    public Proof(String content, GodSaeng godSaeng, ProofImage proofImage, Member member) {
         this.content = content;
         this.godSaeng = godSaeng;
         this.proofImage = proofImage;
+        this.member = member;
     }
 }
