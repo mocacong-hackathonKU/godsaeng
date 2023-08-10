@@ -5,8 +5,6 @@ import lombok.*;
 import javax.validation.constraints.NotBlank;
 
 @Getter
-@NoArgsConstructor(access = AccessLevel.PROTECTED)
-@AllArgsConstructor
 @ToString
 public class ProofSaveRequest {
 

@@ -1,14 +1,17 @@
 package godsaeng.server.controller;
 
 import godsaeng.server.dto.request.GodSaengSaveRequest;
+import godsaeng.server.dto.request.ProofSaveRequest;
 import godsaeng.server.dto.response.GodSaengSaveResponse;
 import godsaeng.server.dto.response.GodSaengsResponse;
+import godsaeng.server.dto.response.ProofSaveResponse;
 import godsaeng.server.security.auth.LoginUserId;
 import godsaeng.server.service.GodSaengService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -18,6 +21,7 @@ import org.springframework.web.multipart.MultipartFile;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/godsaeng")
+@Slf4j
 public class GodSaengController {
 
     private final GodSaengService godSaengService;
@@ -25,7 +29,8 @@ public class GodSaengController {
     @Operation(summary = "같생 등록")
     @SecurityRequirement(name = "JWT")
     @PostMapping
-    public ResponseEntity<GodSaengSaveResponse> save(@LoginUserId Long memberId, @RequestBody GodSaengSaveRequest request) {
+    public ResponseEntity<GodSaengSaveResponse> save(@LoginUserId Long memberId
+            , @RequestBody GodSaengSaveRequest request) {
         GodSaengSaveResponse response = godSaengService.save(memberId, request);
         return ResponseEntity.ok(response);
     }
@@ -48,12 +53,13 @@ public class GodSaengController {
 
     @Operation(summary = "같생 인증 등록")
     @SecurityRequirement(name = "JWT")
-    @PostMapping("/proof/{godSaengId}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public ResponseEntity<Void> saveProof(
-            @LoginUserId Long memberId,
-            @PathVariable Long godSaengId,
-            @RequestParam(value = "file", required = false) MultipartFile multipartFile) {
-        godSaengService.saveProof(memberId, godSaengId, multipartFile);
-        return ResponseEntity.ok().build();
+    @PostMapping(value = "/proof/{godSaengId}", consumes = {MediaType.APPLICATION_JSON_VALUE,
+            MediaType.MULTIPART_FORM_DATA_VALUE})
+    public ResponseEntity<ProofSaveResponse> saveProof(@LoginUserId Long memberId,
+                                                       @PathVariable Long godSaengId,
+                                                       @RequestPart ProofSaveRequest request,
+                                                       @RequestPart MultipartFile multipartFile) {
+        ProofSaveResponse response = godSaengService.saveProof(memberId, godSaengId, multipartFile, request);
+        return ResponseEntity.ok(response);
     }
 }
