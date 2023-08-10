@@ -3,6 +3,7 @@ package godsaeng.server.service;
 import godsaeng.server.domain.*;
 import godsaeng.server.dto.request.GodSaengSaveRequest;
 import godsaeng.server.dto.response.GodSaengSaveResponse;
+import godsaeng.server.dto.response.GodSaengsResponse;
 import godsaeng.server.exception.badrequest.DuplicateGodSaengException;
 import godsaeng.server.repository.GodSaengRepository;
 import godsaeng.server.repository.MemberRepository;
@@ -67,12 +68,8 @@ class GodSaengServiceTest {
     void findAll() {
         String title = "아침 6시 반 기상 갓생 살기";
         String description = "아침 6시 반 기상 후 유의미한 일을 하고 인증해야합니다.";
-        List<Week> weeks = new ArrayList<>();
-        weeks.add(Week.MON);
-        weeks.add(Week.TUE);
-        weeks.add(Week.WED);
-
-        GodSaengSaveRequest request = new GodSaengSaveRequest(title, description, weeks);
+        List<GodSaengWeek> weeks = new ArrayList<>();
+        weeks.add(new GodSaengWeek(Week.MON));
 
         String email = "rlawjddn103@naver.com";
         Member savedMember = memberRepository.save(new Member(email, Platform.KAKAO, "11111"));
@@ -80,10 +77,13 @@ class GodSaengServiceTest {
         godSaengRepository.save(new GodSaeng(title, description, weeks, savedMember));
         godSaengRepository.save(new GodSaeng(title, description, weeks, savedMember));
 
-        godSaengService.findAllGodSaeng();
-        List<GodSaeng> actual = godSaengRepository.findAll();
+        em.clear();
+        em.flush();
 
-        assertEquals(2, actual.size());
+        GodSaengsResponse allGodSaeng = godSaengService.findAllGodSaeng();
+
+
+        assertEquals(2, allGodSaeng.getGodsaengs().size());
     }
 
     @DisplayName("같생에 참가 신청할 수 있다.")
@@ -91,12 +91,8 @@ class GodSaengServiceTest {
     void attendGodSaeng() {
         String title = "아침 6시 반 기상 갓생 살기";
         String description = "아침 6시 반 기상 후 유의미한 일을 하고 인증해야합니다.";
-        List<Week> weeks = new ArrayList<>();
-        weeks.add(Week.MON);
-        weeks.add(Week.TUE);
-        weeks.add(Week.WED);
-
-        GodSaengSaveRequest request = new GodSaengSaveRequest(title, description, weeks);
+        List<GodSaengWeek> weeks = new ArrayList<>();
+        weeks.add(new GodSaengWeek(Week.MON));
 
         String email1 = "rlawjddn103@naver.com";
         Member savedMember1 = memberRepository.save(new Member(email1, Platform.KAKAO, "11111"));
@@ -121,12 +117,8 @@ class GodSaengServiceTest {
     void validateDuplicateAttendGodSaeng() {
         String title = "아침 6시 반 기상 갓생 살기";
         String description = "아침 6시 반 기상 후 유의미한 일을 하고 인증해야합니다.";
-        List<Week> weeks = new ArrayList<>();
-        weeks.add(Week.MON);
-        weeks.add(Week.TUE);
-        weeks.add(Week.WED);
-
-        GodSaengSaveRequest request = new GodSaengSaveRequest(title, description, weeks);
+        List<GodSaengWeek> weeks = new ArrayList<>();
+        weeks.add(new GodSaengWeek(Week.MON));
 
         String email1 = "rlawjddn103@naver.com";
         Member savedMember1 = memberRepository.save(new Member(email1, Platform.KAKAO, "11111"));
