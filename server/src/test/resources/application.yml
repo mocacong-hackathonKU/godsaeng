@@ -11,7 +11,7 @@ spring:
         create_empty_composites:
           enabled: true
         format_sql: true
-        show_sql: false
+        show_sql: true
         default_batch_fetch_size: 100
 
   h2:

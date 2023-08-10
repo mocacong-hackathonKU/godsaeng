@@ -25,29 +25,40 @@ public class GodSaeng extends BaseTime {
     @Column(name = "description")
     private String description;
 
-    @ElementCollection
-    @CollectionTable(name = "god_saeng_week", joinColumns = @JoinColumn(name = "god_saeng_id"))
+    @OneToMany(mappedBy = "godSaeng", cascade = CascadeType.ALL, orphanRemoval = true)
     @Column(name = "god_saeng_week", nullable = false)
-    @Enumerated(EnumType.STRING)
-    private List<Week> weeks = new ArrayList<>();
+    private List<GodSaengWeek> weeks = new ArrayList<>();
 
     @Enumerated(EnumType.STRING)
     private GodSaengStatus status;
 
-    @OneToMany(mappedBy = "godSaeng", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<GodSaengMember> members = new ArrayList<>();
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "member_id")
+    private Member owner;
 
-    public GodSaeng(String title, String description, List<Week> weeks) {
+
+    @OneToMany(mappedBy = "godSaeng", cascade = CascadeType.ALL, orphanRemoval = true)
+    private final List<GodSaengMember> members = new ArrayList<>();
+
+    public GodSaeng(String title, String description, List<GodSaengWeek> weeks, Member member) {
         this.title = title;
         this.description = description;
         this.weeks = weeks;
-        validateWeeks();
+        // 같생을 만든 사람은 자동 참여
+        this.members.add(new GodSaengMember(this, member));
+        this.owner = member;
     }
 
-    private void validateWeeks() {
-        long count = weeks.stream().distinct().count();
-        if (count != weeks.size()) {
-            throw new DuplicateWeekException();
+    public GodSaeng(String title, String description, Member member) {
+        this.title = title;
+        this.description = description;
+        this.members.add(new GodSaengMember(this, member));
+        this.owner = member;
+    }
+
+    public void addAllWeek(List<Week> weeks) {
+        for (Week week : weeks) {
+            this.weeks.add(new GodSaengWeek(this,week));
         }
     }
 }
