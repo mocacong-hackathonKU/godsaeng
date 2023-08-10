@@ -82,13 +82,10 @@ public class GodSaengService {
                 .orElseThrow(NotFoundMemberException::new);
         GodSaeng godSaeng = godSaengRepository.findById(godSaengId)
                 .orElseThrow(NotFoundGodSaengException::new);
-        if (!godSaengMemberRepository.existsByGodSaengAndMember(godSaeng, member)) {
-            throw new InvalidProofMemberException();
-        }
-        String content = request.getProofContent();
-        validateProofDay(member, godSaeng);
+        validateProofCondition(member, godSaeng);
 
         try {
+            String content = request.getProofContent();
             ProofImage proofImage = saveProofImage(godSaengId, proofImg);
             Proof proof = new Proof(content, godSaeng, proofImage, member);
             return new ProofSaveResponse(proofRepository.save(proof).getId());
@@ -109,6 +106,17 @@ public class GodSaengService {
         ProofImage proofImage = new ProofImage(proofImgUrl, godSaeng);
         proofImageRepository.save(proofImage);
         return proofImage;
+    }
+
+    @Transactional
+    public void validateProofCondition(Member member, GodSaeng godSaeng) {
+        if (godSaeng.getStatus() != GodSaengStatus.DOING) {
+            throw new InvalidProofStatusException();
+        }
+        if (!godSaengMemberRepository.existsByGodSaengAndMember(godSaeng, member)) {
+            throw new InvalidProofMemberException();
+        }
+        validateProofDay(member, godSaeng);
     }
 
     @Transactional
