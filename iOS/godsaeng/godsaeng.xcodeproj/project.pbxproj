@@ -12,6 +12,21 @@
 		098C6E2A2A80B2C3003422F8 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 098C6E292A80B2C3003422F8 /* Assets.xcassets */; };
 		098C6E2D2A80B2C3003422F8 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 098C6E2C2A80B2C3003422F8 /* Preview Assets.xcassets */; };
 		098C6E342A80B311003422F8 /* LoginPage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 098C6E332A80B311003422F8 /* LoginPage.swift */; };
+		098C6E382A80C289003422F8 /* RegisterPage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 098C6E372A80C289003422F8 /* RegisterPage.swift */; };
+		098C6E3B2A80C486003422F8 /* Color.swift in Sources */ = {isa = PBXBuildFile; fileRef = 098C6E3A2A80C486003422F8 /* Color.swift */; };
+		098C6E3E2A849503003422F8 /* MemberViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 098C6E3D2A849503003422F8 /* MemberViewModel.swift */; };
+		098C6E412A84953E003422F8 /* AppleLoginInfo.swift in Sources */ = {isa = PBXBuildFile; fileRef = 098C6E402A84953E003422F8 /* AppleLoginInfo.swift */; };
+		098C6E432A84955B003422F8 /* Member.swift in Sources */ = {isa = PBXBuildFile; fileRef = 098C6E422A84955B003422F8 /* Member.swift */; };
+		098C6E462A8495BB003422F8 /* AccessManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 098C6E452A8495BB003422F8 /* AccessManager.swift */; };
+		098C6E482A849644003422F8 /* TokenManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 098C6E472A849644003422F8 /* TokenManager.swift */; };
+		098C6E4B2A84966E003422F8 /* SwiftKeychainWrapper in Frameworks */ = {isa = PBXBuildFile; productRef = 098C6E4A2A84966E003422F8 /* SwiftKeychainWrapper */; };
+		098C6E4D2A849778003422F8 /* AgreementView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 098C6E4C2A849778003422F8 /* AgreementView.swift */; };
+		098C6E502A849D3A003422F8 /* CalendarPage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 098C6E4F2A849D3A003422F8 /* CalendarPage.swift */; };
+		098C6E522A849D63003422F8 /* DatePicker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 098C6E512A849D63003422F8 /* DatePicker.swift */; };
+		098C6E542A849D9A003422F8 /* Date.swift in Sources */ = {isa = PBXBuildFile; fileRef = 098C6E532A849D9A003422F8 /* Date.swift */; };
+		098C6E562A849DC2003422F8 /* Godsaeng.swift in Sources */ = {isa = PBXBuildFile; fileRef = 098C6E552A849DC2003422F8 /* Godsaeng.swift */; };
+		098C6E582A849F0F003422F8 /* Week.swift in Sources */ = {isa = PBXBuildFile; fileRef = 098C6E572A849F0F003422F8 /* Week.swift */; };
+		098C6E5A2A849F4A003422F8 /* Proof.swift in Sources */ = {isa = PBXBuildFile; fileRef = 098C6E592A849F4A003422F8 /* Proof.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -21,6 +36,20 @@
 		098C6E292A80B2C3003422F8 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		098C6E2C2A80B2C3003422F8 /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
 		098C6E332A80B311003422F8 /* LoginPage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginPage.swift; sourceTree = "<group>"; };
+		098C6E372A80C289003422F8 /* RegisterPage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RegisterPage.swift; sourceTree = "<group>"; };
+		098C6E3A2A80C486003422F8 /* Color.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Color.swift; sourceTree = "<group>"; };
+		098C6E3D2A849503003422F8 /* MemberViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MemberViewModel.swift; sourceTree = "<group>"; };
+		098C6E402A84953E003422F8 /* AppleLoginInfo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppleLoginInfo.swift; sourceTree = "<group>"; };
+		098C6E422A84955B003422F8 /* Member.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Member.swift; sourceTree = "<group>"; };
+		098C6E452A8495BB003422F8 /* AccessManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AccessManager.swift; sourceTree = "<group>"; };
+		098C6E472A849644003422F8 /* TokenManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TokenManager.swift; sourceTree = "<group>"; };
+		098C6E4C2A849778003422F8 /* AgreementView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AgreementView.swift; sourceTree = "<group>"; };
+		098C6E4F2A849D3A003422F8 /* CalendarPage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CalendarPage.swift; sourceTree = "<group>"; };
+		098C6E512A849D63003422F8 /* DatePicker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DatePicker.swift; sourceTree = "<group>"; };
+		098C6E532A849D9A003422F8 /* Date.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Date.swift; sourceTree = "<group>"; };
+		098C6E552A849DC2003422F8 /* Godsaeng.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Godsaeng.swift; sourceTree = "<group>"; };
+		098C6E572A849F0F003422F8 /* Week.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Week.swift; sourceTree = "<group>"; };
+		098C6E592A849F4A003422F8 /* Proof.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Proof.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -28,6 +57,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				098C6E4B2A84966E003422F8 /* SwiftKeychainWrapper in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -53,11 +83,14 @@
 		098C6E242A80B2C2003422F8 /* godsaeng */ = {
 			isa = PBXGroup;
 			children = (
-				098C6E292A80B2C3003422F8 /* Assets.xcassets */,
-				098C6E272A80B2C2003422F8 /* ContentView.swift */,
 				098C6E252A80B2C2003422F8 /* godsaengApp.swift */,
+				098C6E292A80B2C3003422F8 /* Assets.xcassets */,
+				098C6E392A80C473003422F8 /* Color */,
+				098C6E442A8495AB003422F8 /* Manager */,
+				098C6E3F2A84952B003422F8 /* Model */,
+				098C6E3C2A8494F0003422F8 /* ViewModel */,
+				098C6E352A80B421003422F8 /* View */,
 				098C6E2B2A80B2C3003422F8 /* Preview Content */,
-				098C6E332A80B311003422F8 /* LoginPage.swift */,
 			);
 			path = godsaeng;
 			sourceTree = "<group>";
@@ -68,6 +101,73 @@
 				098C6E2C2A80B2C3003422F8 /* Preview Assets.xcassets */,
 			);
 			path = "Preview Content";
+			sourceTree = "<group>";
+		};
+		098C6E352A80B421003422F8 /* View */ = {
+			isa = PBXGroup;
+			children = (
+				098C6E272A80B2C2003422F8 /* ContentView.swift */,
+				098C6E362A80B637003422F8 /* Authentication */,
+			);
+			path = View;
+			sourceTree = "<group>";
+		};
+		098C6E362A80B637003422F8 /* Authentication */ = {
+			isa = PBXGroup;
+			children = (
+				098C6E332A80B311003422F8 /* LoginPage.swift */,
+				098C6E372A80C289003422F8 /* RegisterPage.swift */,
+				098C6E4C2A849778003422F8 /* AgreementView.swift */,
+				098C6E4E2A849D2B003422F8 /* Calendar */,
+			);
+			path = Authentication;
+			sourceTree = "<group>";
+		};
+		098C6E392A80C473003422F8 /* Color */ = {
+			isa = PBXGroup;
+			children = (
+				098C6E3A2A80C486003422F8 /* Color.swift */,
+			);
+			path = Color;
+			sourceTree = "<group>";
+		};
+		098C6E3C2A8494F0003422F8 /* ViewModel */ = {
+			isa = PBXGroup;
+			children = (
+				098C6E3D2A849503003422F8 /* MemberViewModel.swift */,
+			);
+			path = ViewModel;
+			sourceTree = "<group>";
+		};
+		098C6E3F2A84952B003422F8 /* Model */ = {
+			isa = PBXGroup;
+			children = (
+				098C6E402A84953E003422F8 /* AppleLoginInfo.swift */,
+				098C6E422A84955B003422F8 /* Member.swift */,
+				098C6E532A849D9A003422F8 /* Date.swift */,
+				098C6E552A849DC2003422F8 /* Godsaeng.swift */,
+				098C6E572A849F0F003422F8 /* Week.swift */,
+				098C6E592A849F4A003422F8 /* Proof.swift */,
+			);
+			path = Model;
+			sourceTree = "<group>";
+		};
+		098C6E442A8495AB003422F8 /* Manager */ = {
+			isa = PBXGroup;
+			children = (
+				098C6E452A8495BB003422F8 /* AccessManager.swift */,
+				098C6E472A849644003422F8 /* TokenManager.swift */,
+			);
+			path = Manager;
+			sourceTree = "<group>";
+		};
+		098C6E4E2A849D2B003422F8 /* Calendar */ = {
+			isa = PBXGroup;
+			children = (
+				098C6E4F2A849D3A003422F8 /* CalendarPage.swift */,
+				098C6E512A849D63003422F8 /* DatePicker.swift */,
+			);
+			path = Calendar;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -86,6 +186,9 @@
 			dependencies = (
 			);
 			name = godsaeng;
+			packageProductDependencies = (
+				098C6E4A2A84966E003422F8 /* SwiftKeychainWrapper */,
+			);
 			productName = godsaeng;
 			productReference = 098C6E222A80B2C2003422F8 /* godsaeng.app */;
 			productType = "com.apple.product-type.application";
@@ -114,6 +217,9 @@
 				Base,
 			);
 			mainGroup = 098C6E192A80B2C2003422F8;
+			packageReferences = (
+				098C6E492A84966E003422F8 /* XCRemoteSwiftPackageReference "SwiftKeychainWrapper" */,
+			);
 			productRefGroup = 098C6E232A80B2C2003422F8 /* Products */;
 			projectDirPath = "";
 			projectRoot = "";
@@ -140,9 +246,23 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				098C6E502A849D3A003422F8 /* CalendarPage.swift in Sources */,
+				098C6E582A849F0F003422F8 /* Week.swift in Sources */,
+				098C6E462A8495BB003422F8 /* AccessManager.swift in Sources */,
+				098C6E3B2A80C486003422F8 /* Color.swift in Sources */,
 				098C6E282A80B2C2003422F8 /* ContentView.swift in Sources */,
+				098C6E5A2A849F4A003422F8 /* Proof.swift in Sources */,
+				098C6E412A84953E003422F8 /* AppleLoginInfo.swift in Sources */,
+				098C6E3E2A849503003422F8 /* MemberViewModel.swift in Sources */,
 				098C6E342A80B311003422F8 /* LoginPage.swift in Sources */,
+				098C6E522A849D63003422F8 /* DatePicker.swift in Sources */,
 				098C6E262A80B2C2003422F8 /* godsaengApp.swift in Sources */,
+				098C6E542A849D9A003422F8 /* Date.swift in Sources */,
+				098C6E482A849644003422F8 /* TokenManager.swift in Sources */,
+				098C6E562A849DC2003422F8 /* Godsaeng.swift in Sources */,
+				098C6E382A80C289003422F8 /* RegisterPage.swift in Sources */,
+				098C6E4D2A849778003422F8 /* AgreementView.swift in Sources */,
+				098C6E432A84955B003422F8 /* Member.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -343,6 +463,25 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		098C6E492A84966E003422F8 /* XCRemoteSwiftPackageReference "SwiftKeychainWrapper" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/jrendel/SwiftKeychainWrapper.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 4.0.0;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		098C6E4A2A84966E003422F8 /* SwiftKeychainWrapper */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 098C6E492A84966E003422F8 /* XCRemoteSwiftPackageReference "SwiftKeychainWrapper" */;
+			productName = SwiftKeychainWrapper;
+		};
+/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = 098C6E1A2A80B2C2003422F8 /* Project object */;
 }
