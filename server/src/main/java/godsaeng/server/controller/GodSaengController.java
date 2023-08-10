@@ -43,4 +43,12 @@ public class GodSaengController {
         godSaengService.attendGodSaeng(memberId, godSaengId);
         return ResponseEntity.ok().build();
     }
+
+    @Operation(summary = "같생 인증 등록")
+    @SecurityRequirement(name = "JWT")
+    @PostMapping("/proof/{godSaengId}")
+    public ResponseEntity<Void> saveProof(@LoginUserId Long memberId,@PathVariable Long godSaengId) {
+        godSaengService.saveProof(memberId, godSaengId);
+        return ResponseEntity.ok().build();
+    }
 }

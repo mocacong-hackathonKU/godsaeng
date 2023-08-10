@@ -17,8 +17,8 @@ public class Proof extends BaseTime {
     @Column(name = "proof_id")
     private Long id;
 
-    @Column(name = "description")
-    private String description;
+    @Column(name = "content")
+    private String content;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "god_saeng_id")
@@ -28,8 +28,8 @@ public class Proof extends BaseTime {
     @JoinColumn(name = "proof_image_id")
     private ProofImage proofImage;
 
-    public Proof(String description, GodSaeng godSaeng, ProofImage proofImage) {
-        this.description = description;
+    public Proof(String content, GodSaeng godSaeng, ProofImage proofImage) {
+        this.content = content;
         this.godSaeng = godSaeng;
         this.proofImage = proofImage;
     }
