@@ -7,10 +7,7 @@ import godsaeng.server.dto.response.GodSaengResponse;
 import godsaeng.server.dto.response.GodSaengSaveResponse;
 import godsaeng.server.dto.response.GodSaengsResponse;
 import godsaeng.server.dto.response.ProofSaveResponse;
-import godsaeng.server.exception.badrequest.DuplicateGodSaengException;
-import godsaeng.server.exception.badrequest.DuplicateProofException;
-import godsaeng.server.exception.badrequest.DuplicateWeekException;
-import godsaeng.server.exception.badrequest.NotExistsProofImageException;
+import godsaeng.server.exception.badrequest.*;
 import godsaeng.server.exception.notfound.NotFoundGodSaengException;
 import godsaeng.server.exception.notfound.NotFoundMemberException;
 import godsaeng.server.repository.*;
@@ -85,6 +82,9 @@ public class GodSaengService {
                 .orElseThrow(NotFoundMemberException::new);
         GodSaeng godSaeng = godSaengRepository.findById(godSaengId)
                 .orElseThrow(NotFoundGodSaengException::new);
+        if (!godSaengMemberRepository.existsByGodSaengAndMember(godSaeng, member)) {
+            throw new InvalidProofMemberException();
+        }
         String content = request.getProofContent();
         validateProofDay(member, godSaeng);
 
@@ -101,7 +101,6 @@ public class GodSaengService {
     public ProofImage saveProofImage(Long godSaengId, MultipartFile proofImg) {
         GodSaeng godSaeng = godSaengRepository.findById(godSaengId)
                 .orElseThrow(NotFoundGodSaengException::new);
-
         if (proofImg == null) {
             throw new NotExistsProofImageException();
         }
@@ -109,14 +108,13 @@ public class GodSaengService {
         String proofImgUrl = awsS3Uploader.uploadImage(proofImg);
         ProofImage proofImage = new ProofImage(proofImgUrl, godSaeng);
         proofImageRepository.save(proofImage);
-
         return proofImage;
     }
 
     @Transactional
     public void validateProofDay(Member member, GodSaeng godSaeng) {
         LocalDateTime now = LocalDateTime.now();
-        // 같은 같생 인증글 중 사용자가 등록한 가장 최신의 인증글
+        // 같은 같생 인증 글 중 사용자가 등록한 가장 최신의 인증글
         Optional<Proof> mostRecentProof = proofRepository
                 .findTopByMemberAndGodSaengOrderByCreatedTimeDesc(member, godSaeng);
 

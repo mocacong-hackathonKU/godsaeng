@@ -37,7 +37,6 @@ public class GodSaeng extends BaseTime {
     @JoinColumn(name = "member_id")
     private Member owner;
 
-
     @OneToMany(mappedBy = "godSaeng", cascade = CascadeType.ALL, orphanRemoval = true)
     private final List<GodSaengMember> members = new ArrayList<>();
 
