@@ -26,7 +26,6 @@ public class GodSaeng extends BaseTime {
     private String description;
 
     @OneToMany(mappedBy = "godSaeng", cascade = CascadeType.ALL, orphanRemoval = true)
-    @Column(name = "god_saeng_week", nullable = false)
     private List<GodSaengWeek> weeks = new ArrayList<>();
 
     @Enumerated(EnumType.STRING)
