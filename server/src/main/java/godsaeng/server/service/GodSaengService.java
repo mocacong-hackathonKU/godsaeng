@@ -94,8 +94,7 @@ public class GodSaengService {
         }
     }
 
-    @Transactional
-    public ProofImage saveProofImage(Long godSaengId, MultipartFile proofImg) {
+    private ProofImage saveProofImage(Long godSaengId, MultipartFile proofImg) {
         GodSaeng godSaeng = godSaengRepository.findById(godSaengId)
                 .orElseThrow(NotFoundGodSaengException::new);
         if (proofImg == null) {
@@ -108,8 +107,7 @@ public class GodSaengService {
         return proofImage;
     }
 
-    @Transactional
-    public void validateProofCondition(Member member, GodSaeng godSaeng) {
+    private void validateProofCondition(Member member, GodSaeng godSaeng) {
         // TODO: 같생 진행 여부에 따른 검증 코드 추가 필요
 //        if (godSaeng.getStatus() != GodSaengStatus.DOING) {
 //            throw new InvalidProofStatusException();
@@ -120,8 +118,7 @@ public class GodSaengService {
         validateProofDay(member, godSaeng);
     }
 
-    @Transactional
-    public void validateProofDay(Member member, GodSaeng godSaeng) {
+    private void validateProofDay(Member member, GodSaeng godSaeng) {
         LocalDateTime now = LocalDateTime.now();
         // 같은 같생 인증 글 중 사용자가 등록한 가장 최신의 인증글
         Optional<Proof> mostRecentProof = proofRepository
