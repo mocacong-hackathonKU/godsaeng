@@ -21,7 +21,7 @@ spring:
         web-allow-others: true
 
 security.jwt.token:
-  secret-key: testtesttesttesttesttesttesttesttesttest
+  secret-key: testtesttesttesttesttesttesttesttesttesttest
   expire-length: 864000
 
 oauth:
