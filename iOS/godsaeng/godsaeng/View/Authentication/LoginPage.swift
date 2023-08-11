@@ -27,8 +27,8 @@ struct LoginPage: View {
     
     @ViewBuilder
     func AppleDefaultIcon() -> some View {
-        RoundedRectangle(cornerRadius: 6.3)
-            .frame(width: screenWidth * 0.8, height: 48)
+        RoundedRectangle(cornerRadius: 20)
+            .frame(width: screenWidth * 0.33, height: 48)
             .foregroundColor(.black)
             .overlay(
                 HStack {
@@ -36,11 +36,25 @@ struct LoginPage: View {
                         .foregroundColor(.white)
                         .font(.system(size: 19))
                         .offset(y: -1.5)
-                    Text("Login with Apple")
+                    Text("Apple")
                         .foregroundColor(.white)
                         .font(.system(size: 17))
                 }
             )
+//        RoundedRectangle(cornerRadius: 6.3)
+//            .frame(width: screenWidth * 0.8, height: 48)
+//            .foregroundColor(.black)
+//            .overlay(
+//                HStack {
+//                    Image(systemName: "apple.logo")
+//                        .foregroundColor(.white)
+//                        .font(.system(size: 19))
+//                        .offset(y: -1.5)
+//                    Text("Login with Apple")
+//                        .foregroundColor(.white)
+//                        .font(.system(size: 17))
+//                }
+//            )
     }
 }
 
