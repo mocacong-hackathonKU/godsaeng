@@ -13,13 +13,13 @@ import javax.validation.constraints.NotBlank;
 @Getter
 public class MemberSignUpRequest {
 
-    @Email(message = "1004:이메일 형식이 올바르지 않습니다.")
-    @NotBlank(message = "1005:공백일 수 없습니다.")
+    @Email(message = "1010:이메일 형식이 올바르지 않습니다.")
+    @NotBlank(message = "1012:공백일 수 없습니다.")
     private String email;
 
-    @NotBlank(message = "1005:공백일 수 없습니다.")
+    @NotBlank(message = "1012:공백일 수 없습니다.")
     private String password;
 
-    @NotBlank(message = "1005:공백일 수 없습니다.")
+    @NotBlank(message = "1012:공백일 수 없습니다.")
     private String nickname;
 }

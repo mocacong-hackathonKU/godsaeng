@@ -22,7 +22,8 @@ public class AuthConfig implements WebMvcConfigurer {
         registry.addInterceptor(loginInterceptor)
                 .addPathPatterns("/members/**","/godsaeng/**")
                 .excludePathPatterns("/members", "/members/oauth", "/members/all",
-                        "/members/check-duplicate/**", "/members/email-verification");
+                        "/members/check-duplicate/**", "/members/email-verification")
+                .excludePathPatterns("/login/**");
     }
 
     @Override
