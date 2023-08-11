@@ -108,10 +108,6 @@ public class GodSaengService {
     }
 
     private void validateProofCondition(Member member, GodSaeng godSaeng) {
-        // TODO: 같생 진행 여부에 따른 검증 코드 추가 필요
-//        if (godSaeng.getStatus() != GodSaengStatus.DOING) {
-//            throw new InvalidProofStatusException();
-//        }
         if (!godSaengMemberRepository.existsByGodSaengAndMember(godSaeng, member)) {
             throw new InvalidProofMemberException();
         }
