@@ -19,22 +19,24 @@ struct AgreementView: View {
     }
     @State var utilizationContractChecked: Bool = false
     @State var personalInfoContractChecked: Bool = false
-    var fontSize: CGFloat = 16
+    var fontSize: CGFloat = 18
     
     var body: some View {
         NavigationView {
             VStack {
-                VStack {
+                VStack(alignment: .leading) {
                     Text("같생")
-                        .font(.system(size: 24, weight: .semibold))
+                        .font(.system(size: 33, weight: .bold))
                         .foregroundColor(.mainOrange)
-                    VStack {
+                    VStack(alignment: .leading) {
                         Text("서비스 이용을 위해")
                         Text("아래 항목에 동의해주세요")
                     }
-                    .font(.system(size: 18.5))
+                    .font(.system(size: 23))
                 }
-                .padding(.bottom, 114)
+                .padding(.top, -30)
+                .padding(.leading, -30)
+                .padding(.bottom, 50)
                 VStack {
                     HStack {
                         Spacer()
@@ -89,7 +91,7 @@ struct AgreementView: View {
                                     .frame(width: 25, height: 25)
                                     .overlay {
                                         Image(systemName: utilizationContractChecked == true ? "checkmark" : "")
-                                            .foregroundColor(.red)
+                                            .foregroundColor(.alertRed)
                                             .font(.system(size: 15, weight: .semibold))
                                     }
                             })
@@ -99,7 +101,6 @@ struct AgreementView: View {
                             Text("개인정보 수집 및 이용 동의")
                                 .foregroundColor(.accent5)
                                 .font(.system(size: fontSize, weight: .semibold))
-                                .padding(.leading)
                             Spacer()
                             Button(action: {
                                 if let url = URL(string: "https://www.notion.so/mocacong/053df0bda1674234a5252d8bc82a4b7b") {
@@ -110,7 +111,6 @@ struct AgreementView: View {
                                     .foregroundColor(.darkGray)
                                     .font(.system(size: 14))
                             })
-                            .padding(.trailing)
                             Button(action: {
                                 withAnimation(.spring()) {
                                     personalInfoContractChecked.toggle()
@@ -121,28 +121,27 @@ struct AgreementView: View {
                                     .frame(width: 25, height: 25)
                                     .overlay {
                                         Image(systemName: personalInfoContractChecked == true ? "checkmark" : "")
-                                            .foregroundColor(.red)
+                                            .foregroundColor(.alertRed)
                                             .font(.system(size: fontSize, weight: .semibold))
                                     }
                             })
-                            .padding(.trailing)
                         }
                     }
                 }
+                .padding(.bottom, 30)
                 Button(action: {
                     accessManager.isAgreed = true
                 }, label: {
-                    RoundedRectangle(cornerRadius: 7)
-                        .foregroundColor(allChecked == true ? .mainGreen : .gray.opacity(0.65))
-                        .frame(width: screenWidth * 0.95, height: 47)
+                    RoundedRectangle(cornerRadius: 20)
+                        .foregroundColor(allChecked == true ? .mainGreen : .gray.opacity(0.5))
+                        .frame(width: screenWidth * 0.9, height: 47)
                         .overlay (
                             Text("가입하기")
                                 .foregroundColor(.white)
-                                .font(.system(size: 15, weight: .semibold))
+                                .font(.system(size: 19, weight: .semibold))
                         )
                 })
                 .disabled(allChecked == false)
-                .padding()
             }
             .toolbar {
                 ToolbarItem(placement: .navigationBarLeading, content: {
@@ -151,7 +150,6 @@ struct AgreementView: View {
                         AccessManager.shared.isLoggedIn = false
                     }, label: {
                         Text("취소")
-                            .font(.system(size: 16, weight: .semibold))
                             .foregroundColor(.darkGray)
                     })
                 })

@@ -20,7 +20,7 @@ struct LoginPage: View {
                 memberVM.loginApple()
             }, label: {
                 AppleDefaultIcon()
-                    .padding(.top, 50)
+                    .padding(.top, 114)
             })
         }
     }

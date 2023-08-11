@@ -3,17 +3,11 @@
 //  godsaeng
 //
 //  Created by Suji Lee on 2023/08/10.
-//
 
 import Foundation
 import Combine
 import AuthenticationServices
 import CryptoKit
-
-enum RegistrationError: Error {
-    case userAlreadyExists
-    case unableToRegister
-}
 
 // 로그인 관련 비즈니스 로직을 처리하는 뷰모델
 class MemberViewModel: NSObject, ObservableObject {
@@ -29,8 +23,7 @@ class MemberViewModel: NSObject, ObservableObject {
     
     @Published var memberDataFetched: Bool = false
     
-    var loginCancellables = Set<AnyCancellable>()
-    var registerCancellables = Set<AnyCancellable>()
+    var cancellables = Set<AnyCancellable>()
 
     func encdoeNonceSha256(_ input: String) -> String {
         let inputData = Data(input.utf8)
@@ -42,6 +35,7 @@ class MemberViewModel: NSObject, ObservableObject {
     }
     
     func loginApple() {
+        print("loginApple 함수 호출")
         // 애플 로그인 요청 시 사용되는 요청 객체 생성
         let request = ASAuthorizationAppleIDProvider().createRequest()
         request.requestedScopes = [.fullName, .email]
@@ -56,7 +50,7 @@ class MemberViewModel: NSObject, ObservableObject {
     func insertAppleIdTokenToAppleLoginModel(appleIdToken: String) {
         appleLoginInfo.token = appleIdToken
         if appleLoginInfo.token != nil {
-//            print("애플 토큰 : ", appleLoginInfo.token)
+            print("애플 토큰 : ", appleLoginInfo.token)
             requestAppleLoginToServer(appleLoginInfo: appleLoginInfo)
                 .sink(receiveCompletion: { result in
                     switch result {
@@ -67,7 +61,7 @@ class MemberViewModel: NSObject, ObservableObject {
                     }
                 }, receiveValue: { member in
                 })
-                .store(in: &self.loginCancellables)
+                .store(in: &self.cancellables)
         }
     }
     
@@ -124,7 +118,7 @@ class MemberViewModel: NSObject, ObservableObject {
                     }
                     print(data.token)
                 }
-                .store(in: &self.loginCancellables)
+                .store(in: &self.cancellables)
         }
     }
 
@@ -177,7 +171,7 @@ class MemberViewModel: NSObject, ObservableObject {
                         self.isDuplicated = true
                     }
                 }
-                .store(in: &self.registerCancellables)
+                .store(in: &self.cancellables)
         }
     }
 
@@ -226,7 +220,7 @@ class MemberViewModel: NSObject, ObservableObject {
                     self.member.nickname = memberToRegister.nickname
                     print("memberVM의 member의 닉네임 : ", self.member.nickname)
                 }
-                .store(in: &self.registerCancellables)
+                .store(in: &self.cancellables)
         }
     }
     
@@ -272,7 +266,7 @@ class MemberViewModel: NSObject, ObservableObject {
                     }
                 }, receiveValue: { _ in
                 })
-                .store(in: &self.loginCancellables)
+                .store(in: &self.cancellables)
     }
 }
 
@@ -303,7 +297,3 @@ extension MemberViewModel: ASAuthorizationControllerPresentationContextProviding
         return window
     }
 }
-
-
-
-

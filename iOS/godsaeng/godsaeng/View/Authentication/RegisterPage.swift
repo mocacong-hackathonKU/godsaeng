@@ -19,23 +19,22 @@ struct RegisterPage: View {
             VStack {
                 VStack {
                 Text("회원가입")
-                    .font(.system(size: 24, weight: .bold))
+                    .font(.system(size: 27, weight: .bold))
                     .padding(.top, -20)
-                    .padding(.bottom, 50)
+                    .padding(.bottom, 45)
                     VStack(alignment: .leading) {
                         Text("프로필 설정")
-                            .font(.system(size: 20, weight: .bold))
+                            .font(.system(size: 22, weight: .bold))
                             .foregroundColor(.accent4)
-                            .padding(.bottom, 10)
+                            .padding(.bottom, 7)
                         Text("나를 잘 나타내는 사진과 닉네임을 정해주세요")
-                            .font(.system(size: 14.5, weight: .semibold))
+                            .font(.system(size: 16, weight: .semibold))
                             .foregroundColor(.darkGray)
-                            .padding(.bottom, 0.3)
                         Text("프로필은 같생을 함께할 사람들에게 보여집니다")
-                            .font(.system(size: 13, weight: .medium))
+                            .font(.system(size: 14))
                             .foregroundColor(.darkGray)
                     }
-                    .padding(.leading, -90)
+                    .padding(.leading, -70)
                 }
                 .padding(.bottom, 35)
                 VStack {
@@ -43,13 +42,13 @@ struct RegisterPage: View {
                     Image("DefaultProfile")
                         .resizable()
                         .scaledToFit()
-                        .frame(width: 200, height: 200)
+                        .frame(width: 180, height: 180)
                         .clipped()
                         .overlay(
                             PhotosPicker(selection: $selectedPhotos, maxSelectionCount: 1, matching: .images) {
                                 Circle()
                                     .foregroundColor(.clear)
-                                    .frame(width: 200, height: 200)
+                                    .frame(width: 180, height: 180)
                             }
                                 .onChange(of: selectedPhotos) { newItem in
                                     guard let item = selectedPhotos.first else {
@@ -71,17 +70,17 @@ struct RegisterPage: View {
                         )
                     
                 }
-                .padding(.bottom, 75)
+                .padding(.bottom, 40)
                 VStack(alignment: .leading) {
                     TextField("닉네잉 (변경불가)", text: $nickname)
                     Rectangle()
                         .foregroundColor(.lightGray)
-                        .frame(width: 320, height: 3)
-                    VStack {
+                        .frame(width: 340, height: 3)
+                    VStack(alignment: .leading) {
                         Text("닉네임은 한글과 영어 2~6자로 입력해주세요")
                         Text("중복된 닉네임입니다")
                     }
-                    .font(.system(size: 12))
+                    .font(.system(size: 13))
                     .foregroundColor(.alertRed)
                 }
                 .padding(.leading, 30)
@@ -92,7 +91,6 @@ struct RegisterPage: View {
                         
                     }, label: {
                         Text("취소")
-                            .font(.system(size: 16, weight: .semibold))
                             .foregroundColor(.darkGray)
                     })
                 }
@@ -102,7 +100,6 @@ struct RegisterPage: View {
                         
                     }, label: {
                         Text("완료")
-                            .font(.system(size: 16, weight: .semibold))
                             .foregroundColor(.mainGreen)
                     })
                 }
