@@ -82,14 +82,14 @@ class GodSaengViewModel: ObservableObject {
                     }
                 } receiveValue: { data in
                     promise(.success(data))
-                    self.fetchGodsaengListData(accessToken: accessToken)
+                    self.fetchGodsaengList(accessToken: accessToken)
                 }
                 .store(in: &self.cancellables)
         }
     }
     
     //같생 전체 조회
-    func fetchGodsaengListData(accessToken: String) {
+    func fetchGodsaengList(accessToken: String) {
         requestGodsaengListFetch(accessToken: accessToken)
             .sink(receiveCompletion: { completion in
                 switch completion {
@@ -152,7 +152,7 @@ class GodSaengViewModel: ObservableObject {
     }
     
     //같생 월별 조회
-    func fetchMonthlyGodsaengListData(accessToken: String, currentMonth: String) {
+    func fetchMonthlyGodsaengList(accessToken: String, currentMonth: String) {
         requestMonthlyGodsaengFetch(accessToken: accessToken, currentMonth: currentMonth)
             .sink(receiveCompletion: { completion in
                 switch completion {
@@ -215,7 +215,7 @@ class GodSaengViewModel: ObservableObject {
     }
     
     //같생 일별 조회
-    func fetchDailyGodsaengListData(accessToken: String, currentDate: String) {
+    func fetchDailyGodsaengList(accessToken: String, currentDate: String) {
         requestDailyGodsaengFetch(accessToken: accessToken, currentDate: currentDate)
             .sink(receiveCompletion: { completion in
                 switch completion {
@@ -278,7 +278,7 @@ class GodSaengViewModel: ObservableObject {
     }
     
     //같생 상세 조회
-    func fetchGodsaengDetailData(accessToken: String, godsaengId: Int) {
+    func fetchGodsaengDetail(accessToken: String, godsaengId: Int) {
         requestGodsaengDetailFetch(accessToken: accessToken, godsaengId: godsaengId)
             .sink(receiveCompletion: { completion in
                 switch completion {
