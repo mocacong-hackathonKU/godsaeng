@@ -6,6 +6,7 @@
 /.idea/modules.xml
 /.idea/workspace.xml
 /.idea/navEditor.xml
+/app/src/main/res/values/strings.xml
 /.idea/assetWizardSettings.xml
 .DS_Store
 /build

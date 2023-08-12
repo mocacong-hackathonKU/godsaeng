@@ -1,5 +1,5 @@
 <resources>
     <string name="app_name">GodSaeng</string>
-    <string name="KAKAO_REST_API_KEY">restkey</string>
+    <string name="KAKAO_REST_API_KEY">bb0ec941dab866bff847af1b4a0d87e8</string>
     <string name="KAKAO_REDIRECT_URI"></string>
 </resources>
