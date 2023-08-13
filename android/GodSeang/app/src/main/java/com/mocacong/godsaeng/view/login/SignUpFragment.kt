@@ -30,7 +30,7 @@ import java.io.File
 
 class SignUpFragment : BaseFragment<FragmentSignUpBinding>(R.layout.fragment_sign_up) {
 
-    private lateinit var body: MultipartBody.Part
+    private var body: MultipartBody.Part? = null
     private val viewModel: LogInViewModel by activityViewModels()
     private val nicknameErrorText = "닉네임은 한글과 영어 2~6글자로 작성해주세요"
 
@@ -42,7 +42,10 @@ class SignUpFragment : BaseFragment<FragmentSignUpBinding>(R.layout.fragment_sig
         binding.nicknameEditText.apply {
             handleEnterKey()
             addTextChangedListener(object : TextWatcher {
-                override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
+                override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
+                    if (p0.toString() == "") binding.nicknameLayout.error = nicknameErrorText
+                }
+
                 override fun afterTextChanged(p0: Editable?) {}
                 override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
                     binding.nicknameLayout.error =
@@ -55,11 +58,11 @@ class SignUpFragment : BaseFragment<FragmentSignUpBinding>(R.layout.fragment_sig
             startNextActivity(LogInActivity::class.java)
         }
         binding.completeButton.setOnClickListener {
-            if (!binding.nicknameLayout.error.isNullOrBlank()) {
+            if(binding.nicknameEditText.text.isNullOrBlank())
+                showToast("닉네임을 입력해주세요")
+            if (binding.nicknameLayout.error != null) {
                 showToast("닉네임 형식을 확인해주세요")
-                return@setOnClickListener
-            }
-            registerMember()
+            } else registerMember()
         }
     }
 
@@ -67,28 +70,35 @@ class SignUpFragment : BaseFragment<FragmentSignUpBinding>(R.layout.fragment_sig
         lifecycleScope.launch {
             val nickname = binding.nicknameEditText.text.toString()
             if (isDuplicated(nickname) == true) {
+                //닉네임 중복체크
                 showMessageDialog("중복된 닉네임", "중복된 닉네임입니다.")
                 return@launch
-            } else {
-                //postSignup
-                val info = SignUpRequest(
-                    email = MemberInfo.data.email,
-                    nickname = nickname,
-                    platform = "kakao",
-                    platformId = MemberInfo.data.platformId
-                )
-                viewModel.requestKakaoSignUp(info).join()
-                consumeResponse(viewModel.signUpFlow.value,
-                    onSuccess = {
-                        (requireActivity() as LogInActivity).kakaoLogin()
-                        return@consumeResponse it
-                    },
-                    onError = {
-                        showToast(it.message)
-                    }
-                )
             }
+
+            if (body == null) {
+                showMessageDialog("프로필 이미지", "프로필 이미지를 등록해주세요")
+                return@launch
+            }
+
+            //postSignup
+            val info = SignUpRequest(
+                email = MemberInfo.data.email,
+                nickname = nickname,
+                platform = "kakao",
+                platformId = MemberInfo.data.platformId
+            )
+            viewModel.requestKakaoSignUp(info).join()
+            consumeResponse(viewModel.signUpFlow.value,
+                onSuccess = {
+                    (requireActivity() as LogInActivity).kakaoLogin()
+                    return@consumeResponse it
+                },
+                onError = {
+                    showToast(it.message)
+                }
+            )
         }
+
     }
 
     private fun nicknameRegex(nickname: String): Boolean {
@@ -107,7 +117,7 @@ class SignUpFragment : BaseFragment<FragmentSignUpBinding>(R.layout.fragment_sig
                 onError = {
                     showToast(it.message)
                 }
-            )
+            )?.result
         }.await()
 
 

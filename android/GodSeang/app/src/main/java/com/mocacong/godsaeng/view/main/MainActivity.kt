@@ -20,6 +20,6 @@ class MainActivity : BaseActivity<ActivityMainBinding, MainViewModel>(R.layout.a
     }
 
     override fun initListener() {
-        TODO("Not yet implemented")
+
     }
 }

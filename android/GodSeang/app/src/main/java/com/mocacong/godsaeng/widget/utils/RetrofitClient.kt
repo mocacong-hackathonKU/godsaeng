@@ -2,6 +2,7 @@ package com.mocacong.godsaeng.widget.utils
 
 import android.util.Log
 import com.google.gson.GsonBuilder
+import com.mocacong.godsaeng.BuildConfig
 import okhttp3.*
 import org.json.JSONObject
 import retrofit2.Retrofit
@@ -10,7 +11,7 @@ import java.util.concurrent.TimeUnit
 
 object RetrofitClient {
 
-    private const val BASE_URL = "url"
+    private const val BASE_URL = BuildConfig.BASE_URI
 
     //interceptor 생성
     private val interceptorClient = OkHttpClient().newBuilder()

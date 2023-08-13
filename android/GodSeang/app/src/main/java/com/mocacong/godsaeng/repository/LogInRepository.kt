@@ -3,6 +3,7 @@ package com.mocacong.godsaeng.repository
 import com.mocacong.godsaeng.data.remote.api.LogInApi
 import com.mocacong.godsaeng.data.remote.model.request.SignUpRequest
 import com.mocacong.godsaeng.data.remote.model.response.LogInResponse
+import com.mocacong.godsaeng.data.remote.model.response.NickNameDuplicateResponse
 import com.mocacong.godsaeng.widget.utils.ApiState
 import com.mocacong.godsaeng.widget.utils.NetworkUtil
 import com.mocacong.godsaeng.widget.utils.RetrofitClient
@@ -28,7 +29,7 @@ class LogInRepository {
         }
     }
 
-    suspend fun checkDuplicate(nickname: String): ApiState<Boolean> {
+    suspend fun checkDuplicate(nickname: String): ApiState<NickNameDuplicateResponse> {
         val response = api.getDuplicated(nickname)
         return if (response.isSuccessful) ApiState.Success(response.body())
         else {

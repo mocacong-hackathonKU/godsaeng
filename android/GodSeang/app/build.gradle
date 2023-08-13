@@ -4,6 +4,10 @@ plugins {
 
 }
 
+Properties properties = new Properties()
+properties.load(project.rootProject.file('local.properties').newDataInputStream())
+
+
 android {
     namespace 'com.mocacong.godsaeng'
     compileSdk 33
@@ -14,6 +18,10 @@ android {
         targetSdk 33
         versionCode 1
         versionName "1.0"
+
+        buildConfigField "String", "KAKAO_REST_API_KEY", properties['kakao_rest_api_key']
+        buildConfigField "String", "KAKAO_REDIRECT_URI", properties['kakao_redirect_uri']
+        buildConfigField "String", "BASE_URI", properties['base_uri']
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }

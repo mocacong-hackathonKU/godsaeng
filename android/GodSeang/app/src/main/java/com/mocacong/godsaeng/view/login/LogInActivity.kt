@@ -9,18 +9,19 @@ import android.webkit.WebView
 import android.webkit.WebViewClient
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
-import com.google.android.material.dialog.MaterialAlertDialogBuilder
-import com.mocacong.godsaeng.view.main.MainActivity
+import com.mocacong.godsaeng.BuildConfig
 import com.mocacong.godsaeng.R
 import com.mocacong.godsaeng.data.MemberInfo
 import com.mocacong.godsaeng.data.remote.model.response.LogInResponse
 import com.mocacong.godsaeng.databinding.ActivityLogInBinding
 import com.mocacong.godsaeng.repository.LogInRepository
+import com.mocacong.godsaeng.view.main.MainActivity
 import com.mocacong.godsaeng.viewmodel.LogInViewModel
 import com.mocacong.godsaeng.widget.utils.ViewModelFactory
 import kotlinx.coroutines.launch
 
 class LogInActivity : BaseActivity<ActivityLogInBinding, LogInViewModel>(R.layout.activity_log_in) {
+    private val TAG = "Login"
 
     override val viewModel: LogInViewModel by lazy {
         ViewModelProvider(this, ViewModelFactory(LogInRepository()))[LogInViewModel::class.java]
@@ -28,8 +29,8 @@ class LogInActivity : BaseActivity<ActivityLogInBinding, LogInViewModel>(R.layou
 
     private lateinit var authCode: String
 
-    private val REST_API_KEY: String by lazy { getString(R.string.KAKAO_REST_API_KEY) }
-    private val REDIRECT_URI: String by lazy { getString(R.string.KAKAO_REDIRECT_URI) }
+    private val REST_API_KEY: String = BuildConfig.KAKAO_REST_API_KEY
+    private val REDIRECT_URI: String = BuildConfig.KAKAO_REDIRECT_URI
 
 
     override fun initView() {
@@ -72,7 +73,8 @@ class LogInActivity : BaseActivity<ActivityLogInBinding, LogInViewModel>(R.layou
                 requestKakaoLogin(authCode).join()
                 consumeResponse(apiState = loginFlow.value,
                     onSuccess = {
-                        if(it.isRegistered) loginSuccessed(it)
+                        Log.d(TAG, "kakaoLogin() isRegistered = ${it.isRegistered}")
+                        if (it.isRegistered) loginSuccessed(it)
                         else registerMember(it)
                         it
                     },
@@ -84,23 +86,25 @@ class LogInActivity : BaseActivity<ActivityLogInBinding, LogInViewModel>(R.layou
         }
     }
 
-    private fun loginSuccessed(member: LogInResponse){
+    private fun loginSuccessed(member: LogInResponse) {
+        Log.d(TAG, "Login Succeed. Member : $member")
         MemberInfo.data = member
         showToast("로그인 성공. 환영합니다")
         startNextActivity(MainActivity::class.java)
     }
 
-    private fun registerMember(member: LogInResponse){
+    private fun registerMember(member: LogInResponse) {
         MemberInfo.data = member
         showToast("회원 정보 없음. 가입을 시작합니다")
-         supportFragmentManager
+        supportFragmentManager
             .findFragmentByTag("SignUpFragment")
-            ?: SignUpFragment().also {fragment->
+            ?: SignUpFragment().also { fragment ->
                 addFragment(fragment)
             }
     }
 
-    private fun addFragment(fragment: SignUpFragment){
-        supportFragmentManager.beginTransaction().add(R.id.login_frame, fragment, "SignUpFragment").commit()
+    private fun addFragment(fragment: SignUpFragment) {
+        supportFragmentManager.beginTransaction().add(R.id.login_frame, fragment, "SignUpFragment")
+            .commit()
     }
 }
