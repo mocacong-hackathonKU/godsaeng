@@ -1,5 +1,6 @@
 package com.mocacong.godsaeng.viewmodel
 
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.mocacong.godsaeng.data.remote.model.request.SignUpRequest
@@ -13,6 +14,8 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 
 class LogInViewModel(val logInRepository: LogInRepository) : ViewModel() {
+    var isLoading = MutableLiveData<Boolean>()
+
     var mLoginFlow: MutableStateFlow<ApiState<LogInResponse>> = MutableStateFlow(ApiState.Loading())
     var loginFlow: StateFlow<ApiState<LogInResponse>> = mLoginFlow
 

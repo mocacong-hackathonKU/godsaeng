@@ -7,6 +7,8 @@ import android.util.Log
 import android.view.View
 import android.webkit.WebView
 import android.webkit.WebViewClient
+import androidx.fragment.app.FragmentTransaction
+import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import com.mocacong.godsaeng.BuildConfig
@@ -34,6 +36,12 @@ class LogInActivity : BaseActivity<ActivityLogInBinding, LogInViewModel>(R.layou
 
 
     override fun initView() {
+        binding.viewmodel = viewModel
+        val loadingObserver = Observer<Boolean>{
+            binding.progressCircular.visibility = if(it) View.VISIBLE else View.GONE
+        }
+        viewModel.isLoading.observe(this, loadingObserver)
+
     }
 
     override fun initListener() {
@@ -70,9 +78,11 @@ class LogInActivity : BaseActivity<ActivityLogInBinding, LogInViewModel>(R.layou
     fun kakaoLogin() {
         lifecycleScope.launch {
             viewModel.apply {
+                isLoading.value = true
                 requestKakaoLogin(authCode).join()
                 consumeResponse(apiState = loginFlow.value,
                     onSuccess = {
+                        isLoading.value = false
                         Log.d(TAG, "kakaoLogin() isRegistered = ${it.isRegistered}")
                         if (it.isRegistered) loginSuccessed(it)
                         else registerMember(it)
@@ -105,6 +115,7 @@ class LogInActivity : BaseActivity<ActivityLogInBinding, LogInViewModel>(R.layou
 
     private fun addFragment(fragment: SignUpFragment) {
         supportFragmentManager.beginTransaction().add(R.id.login_frame, fragment, "SignUpFragment")
-            .commit()
+            .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE)
+            .commitNow()
     }
 }
