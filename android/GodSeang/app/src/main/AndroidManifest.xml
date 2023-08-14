@@ -15,10 +15,7 @@
         android:theme="@style/Theme.GodSaeng"
         android:usesCleartextTraffic="true"
         tools:targetApi="31">
-        <activity
-            android:name=".view.main.feed.CalendarTestActivity"
-            android:exported="true">
-        </activity>
+
         <activity
             android:name=".view.login.LogInActivity"
             android:exported="true">

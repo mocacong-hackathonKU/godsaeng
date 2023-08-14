@@ -8,6 +8,7 @@ import com.mocacong.godsaeng.R
 import com.mocacong.godsaeng.databinding.ActivityMainBinding
 import com.mocacong.godsaeng.repository.MainRepository
 import com.mocacong.godsaeng.view.main.feed.FeedFragment
+import com.mocacong.godsaeng.view.main.search.SearchFragment
 import com.mocacong.godsaeng.viewmodel.MainViewModel
 import com.mocacong.godsaeng.widget.utils.ViewModelFactory
 
@@ -27,7 +28,7 @@ class MainActivity : BaseActivity<ActivityMainBinding, MainViewModel>(R.layout.a
                     true
                 }
                 R.id.menu_search -> {
-
+                    replaceFragment(SearchFragment())
                     true
                 }
                 R.id.menu_mypage -> {

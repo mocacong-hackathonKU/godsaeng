@@ -1,36 +1,36 @@
-package com.mocacong.godsaeng.view.main.feed
+package com.mocacong.godsaeng.view.main.search
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import com.mocacong.godsaeng.data.DailyInfo
-import com.mocacong.godsaeng.databinding.ItemDailyGodsaengBinding
+import com.mocacong.godsaeng.data.Preview
+import com.mocacong.godsaeng.databinding.ItemGodsaengSearchBinding
 
-class DailyGodSaengAdapter : RecyclerView.Adapter<DailyGodSaengAdapter.MyViewHolder>() {
+class GodSaengListAdapter : RecyclerView.Adapter<GodSaengListAdapter.MyViewHolder>() {
 
     private var onItemClickListener: OnItemClickListener? = null
-    private var godSaengList = mutableListOf<DailyInfo>()
+    private var godSaengList = mutableListOf<Preview>()
 
     interface OnItemClickListener {
-        fun onItemClick(item: DailyInfo)
+        fun onItemClick(item: Preview)
     }
 
     fun setOnItemClickListener(listener: OnItemClickListener) {
         this.onItemClickListener = listener
     }
 
-    inner class MyViewHolder(private val binding: ItemDailyGodsaengBinding) :
+    inner class MyViewHolder(private val binding: ItemGodsaengSearchBinding) :
         RecyclerView.ViewHolder(binding.root) {
-        fun bind(godSaeng: DailyInfo) {
-            binding.dailyGodSaeng = godSaeng
-            binding.proofBtn.setOnClickListener {
+        fun bind(godSaeng: Preview) {
+            binding.godSaengInfo = godSaeng
+            binding.root.setOnClickListener {
                 onItemClickListener?.onItemClick(godSaeng)
             }
         }
     }
 
 
-    fun setData(godSaengs: List<DailyInfo>) {
+    fun setData(godSaengs: List<Preview>) {
         godSaengList.clear()
         godSaengList.addAll(godSaengs)
         notifyDataSetChanged()
@@ -38,7 +38,7 @@ class DailyGodSaengAdapter : RecyclerView.Adapter<DailyGodSaengAdapter.MyViewHol
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MyViewHolder {
         val binding =
-            ItemDailyGodsaengBinding.inflate(LayoutInflater.from(parent.context), parent, false)
+            ItemGodsaengSearchBinding.inflate(LayoutInflater.from(parent.context), parent, false)
         return MyViewHolder(binding)
     }
 

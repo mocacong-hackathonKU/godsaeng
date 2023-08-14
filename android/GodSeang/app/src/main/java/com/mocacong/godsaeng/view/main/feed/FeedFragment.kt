@@ -5,6 +5,7 @@ import android.util.Log
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.mocacong.godsaeng.R
 import com.mocacong.godsaeng.data.CalendarEntity
+import com.mocacong.godsaeng.data.DailyInfo
 import com.mocacong.godsaeng.data.GodSaeng
 import com.mocacong.godsaeng.databinding.FragmentFeedBinding
 import java.util.*
@@ -22,7 +23,7 @@ class FeedFragment : BaseFragment<FragmentFeedBinding>(R.layout.fragment_feed) {
 
     private fun setGodSaengList() {
         dailyAdapter.setOnItemClickListener(object : DailyGodSaengAdapter.OnItemClickListener {
-            override fun onItemClick(item: GodSaeng.DailyInfo) {
+            override fun onItemClick(item: DailyInfo) {
                 Log.d("Feed", "Daily Item : $item 선택됨")
                 //TODO: 상세페이지로 넘어가기
             }
@@ -30,10 +31,10 @@ class FeedFragment : BaseFragment<FragmentFeedBinding>(R.layout.fragment_feed) {
 
         dailyAdapter.setData(
             listOf(
-                GodSaeng.DailyInfo(id = 12124141, "같생111", GodSaeng.STATUS.PROCEEDING.name),
-                GodSaeng.DailyInfo(id = 12222222, "같생222", GodSaeng.STATUS.PROCEEDING.name),
-                GodSaeng.DailyInfo(id = 13333333, "같생1113", GodSaeng.STATUS.DONE.name),
-                GodSaeng.DailyInfo(id = 12444441, "같생1114", GodSaeng.STATUS.DONE.name),
+                DailyInfo(id = 12124141, "같생111", GodSaeng.STATUS.PROCEEDING.name),
+                DailyInfo(id = 12222222, "같생222", GodSaeng.STATUS.PROCEEDING.name),
+                DailyInfo(id = 13333333, "같생1113", GodSaeng.STATUS.DONE.name),
+                DailyInfo(id = 12444441, "같생1114", GodSaeng.STATUS.DONE.name),
             )
         )
 

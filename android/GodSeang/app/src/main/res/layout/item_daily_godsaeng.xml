@@ -5,7 +5,7 @@
     <data>
         <variable
             name="dailyGodSaeng"
-            type="com.mocacong.godsaeng.data.GodSaeng.DailyInfo" />
+            type="com.mocacong.godsaeng.data.DailyInfo" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
