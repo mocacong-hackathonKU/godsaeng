@@ -39,6 +39,7 @@
             tools:text="8" />
 
         <LinearLayout
+            android:layout_marginTop="20dp"
             android:id="@+id/daysIndexLayout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

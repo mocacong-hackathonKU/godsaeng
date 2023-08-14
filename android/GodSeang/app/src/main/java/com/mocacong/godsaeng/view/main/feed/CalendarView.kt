@@ -1,6 +1,5 @@
-package com.mocacong.godsaeng.view.calendar
+package com.mocacong.godsaeng.view.main.feed
 
-import CalendarViewAdapter
 import android.content.Context
 import android.util.AttributeSet
 import android.util.Log
@@ -47,7 +46,7 @@ class CalendarView @JvmOverloads constructor(
         }
         calendarEntities.addAll(monthlyInfo)
         val todayPosition = calendarEntities.indexOf(getToday())
-        Log.d("Calendar","todayposition: ${todayPosition}")
+        Log.d("Calendar", "todayposition: ${todayPosition}")
         calendarEntities.find {
             it == getToday()
         }?.isSelected = true
@@ -57,7 +56,33 @@ class CalendarView @JvmOverloads constructor(
         calendarViewBinding.calendarView.layoutManager = getLayoutManger()
     }
 
-    fun setDateClickListener(listener: CalendarViewAdapter.OnItemClickListener){
+    fun initialize(monthlyInfo: List<CalendarEntity>) {
+        val calendar = Calendar.getInstance()
+
+        val year = calendar.get(Calendar.YEAR)
+        val month = calendar.get(Calendar.MONTH) + 1
+        //월별 뷰 초기화
+        calendarEntities.clear()
+        setMonthTitle(month)
+
+        //어댑터에 해당 월 데이터 전달
+        val startDay = getStartDayOfMonth(year, month)
+        repeat(startDay) {
+            calendarEntities.add(CalendarEntity("", ""))
+        }
+        calendarEntities.addAll(monthlyInfo)
+        val todayPosition = calendarEntities.indexOf(getToday())
+        Log.d("Calendar", "todayposition: ${todayPosition}")
+        calendarEntities.find {
+            it == getToday()
+        }?.isSelected = true
+
+
+        adapter.setData(calendarEntities, todayPosition)
+        calendarViewBinding.calendarView.layoutManager = getLayoutManger()
+    }
+
+    fun setDateClickListener(listener: CalendarViewAdapter.OnItemClickListener) {
         adapter.setOnItemClickListener(listener)
     }
 
@@ -78,7 +103,7 @@ class CalendarView @JvmOverloads constructor(
         return layoutManager
     }
 
-    private fun getStartDayOfMonth(year: Int, month: Int) : Int {
+    private fun getStartDayOfMonth(year: Int, month: Int): Int {
         val calendar = Calendar.getInstance()
         calendar.set(year, month - 1, 1) // 월은 0부터 시작하므로 -1을 해줘야함
         val dayOfWeek = calendar.get(Calendar.DAY_OF_WEEK) - 2// 월 0 화 1 ... 일 -1

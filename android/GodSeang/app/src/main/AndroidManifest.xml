@@ -16,7 +16,7 @@
         android:usesCleartextTraffic="true"
         tools:targetApi="31">
         <activity
-            android:name=".view.calendar.CalendarTestActivity"
+            android:name=".view.main.feed.CalendarTestActivity"
             android:exported="true">
         </activity>
         <activity

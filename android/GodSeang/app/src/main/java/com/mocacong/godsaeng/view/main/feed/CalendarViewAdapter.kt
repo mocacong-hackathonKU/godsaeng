@@ -1,3 +1,5 @@
+package com.mocacong.godsaeng.view.main.feed
+
 import android.graphics.Color
 import android.util.Log
 import android.view.LayoutInflater
@@ -9,7 +11,6 @@ import com.mocacong.godsaeng.databinding.ItemCalendarDateBinding
 
 class CalendarViewAdapter : RecyclerView.Adapter<CalendarViewAdapter.CalendarViewHolder>() {
 
-    var today: CalendarEntity? = null
     private val calendarInfo = mutableListOf<CalendarEntity>()
     var selectedPosition = -1
 
@@ -29,13 +30,13 @@ class CalendarViewAdapter : RecyclerView.Adapter<CalendarViewAdapter.CalendarVie
         fun bind(calendarEntity: CalendarEntity) {
             binding.calendarEntity = calendarEntity
             binding.calendarDate.isSelected = calendarEntity.isSelected
+            updateUIByStatus(calendarEntity.status)
+
             if(calendarEntity.date=="") {
                 binding.root.isEnabled = false
+                binding.calendarDate.setOnClickListener {  }
                 return
             }
-
-            // 상태에 따른 UI 처리
-            updateUIByStatus(calendarEntity.status)
 
             if (onItemClickListener != null) {
                 binding.calendarDate.setOnClickListener {
