@@ -6,6 +6,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
+import java.time.DayOfWeek;
 
 @Entity
 @Table(name = "god_saeng_week",uniqueConstraints = {
@@ -35,5 +36,9 @@ public class GodSaengWeek extends BaseTime {
     public GodSaengWeek(GodSaeng godSaeng, Week week) {
         this.godSaeng = godSaeng;
         this.week = week;
+    }
+
+    public DayOfWeek toDayOfWeek() {
+        return week.toDayOfWeek();
     }
 }

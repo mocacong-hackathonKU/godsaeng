@@ -5,6 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import java.time.DayOfWeek;
 import java.util.Arrays;
 import java.util.Objects;
 
@@ -13,20 +14,17 @@ import java.util.Objects;
 @Getter
 public enum Week {
 
-    MON("MON"),
-    TUE("TUE"),
-    WED("WED"),
-    THR("THR"),
-    FRI("FRI"),
-    SAT("SAT"),
-    SUN("SUN");
+    MON(1),
+    TUE(2),
+    WED(3),
+    THR(4),
+    FRI(5),
+    SAT(6),
+    SUN(7);
 
-    private String value;
+    private int value;
 
-    public static Week from(String value) {
-        return Arrays.stream(values())
-                .filter(it -> Objects.equals(it.value, value))
-                .findFirst()
-                .orElseThrow(InvalidPlatformException::new);
+    public DayOfWeek toDayOfWeek() {
+        return DayOfWeek.of(value);
     }
 }
