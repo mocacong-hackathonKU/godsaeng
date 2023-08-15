@@ -1,7 +1,6 @@
 package godsaeng.server.service;
 
 import godsaeng.server.domain.Member;
-import godsaeng.server.domain.MemberProfileImage;
 import godsaeng.server.domain.Platform;
 import godsaeng.server.dto.request.MemberSignUpRequest;
 import godsaeng.server.dto.request.OAuthMemberSignUpRequest;
@@ -24,7 +23,6 @@ import org.springframework.mock.web.MockMultipartFile;
 
 import java.io.FileInputStream;
 import java.io.IOException;
-
 import java.util.List;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
@@ -88,14 +86,18 @@ public class MemberServiceTest {
 
     @Test
     @DisplayName("OAuth 유저 로그인 후 정보를 입력받아 회원을 가입한다")
-    void signUpByOAuthMember() {
+    void signUpByOAuthMember() throws IOException {
         String email = "dlawotn3@naver.com";
         String platformId = "1234321";
+        String img = "test_img.jpg";
         Member savedMember = memberRepository.save(new Member(email, Platform.KAKAO, platformId));
+        FileInputStream fileInputStream = new FileInputStream("src/test/resources/images/" + img);
+        MockMultipartFile mockMultipartFile = new MockMultipartFile("test_img", img, "jpg",
+                fileInputStream);
         OAuthMemberSignUpRequest request = new OAuthMemberSignUpRequest(null, "메리",
                 Platform.KAKAO.getValue(), platformId);
-
-        memberService.signUpByOAuthMember(request);
+        when(awsS3Uploader.uploadImage(mockMultipartFile)).thenReturn("test_img.jpg");
+        memberService.signUpByOAuthMember(request, mockMultipartFile);
 
         Member actual = memberRepository.findById(savedMember.getId()).orElseThrow();
         assertThat(actual.getNickname()).isEqualTo("메리");
@@ -103,28 +105,39 @@ public class MemberServiceTest {
 
     @Test
     @DisplayName("OAuth 유저 로그인 후 회원가입 시 platform과 platformId 정보로 회원이 존재하지 않으면 예외를 반환한다")
-    void signUpByOAuthMemberWhenInvalidPlatformInfo() {
+    void signUpByOAuthMemberWhenInvalidPlatformInfo() throws IOException {
+        String img = "test_img.jpg";
+        FileInputStream fileInputStream = new FileInputStream("src/test/resources/images/" + img);
+        MockMultipartFile mockMultipartFile = new MockMultipartFile("test_img", img, "jpg",
+                fileInputStream);
         memberRepository.save(new Member("dlawotn3@naver.com", Platform.KAKAO, "1234321"));
         OAuthMemberSignUpRequest request = new OAuthMemberSignUpRequest(null, "메리",
                 Platform.KAKAO.getValue(), "invalid");
+        when(awsS3Uploader.uploadImage(mockMultipartFile)).thenReturn("test_img.jpg");
 
-        assertThatThrownBy(() -> memberService.signUpByOAuthMember(request))
+
+        assertThatThrownBy(() -> memberService.signUpByOAuthMember(request, mockMultipartFile))
                 .isInstanceOf(NotFoundMemberException.class);
     }
 
     @Test
     @DisplayName("이미 존재하는 닉네임인 경우 True를 반환한다")
-    void isDuplicateNicknameReturnTrue() {
+    void isDuplicateNicknameReturnTrue() throws IOException {
         String email = "dlawotn3@naver.com";
         String platformId = "1234321";
         String nickname = "메리";
+        String img = "test_img.jpg";
+        FileInputStream fileInputStream = new FileInputStream("src/test/resources/images/" + img);
+        MockMultipartFile mockMultipartFile = new MockMultipartFile("test_img", img, "jpg",
+                fileInputStream);
         memberRepository.save(new Member(email, Platform.KAKAO, platformId));
         OAuthMemberSignUpRequest request = new OAuthMemberSignUpRequest(null, nickname,
                 Platform.KAKAO.getValue(), platformId);
-        memberService.signUpByOAuthMember(request);
+        when(awsS3Uploader.uploadImage(mockMultipartFile)).thenReturn("test_img.jpg");
+        memberService.signUpByOAuthMember(request, mockMultipartFile);
         IsDuplicateNicknameResponse response = memberService.isDuplicateNickname(nickname);
 
-        memberService.signUpByOAuthMember(request);
+        memberService.signUpByOAuthMember(request, mockMultipartFile);
 
         Assertions.assertThat(response.isResult()).isTrue();
     }
@@ -141,17 +154,19 @@ public class MemberServiceTest {
 
     @Test
     @DisplayName("마이페이지로 내 정보를 조회한다")
-    void findMyInfo() {
+    void findMyInfo() throws IOException {
         String imgUrl = "test_img.jpg";
         String email = "kth990303@naver.com";
         String nickname = "메리";
-        MemberProfileImage memberProfileImage = new MemberProfileImage(imgUrl);
-        memberProfileImageRepository.save(memberProfileImage);
-        Member savedMember = memberRepository.save(new Member(email, memberProfileImage, Platform.KAKAO,
-                "11111"));
+        String img = "test_img.jpg";
+        FileInputStream fileInputStream = new FileInputStream("src/test/resources/images/" + img);
+        MockMultipartFile mockMultipartFile = new MockMultipartFile("test_img", img, "jpg",
+                fileInputStream);
+        Member savedMember = memberRepository.save(new Member(email, Platform.KAKAO, "11111"));
         OAuthMemberSignUpRequest request = new OAuthMemberSignUpRequest(null, "메리",
                 Platform.KAKAO.getValue(), "11111");
-        memberService.signUpByOAuthMember(request);
+        when(awsS3Uploader.uploadImage(mockMultipartFile)).thenReturn("test_img.jpg");
+        memberService.signUpByOAuthMember(request, mockMultipartFile);
 
         MyPageResponse actual = memberService.findMyInfo(savedMember.getId());
 
@@ -166,44 +181,29 @@ public class MemberServiceTest {
     @DisplayName("회원의 프로필 이미지를 변경하면 s3 서버와 연동하여 이미지를 업로드한다")
     void updateProfileImg() throws IOException {
         String expected = "test_img.jpg";
+        String img = "test_img.jpg";
+        FileInputStream fileInputStream1 = new FileInputStream("src/test/resources/images/" + img);
+        MockMultipartFile mockMultipartFile1 = new MockMultipartFile("test_img", img, "jpg",
+                fileInputStream1);
         Member savedMember = memberRepository.save(new Member("dlawotn3@naver.com", Platform.KAKAO,
                 "11111"));
+        when(awsS3Uploader.uploadImage(mockMultipartFile1)).thenReturn("test_img.jpg");
         OAuthMemberSignUpRequest request = new OAuthMemberSignUpRequest(null, "메리",
                 Platform.KAKAO.getValue(), "11111");
-        memberService.signUpByOAuthMember(request);
-        FileInputStream fileInputStream = new FileInputStream("src/test/resources/images/" + expected);
-        MockMultipartFile mockMultipartFile = new MockMultipartFile("test_img", expected, "jpg",
-                fileInputStream);
 
-        when(awsS3Uploader.uploadImage(mockMultipartFile)).thenReturn("test_img.jpg");
-        memberService.updateProfileImage(savedMember.getId(), mockMultipartFile);
+        memberService.signUpByOAuthMember(request, mockMultipartFile1);
+        FileInputStream fileInputStream2 = new FileInputStream("src/test/resources/images/" + expected);
+        MockMultipartFile mockMultipartFile2 = new MockMultipartFile("test_img", expected, "jpg",
+                fileInputStream2);
+
+        when(awsS3Uploader.uploadImage(mockMultipartFile2)).thenReturn("test_img.jpg");
+        memberService.updateProfileImage(savedMember.getId(), mockMultipartFile2);
 
         Member actual = memberRepository.findById(savedMember.getId())
                 .orElseThrow();
         assertAll(
                 () -> Assertions.assertThat(actual.getImgUrl()).isEqualTo(expected),
                 () -> Assertions.assertThat(actual.getMemberProfileImage().getIsUsed()).isTrue()
-        );
-    }
-
-    @Test
-    @DisplayName("회원이 프로필 이미지를 삭제하거나 null로 설정하면 프로필 이미지는 null로 설정된다")
-    void updateProfileImgWithNull() {
-        MemberProfileImage memberProfileImage = new MemberProfileImage("test.me.jpg");
-        memberProfileImageRepository.save(memberProfileImage);
-        Member member = memberRepository.save(new Member("dlawotn3@naver.com", memberProfileImage,
-                Platform.KAKAO, "11111"));
-        OAuthMemberSignUpRequest request = new OAuthMemberSignUpRequest(null, "메리",
-                Platform.KAKAO.getValue(), "11111");
-        memberService.signUpByOAuthMember(request);
-
-        memberService.updateProfileImage(member.getId(), null);
-
-        Member actual = memberRepository.findById(member.getId())
-                .orElseThrow();
-        assertAll(
-                () -> Assertions.assertThat(actual.getImgUrl()).isNull(),
-                () -> Assertions.assertThat(actual.getMemberProfileImage()).isNull()
         );
     }
 }
