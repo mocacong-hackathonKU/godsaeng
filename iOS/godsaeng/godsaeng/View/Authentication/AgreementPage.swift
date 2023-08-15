@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-struct AgreementView: View {
+struct AgreementPage: View {
     
     @EnvironmentObject var accessManager: AccessManager
     var allChecked: Bool {
@@ -158,8 +158,8 @@ struct AgreementView: View {
     }
 }
 
-struct AgreementView_Previews: PreviewProvider {
+struct AgreementPage_Previews: PreviewProvider {
     static var previews: some View {
-        AgreementView()
+        AgreementPage()
     }
 }

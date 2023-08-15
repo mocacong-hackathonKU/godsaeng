@@ -7,7 +7,7 @@
 
 import Foundation
 
-struct Proof: Codable, Identifiable {
+struct Proof: Codable, Identifiable, Hashable {
     var id: Int?
     var proofId: Int?
     var nickname: String?

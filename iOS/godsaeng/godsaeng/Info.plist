@@ -3,8 +3,8 @@
 <plist version="1.0">
 <dict>
 	<key>NONCE</key>
-	<string>${NONCE}</string>
+	<string>$(NONCE)</string>
 	<key>REQUEST_URL</key>
-	<string>${REQUEST_URL}</string>
+	<string>$(REQUEST_URL)</string>
 </dict>
 </plist>

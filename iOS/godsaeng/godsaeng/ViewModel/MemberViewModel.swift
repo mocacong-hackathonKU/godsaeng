@@ -17,7 +17,6 @@ class MemberViewModel: NSObject, ObservableObject {
     var appleLoginInfo = AppleLoginInfo()
     @Published var member: Member = Member()
     @Published var memberId: Int?
-    @Published var isRegistered: Bool?
     @Published var error: Error?
     @Published var isDuplicated: Bool?
     
@@ -108,10 +107,11 @@ class MemberViewModel: NSObject, ObservableObject {
                     AccessManager.shared.isLoggedIn = true
                 } receiveValue: { data in
                     self.member = data
-                    self.isRegistered = data.isRegistered
+                    if let iSRegistered = data.isRegistered {
+                        AccessManager.shared.isRegistered = iSRegistered
+                    }
                     self.member.platform = "apple"
-                    
-                    // Save the token using TokenManager
+                    //TokenManager에 액세스 토큰 저장
                     if let token = data.token {
                         try? TokenManager.shared.saveToken(token)
                         AccessManager.shared.isLoggedIn = true
@@ -200,7 +200,7 @@ class MemberViewModel: NSObject, ObservableObject {
                     switch httpResponse.statusCode {
                     case 200:
                         print("회원가입 상태코드 200")
-                        self.isRegistered = true
+                        AccessManager.shared.isRegistered = true
                     case 500 :
                         print("서버 에러 500")
                         AccessManager.shared.serverDown = true
@@ -215,7 +215,6 @@ class MemberViewModel: NSObject, ObservableObject {
                     print("Completion: \(completion)")
                     promise(.success(self.member))
                 } receiveValue: { data in
-                    self.isRegistered = true
                     self.member.id = data.id
                     self.member.nickname = memberToRegister.nickname
                     print("memberVM의 member의 닉네임 : ", self.member.nickname)

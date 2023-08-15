@@ -12,6 +12,7 @@ class AccessManager: ObservableObject {
 
     @Published private var _isLoggedIn: Bool = false
     @Published private var _isAgreed: Bool = false
+    @Published private var _isRegistered: Bool = false
     @Published private var _tokenExpired: Bool = false
     @Published private var _userLoggedOutOrDeleted: Bool = false
     @Published private var _serverDown: Bool = false
@@ -29,6 +30,14 @@ class AccessManager: ObservableObject {
         }
         set {
             self._isAgreed = newValue
+        }
+    }
+    var isRegistered: Bool {
+        get {
+            return self._isRegistered
+        }
+        set {
+            self._isRegistered = newValue
         }
     }
     var tokenExpired: Bool {
