@@ -29,6 +29,7 @@ public class GodSaeng extends BaseTime {
 
     @Column(name = "title", nullable = false)
     private String title;
+
     @Column(name = "description")
     private String description;
 
@@ -38,7 +39,6 @@ public class GodSaeng extends BaseTime {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "member_id")
     private Member owner;
-
 
     @OneToMany(mappedBy = "godSaeng", cascade = CascadeType.ALL, orphanRemoval = true)
     private final List<GodSaengMember> members = new ArrayList<>();

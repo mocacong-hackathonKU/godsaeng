@@ -2,20 +2,20 @@ package godsaeng.server.service;
 
 import godsaeng.server.domain.Member;
 import godsaeng.server.domain.Platform;
+import godsaeng.server.dto.request.AppleLoginRequest;
+import godsaeng.server.dto.request.AuthLoginRequest;
 import godsaeng.server.dto.request.KakaoLoginRequest;
 import godsaeng.server.dto.response.OAuthTokenResponse;
+import godsaeng.server.dto.response.TokenResponse;
+import godsaeng.server.exception.badrequest.PasswordMismatchException;
 import godsaeng.server.exception.notfound.NotFoundMemberException;
 import godsaeng.server.repository.MemberRepository;
 import godsaeng.server.security.auth.JwtTokenProvider;
 import godsaeng.server.security.auth.OAuthPlatformMemberResponse;
+import godsaeng.server.security.auth.apple.AppleOAuthUserProvider;
 import godsaeng.server.security.auth.kakao.KakaoOAuthUserProvider;
 import lombok.RequiredArgsConstructor;
-
-import godsaeng.server.dto.request.AuthLoginRequest;
-import godsaeng.server.dto.response.TokenResponse;
-import godsaeng.server.exception.badrequest.PasswordMismatchException;
 import org.springframework.security.crypto.password.PasswordEncoder;
-
 import org.springframework.stereotype.Service;
 
 @Service
@@ -26,6 +26,7 @@ public class AuthService {
     private final JwtTokenProvider jwtTokenProvider;
 
     private final KakaoOAuthUserProvider kakaoOAuthUserProvider;
+    private final AppleOAuthUserProvider appleOAuthUserProvider;
     private final PasswordEncoder passwordEncoder;
 
     public TokenResponse login(AuthLoginRequest request) {
@@ -55,6 +56,16 @@ public class AuthService {
                 Platform.KAKAO,
                 kakaoPlatformMember.getEmail(),
                 kakaoPlatformMember.getPlatformId()
+        );
+    }
+
+    public OAuthTokenResponse appleOAuthLogin(AppleLoginRequest request) {
+        OAuthPlatformMemberResponse applePlatformMember =
+                appleOAuthUserProvider.getApplePlatformMember(request.getToken());
+        return generateOAuthTokenResponse(
+                Platform.APPLE,
+                applePlatformMember.getEmail(),
+                applePlatformMember.getPlatformId()
         );
     }
 
