@@ -36,13 +36,6 @@ struct SettingPage: View {
                         BlockCell(icon: "doc.text.magnifyingglass", label: "이용약관")
                     })
                     Button(action: {
-                        if let url = URL(string: "https://www.notion.so/mocacong/36de943075a2454d9bc3383e909c1390") {
-                            UIApplication.shared.open(url)
-                        }
-                    }, label: {
-                        BlockCell(icon: "doc.text.magnifyingglass", label: "위치기반서비스이용약관")
-                    })
-                    Button(action: {
                         if let url = URL(string: "https://www.notion.so/mocacong/ef1c29e4c9954d3e907936e955a1b8a0") {
                             UIApplication.shared.open(url)
                         }
@@ -90,12 +83,12 @@ struct SettingPage: View {
                             .font(.system(size: 17))
                         Spacer()
                         if label == "계정 정보" {
-                            Image(systemName: "greaterthan")
+                            Image(systemName: "chevron.right")
                                 .font(.system(size: 17))
                                 .padding(.trailing)
                         }
                         if label == "문의처" {
-                            Text("official.mocacong@gmail.com")
+                            Text("official.godsaeng@gmail.com")
                                 .foregroundColor(.gray.opacity(0.8))
                                 .font(.system(size: 14))
                                 .padding(.trailing)

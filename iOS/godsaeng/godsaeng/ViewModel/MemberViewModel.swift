@@ -267,6 +267,84 @@ class MemberViewModel: NSObject, ObservableObject {
                 })
                 .store(in: &self.cancellables)
     }
+    
+    //이미지
+    
+    func updateProfileImage(accessToken: String, imageDataToUpdate: Data?) {
+        requestProfileImageDataUpDate(accessToken: accessToken, imageDataToUpdate: imageDataToUpdate)
+            .sink(receiveCompletion: { completion in
+                switch completion {
+                case .finished:
+                    print("프로필 이미지 업데이트 비동기 종료")
+                case .failure(let error):
+                    print("프로필 이미지 업데이트 비동기 error : \(error)")
+                }
+            }, receiveValue: { _ in
+            })
+            .store(in: &self.cancellables)
+    }
+    
+    func requestProfileImageDataUpDate(accessToken: String, imageDataToUpdate: Data?) -> Future<Bool, Error> {
+        return Future { promise in
+            guard let url = URL(string: "\(requestURL)/members/mypage/img") else {
+                promise(.failure(URLError(.badURL)))
+                return
+            }
+            
+            var request = URLRequest(url: url)
+            request.httpMethod = "PUT"
+            let boundary = UUID().uuidString
+            request.addValue("Bearer \(accessToken)", forHTTPHeaderField: "Authorization")
+            request.addValue("multipart/form-data; boundary=\(boundary)", forHTTPHeaderField: "Content-Type")
+            
+            let data = self.createBody(with: ["file": imageDataToUpdate], boundary: boundary)
+            request.httpBody = data
+            
+            URLSession.shared.dataTask(with: request) { (data, response, error) in
+                DispatchQueue.main.async {
+                    if let error = error {
+                        promise(.failure(error))
+                        print("프로필 이미지 업데이트 요청 error : \(error)")
+                    } else if let httpResponse = response as? HTTPURLResponse {
+                        if httpResponse.statusCode == 200 {
+                            promise(.success(true))
+                            print("프로필 이미지 업데이트 응답 상태코드 : ", httpResponse.statusCode)
+                        } else if httpResponse.statusCode == 401 {
+                            AccessManager.shared.tokenExpired = true
+                            AccessManager.shared.isLoggedIn = false
+                        } else if httpResponse.statusCode == 500 {
+                            AccessManager.shared.serverDown = true
+                            AccessManager.shared.isLoggedIn = false
+                    }else {
+                            promise(.failure(URLError(URLError.Code.badServerResponse)))
+                            print("프로필이미지 업데이트 응답 상태코드 : ", httpResponse.statusCode)
+                        }
+                    }
+                }
+            }.resume()
+        }
+    }
+    
+    private func createBody(with parameters: [String: Any], boundary: String) -> Data {
+        
+        var body = Data()
+        
+        for (key, value) in parameters {
+            if key == "file" {
+                if let image = value as? Data {
+                    body.append(Data("--\(boundary)\r\n".utf8))
+                    body.append(Data("Content-Disposition: form-data; name=\"\(key)\"; filename=\"image.jpg\"\r\n".utf8))
+                    body.append(Data("Content-Type: image/jpeg\r\n\r\n".utf8))
+                    body.append(image)
+                    body.append(Data("\r\n".utf8))
+                } else {
+                    print("no image data value")
+                }
+            }
+        }
+        body.append(Data("--\(boundary)--\r\n".utf8))
+        return body
+    }
 }
 
 // ASAuthorizationControllerDelegate 프로토콜 구현

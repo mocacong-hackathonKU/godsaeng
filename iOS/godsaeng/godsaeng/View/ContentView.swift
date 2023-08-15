@@ -35,7 +35,7 @@ struct ContentView: View {
                             .tabItem({
                                 Image(systemName: "magnifyingglass")
                             })
-                        MyPage()
+                        MyPage(memberVM: memberVM)
                             .tabItem({
                                 Image(systemName: "person.fill")
                             })

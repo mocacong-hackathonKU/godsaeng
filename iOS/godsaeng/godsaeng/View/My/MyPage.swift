@@ -14,6 +14,7 @@ struct MyPage: View {
     @ObservedObject var memberVM: MemberViewModel
     @State var profileImageDataToUpdate: Data?
     @State var selectedPhotos: [PhotosPickerItem] = []
+    @State var showProfileImageEditModal: Bool = false
     
     var body: some View {
         VStack {
@@ -23,44 +24,22 @@ struct MyPage: View {
                 .frame(width: screenWidth * 0.48)
                 .clipShape(Circle())
                 .padding(.top, -50)
-                .overlay(
-                    PhotosPicker(selection: $selectedPhotos, maxSelectionCount: 1, matching: .images) {
-                        Image(systemName: "pencil.circle.fill")
-                            .font(.system(size: 20, weight: .medium))
-                    }
-                        .onChange(of: selectedPhotos) { newItem in
-                            guard let item = selectedPhotos.first else {
-                                return
-                            }
-                            item.loadTransferable(type: Data.self) { result in
-                                switch result {
-                                case .success(let data):
-                                    if let data = data {
-                                        self.profileImageDataToUpdate = data
-                                    } else {
-                                        print("data is nil")
-                                    }
-                                case .failure(let failure):
-                                    fatalError("\(failure)")
-                                }
-                            }
-                        }
-                )
         }
-        .overlay(
+        .overlay (
             HStack {
                 Spacer()
                 Button(action: {
-                    showImageEditModal = true
+                    showProfileImageEditModal = true
                 }, label: {
                     Image(systemName: "pencil.circle.fill")
-                        .font(.system(size: 32))
-                        .foregroundColor(.ssook)
-                        .background(Color.white, in: Circle())
-                        .clipped()
+                        .font(.system(size: 20, weight: .medium))
                 })
                 .offset(y: 50)
             }
         )
+        .sheet(isPresented: $showProfileImageEditModal, content: {
+            ProfileImageEditModal(memberVM: memberVM)
+                .presentationDetents([.large, .fraction(0.6)])
+        })
     }
 }
