@@ -4,6 +4,7 @@ import godsaeng.server.dto.request.GodSaengSaveRequest;
 import godsaeng.server.dto.request.ProofSaveRequest;
 import godsaeng.server.dto.response.GodSaengSaveResponse;
 import godsaeng.server.dto.response.GodSaengsResponse;
+import godsaeng.server.dto.response.MonthlyGodSaengsResponse;
 import godsaeng.server.dto.response.ProofSaveResponse;
 import godsaeng.server.security.auth.LoginUserId;
 import godsaeng.server.service.GodSaengService;
@@ -11,10 +12,13 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+
+import java.time.LocalDate;
 
 @Tag(name = "Godsaengs", description = "같생")
 @RestController
@@ -47,6 +51,15 @@ public class GodSaengController {
     public ResponseEntity<Void> attendGodSaeng(@LoginUserId Long memberId, @PathVariable Long godSaengId) {
         godSaengService.attendGodSaeng(memberId, godSaengId);
         return ResponseEntity.ok().build();
+    }
+
+    @Operation(summary = "같생 월간 조회")
+    @SecurityRequirement(name = "JWT")
+    @PostMapping("/monthly")
+    public ResponseEntity<MonthlyGodSaengsResponse> findMonthlyGodSaeng(@LoginUserId Long memberId,
+                                                    @RequestParam("date") @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate date) {
+        MonthlyGodSaengsResponse monthlyGodSaeng = godSaengService.findMonthlyGodSaeng(memberId, date);
+        return ResponseEntity.ok(monthlyGodSaeng);
     }
 
     @Operation(summary = "같생 인증 등록")

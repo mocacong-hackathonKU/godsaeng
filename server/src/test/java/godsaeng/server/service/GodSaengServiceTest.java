@@ -5,6 +5,7 @@ import godsaeng.server.dto.request.GodSaengSaveRequest;
 import godsaeng.server.dto.request.ProofSaveRequest;
 import godsaeng.server.dto.response.GodSaengSaveResponse;
 import godsaeng.server.dto.response.GodSaengsResponse;
+import godsaeng.server.dto.response.MonthlyGodSaengsResponse;
 import godsaeng.server.exception.badrequest.DuplicateGodSaengException;
 import godsaeng.server.exception.badrequest.DuplicateProofException;
 import godsaeng.server.exception.badrequest.InvalidProofMemberException;
@@ -23,6 +24,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import java.time.LocalDate;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -82,8 +84,8 @@ class GodSaengServiceTest {
     void findAllGodSaeng() {
         String title = "아침 6시 반 기상 갓생 살기";
         String description = "아침 6시 반 기상 후 유의미한 일을 하고 인증해야합니다.";
-        List<GodSaengWeek> weeks = new ArrayList<>();
-        weeks.add(new GodSaengWeek(Week.MON));
+        List<Week> weeks = new ArrayList<>();
+        weeks.add(Week.MON);
 
         String email = "rlawjddn103@naver.com";
         Member savedMember = memberRepository.save(new Member(email, Platform.KAKAO, "11111"));
@@ -105,8 +107,8 @@ class GodSaengServiceTest {
     void attendGodSaeng() {
         String title = "아침 6시 반 기상 갓생 살기";
         String description = "아침 6시 반 기상 후 유의미한 일을 하고 인증해야합니다.";
-        List<GodSaengWeek> weeks = new ArrayList<>();
-        weeks.add(new GodSaengWeek(Week.MON));
+        List<Week> weeks = new ArrayList<>();
+        weeks.add(Week.MON);
 
         String email1 = "rlawjddn103@naver.com";
         Member savedMember1 = memberRepository.save(new Member(email1, Platform.KAKAO, "11111"));
@@ -131,8 +133,8 @@ class GodSaengServiceTest {
     void validateDuplicateAttendGodSaeng() {
         String title = "아침 6시 반 기상 갓생 살기";
         String description = "아침 6시 반 기상 후 유의미한 일을 하고 인증해야합니다.";
-        List<GodSaengWeek> weeks = new ArrayList<>();
-        weeks.add(new GodSaengWeek(Week.MON));
+        List<Week> weeks = new ArrayList<>();
+        weeks.add(Week.MON);
 
         String email1 = "rlawjddn103@naver.com";
         Member savedMember1 = memberRepository.save(new Member(email1, Platform.KAKAO, "11111"));
@@ -150,6 +152,31 @@ class GodSaengServiceTest {
         assertThrows(DuplicateGodSaengException.class, () -> godSaengService.attendGodSaeng(savedMember2.getId(), savedGodSaeng.getId()));
     }
 
+    @DisplayName("월별 같생 목록을 조회할 수 있다.")
+    @Test
+    void monthlyGodSaeng() {
+        String title = "아침 6시 반 기상 갓생 살기";
+        String description = "아침 6시 반 기상 후 유의미한 일을 하고 인증해야합니다.";
+        List<Week> weeks = new ArrayList<>();
+        weeks.add(Week.MON);
+        weeks.add(Week.WED);
+        weeks.add(Week.FRI);
+
+        String email1 = "rlawjddn103@naver.com";
+        Member savedMember1 = memberRepository.save(new Member(email1, Platform.KAKAO, "11111"));
+
+        String email2 = "rlawjddn102@naver.com";
+        memberRepository.save(new Member(email2, Platform.KAKAO, "12121"));
+
+        godSaengRepository.save(new GodSaeng(title, description, weeks, savedMember1));
+
+        em.clear();
+        em.flush();
+
+        MonthlyGodSaengsResponse monthlyGodSaeng = godSaengService.findMonthlyGodSaeng(1L, LocalDate.now());
+
+        // 테스트에 대한 고민 필요
+    }
     @DisplayName("같생에 인증 글을 올릴 수 있다")
     @Test
     void saveProof() throws IOException {
