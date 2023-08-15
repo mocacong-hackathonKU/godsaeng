@@ -2,6 +2,16 @@
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
+    <data>
+
+        <import type="android.view.View" />
+
+        <variable
+            name="viewModel"
+            type="com.mocacong.godsaeng.viewmodel.DetailViewModel" />
+
+    </data>
+
     <androidx.core.widget.NestedScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent">
@@ -11,14 +21,26 @@
             android:layout_height="wrap_content"
             android:background="@color/white">
 
-            <TextView
-                android:id="@+id/title"
+            <ProgressBar
+                android:id="@+id/progessCircular"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:visibility="@{viewModel.isLoading ? View.VISIBLE : View.GONE}"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <TextView
+                android:id="@+id/title"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
                 android:layout_marginTop="50dp"
-                android:text="같생제목"
+                android:gravity="center"
+
+                android:text="@{viewModel.detailData.title}"
                 android:textColor="@color/dark_main"
-                android:textSize="24sp"
+                android:textSize="27sp"
                 android:textStyle="bold"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
@@ -30,13 +52,14 @@
                 android:layout_height="wrap_content"
                 android:text="@{@string/detail_date_string(8,20,9,4)}"
                 android:textColor="@color/gray_7"
-                android:textSize="10sp"
+                android:textSize="12sp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/title" />
 
             <com.mocacong.godsaeng.view.detail.WeekSelectorView
                 android:id="@+id/weekSelector"
+                android:layout_marginVertical="20dp"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 app:layout_constraintEnd_toEndOf="parent"
@@ -49,7 +72,7 @@
                 android:layout_height="wrap_content"
                 android:gravity="center"
                 android:padding="20dp"
-                android:text="우리같생은어쩌구저쩌구"
+                android:text="@{viewModel.detailData.description}"
                 android:textColor="@color/dark_main"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
@@ -59,7 +82,9 @@
                 android:id="@+id/memberCountView"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@{@string/detail_member_count(0)}"
+                android:layout_marginStart="20dp"
+                android:layout_marginTop="20dp"
+                android:text="@{@string/detail_member_count(viewModel.detailData.members.size)}"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/descriptionView" />
 
@@ -73,6 +98,7 @@
                 android:id="@+id/todayProgressText"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginStart="20dp"
                 android:text="@{@string/detail_progress(8, 16, 1)}"
                 android:textColor="@color/gray_5"
                 app:layout_constraintStart_toStartOf="parent"
@@ -82,7 +108,8 @@
                 android:id="@+id/todayProgressInt"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="34%"
+                android:layout_marginEnd="20dp"
+                android:text="@{@string/detail_percent(viewModel.detailData.progress)}"
                 android:textColor="@color/gray_5"
                 app:layout_constraintBaseline_toBaselineOf="@id/todayProgressText"
                 app:layout_constraintEnd_toEndOf="parent" />
@@ -92,9 +119,10 @@
                 style="@style/Widget.AppCompat.ProgressBar.Horizontal"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_margin="10dp"
+                android:layout_margin="20dp"
                 android:indeterminate="false"
-                android:progress="34"
+                android:progress="@{viewModel.detailData.progress}"
+                android:progressBackgroundTint="@color/gray_5"
                 android:progressTint="@color/green_1"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
@@ -108,8 +136,6 @@
                 app:layout_constraintTop_toBottomOf="@id/progressBar" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
-
-
     </androidx.core.widget.NestedScrollView>
 
 </layout>

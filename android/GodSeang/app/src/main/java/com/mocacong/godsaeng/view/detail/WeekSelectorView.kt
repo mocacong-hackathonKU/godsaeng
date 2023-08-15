@@ -15,7 +15,6 @@ class WeekSelectorView @JvmOverloads constructor(
     private var weekBinding: ViewWeekSelectorBinding
     private val buttons: List<AppCompatButton>
 
-
     init {
         val inflater = LayoutInflater.from(context)
         weekBinding = ViewWeekSelectorBinding.inflate(inflater, this, true)
@@ -28,6 +27,18 @@ class WeekSelectorView @JvmOverloads constructor(
             btn.setOnClickListener {
                 it.isSelected = !it.isSelected
             }
+        }
+    }
+
+    override fun setClickable(isClickable : Boolean){
+        buttons.forEach {
+            it.isClickable = false
+        }
+    }
+
+    fun selectDays(selectedDays: List<String>) {
+        selectedDays.forEach {
+            buttons[CalendarEntity.DAYS.indexOf(it)].performClick()
         }
     }
 

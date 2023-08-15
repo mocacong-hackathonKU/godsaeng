@@ -1,6 +1,7 @@
 <resources>
     <string name="app_name">GodSaeng</string>
-    <string name="detail_date_string">%1$d월 %2$d일부터%3$d월 %4$d일까지</string>
+    <string name="detail_date_string">%1$d월 %2$d일부터 %3$d월 %4$d일까지</string>
     <string name="detail_member_count">총 %d명의 같생이 함께해요</string>
     <string name="detail_progress">%1$d월 %2$d일 %3$s요일(오늘)의 달성도</string>
+    <string name="detail_percent">%d%%</string>
 </resources>

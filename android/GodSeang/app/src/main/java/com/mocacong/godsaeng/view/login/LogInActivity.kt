@@ -36,12 +36,10 @@ class LogInActivity : BaseActivity<ActivityLogInBinding, LogInViewModel>(R.layou
 
 
     override fun initView() {
-        binding.viewmodel = viewModel
-        val loadingObserver = Observer<Boolean>{
-            binding.progressCircular.visibility = if(it) View.VISIBLE else View.GONE
+        val loadingObserver = Observer<Boolean> {
+            binding.progressCircular.visibility = if (it) View.VISIBLE else View.GONE
         }
         viewModel.isLoading.observe(this, loadingObserver)
-
     }
 
     override fun initListener() {

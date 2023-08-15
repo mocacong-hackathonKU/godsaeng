@@ -68,4 +68,5 @@ abstract class BaseActivity<T : ViewDataBinding, VM : ViewModel>
         toast = Toast.makeText(this, msg, Toast.LENGTH_SHORT)
         toast?.show()
     }
+
 }

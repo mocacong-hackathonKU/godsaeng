@@ -44,6 +44,34 @@ data class Detail(
     val proofs: List<Proof>
 ) : GodSaeng(title, status) {
     val weeksStr: String = convertWeeksToKorean(weeks)
+
+    val openMonth: String
+        get() {
+            val parts = openDate.split("-")
+            return parts.getOrNull(1) ?: ""
+        }
+
+    val openDay: String
+        get() {
+            val parts = openDate.split("-")
+            val dayString = parts.getOrNull(2) ?: return ""
+            return dayString.toInt().toString()
+        }
+
+    val closeMonth: String
+        get() {
+            val parts = closeDate.split("-")
+            return parts.getOrNull(1) ?: ""
+        }
+
+    val closeDay: String
+        get() {
+            val parts = closeDate.split("-")
+            val dayString = parts.getOrNull(2) ?: return ""
+            return dayString.toInt().toString()
+        }
+
+
 }
 
 data class Preview(

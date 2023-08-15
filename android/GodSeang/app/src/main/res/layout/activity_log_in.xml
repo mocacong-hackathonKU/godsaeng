@@ -4,14 +4,6 @@
     xmlns:tools="http://schemas.android.com/tools"
     tools:context=".view.login.LogInActivity">
 
-    <data>
-
-        <variable
-            name="viewmodel"
-            type="com.mocacong.godsaeng.viewmodel.LogInViewModel" />
-
-    </data>
-
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
