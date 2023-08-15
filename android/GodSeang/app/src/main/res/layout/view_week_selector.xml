@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:gravity="center"
+    android:orientation="horizontal"
+    android:padding="10dp">
+
+    <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/mon"
+        android:layout_width="30dp"
+        android:layout_height="30dp"
+        android:layout_margin="5dp"
+        android:background="@drawable/selector_week"
+        android:text="월"
+        android:textColor="@color/selector_text" />
+
+    <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/tue"
+        android:layout_width="30dp"
+        android:layout_height="30dp"
+        android:layout_margin="5dp"
+        android:background="@drawable/selector_week"
+        android:text="화"
+        android:textColor="@color/selector_text" />
+
+    <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/wed"
+        android:layout_width="30dp"
+        android:layout_height="30dp"
+        android:layout_margin="5dp"
+        android:background="@drawable/selector_week"
+        android:text="수"
+        android:textColor="@color/selector_text" />
+
+    <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/thu"
+        android:layout_width="30dp"
+        android:layout_height="30dp"
+        android:layout_margin="5dp"
+        android:background="@drawable/selector_week"
+        android:text="목"
+        android:textColor="@color/selector_text" />
+
+    <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/fri"
+        android:layout_width="30dp"
+        android:layout_height="30dp"
+        android:layout_margin="5dp"
+        android:background="@drawable/selector_week"
+        android:text="금"
+        android:textColor="@color/selector_text" />
+
+    <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/sat"
+        android:layout_width="30dp"
+        android:layout_height="30dp"
+        android:layout_margin="5dp"
+        android:background="@drawable/selector_week"
+        android:text="토"
+        android:textColor="@color/selector_text" />
+
+    <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/sun"
+        android:layout_width="30dp"
+        android:layout_height="30dp"
+        android:layout_margin="5dp"
+        android:background="@drawable/selector_week"
+        android:text="일"
+        android:textColor="@color/selector_text" />
+
+
+</LinearLayout>

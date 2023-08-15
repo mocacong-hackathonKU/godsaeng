@@ -5,6 +5,10 @@ data class CalendarEntity(
     val status: String,
     var isSelected: Boolean = false
 ) {
+    companion object {
+        val DAYS = listOf<String>("MON", "TUE", "WED", "THU", "FRI", "SAT", "SUN")
+    }
+
     val year: String
         get() {
             val parts = date.split("-")
