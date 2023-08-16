@@ -13,14 +13,34 @@
 
 - - - 
 
-### MVP 기능
+### MVP 기능 목차
 <p align="center">
   <img width="969" alt="스크린샷 2023-08-17 오전 4 54 32" src="https://github.com/mocacong-hackathonKU/godsaeng/assets/69844138/39d62e6f-14b1-40fc-b84e-66ce2aa3a575">
 </p>
 
+---
+
+### MVP 주요 기능 소개
+- **로그인**
+  - Apple OAuth 로그인 기능 제공
+  - Kakao OAuth 로그인 기능 제공
+- **캘린더**
+  - 자신이 참여한 같생 챌린지에 대해 월별 같생 조회
+  - 자신이 참여한 같생 챌린지에 대해 일별 같생 조회
+  - 자신이 참여한 같생 달성 상태 조회
+- **같생**
+  - 자신이 참여하고 싶은 다른 회원이 만든 같생에 참여
+  - 직접 자신이 같생 챌린지 모임을 생성
+  - 같생 상세 정보 조회
+  - 자신이 참여한 같생에 대해 해당하는 요일에 인증 사진과 인증 내용을 포함하여 인증 글 작성 
+- **마이페이지**
+  - 프로필 조회
+  - 프로필 이미지 수정
+  - 로그아웃 및 회원 탈퇴 
 - - - 
 
 ### 사용 기술스택
+**BackEnd**
 - `Language`: Java 11, JUnit 5
 - `Framework`: Spring Boot 2.7.9
 - `Database`: H2, Amazon RDS for MySQL, Amazon Elasticache for Redis
@@ -28,6 +48,12 @@
 - `Deploy`: Github Actions, Docker CI/CD
 - `Logging`: Logback, AWS Cloudwatch, AWS Lambda, Slack API
 - `API Docs`: SpringDoc Swagger 3
+<br>
+**iOS**
+- Swift UI + Combine + MVVM 패턴을 통한 아키텍처 개선
+<br>
+**Android**
+- Android MVVM 패턴 적용
 
 - - - 
 
