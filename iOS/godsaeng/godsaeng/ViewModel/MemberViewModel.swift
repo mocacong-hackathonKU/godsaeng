@@ -328,6 +328,7 @@ class MemberViewModel: NSObject, ObservableObject {
                     }
                 } receiveValue: { data in
                     promise(.success(data))
+                    self.loadProfileImage(imageUrl: data.imgUrl ?? "")
                 }
                 .store(in: &self.cancellables)
         }
@@ -387,6 +388,42 @@ class MemberViewModel: NSObject, ObservableObject {
         }
     }
     
+    func loadProfileImage(imageUrl: String) {
+        guard let url = URL(string: imageUrl) else {
+            print("Invalid URL.")
+            return
+        }
+        loadProfileImageData(url: url)
+            .receive(on: DispatchQueue.main)
+            .sink(
+                receiveCompletion: { completion in
+                    switch completion {
+                    case .finished:
+                        print("프로필 이미지 다운로드 비동기 종료")
+                        break
+                    case .failure(let error):
+                        print("Failed to load image data: \(error)")
+                    }
+                },
+                receiveValue: { [weak self] data in
+                    print("프로필 이미지 다운로드 응답 데이터 :", data)
+                    self?.member.imgData = data
+                }
+            )
+            .store(in: &cancellables)
+    }
+    
+    func loadProfileImageData(url: URL) -> AnyPublisher<Data, Error> {
+        URLSession.shared.dataTaskPublisher(for: url)
+            .tryMap { data, response -> Data in
+                guard let httpResponse = response as? HTTPURLResponse, httpResponse.statusCode == 200 else {
+                    throw URLError(.badServerResponse)
+                }
+                return data
+            }
+            .eraseToAnyPublisher()
+    }
+    
     //회원가입 바디 생성기
     private func createRegisterBody(with parameters: [String: Any], boundary: String) -> Data {
         var body = Data()
@@ -418,7 +455,7 @@ class MemberViewModel: NSObject, ObservableObject {
         body.append(Data("--\(boundary)--\r\n".utf8))
         return body
     }
-    
+
     //프로필 수정 바디 생성기
     private func createBody(with parameters: [String: Any], boundary: String) -> Data {
         
