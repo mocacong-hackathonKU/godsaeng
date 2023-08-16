@@ -41,6 +41,7 @@ struct CalendarGSCell: View {
         }
         .sheet(isPresented: $showProofPostModal) {
             ProofPostModal(godsaeng: $godsaeng)
+                .presentationDetents([.large, .fraction(0.8)])
         }
     }
 }

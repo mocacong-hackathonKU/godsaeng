@@ -21,7 +21,7 @@ struct ProofPostModal: View {
     
     var body: some View {
         NavigationView {
-            VStack {
+            VStack(spacing: 25) {
                 //이미지
                 VStack {
                     if let imageData = proofImgData, let uiImage = UIImage(data: imageData) {
@@ -87,9 +87,8 @@ struct ProofPostModal: View {
                 }
                 //내용
                 VStack{
-                    TextField("인증 내용을 이벽해주세요 (25자 제한)", text: $content)
-                        .font(.system(size: 15, weight: .semibold))
-                        .padding(.leading, 5)
+                    TextField("인증을 설명해주세요 (25자 제한)", text: $content)
+                        .font(.system(size: 16, weight: .semibold))
                         .onAppear {
                             UIApplication.shared.hideKeyboard()
                         }
@@ -105,7 +104,7 @@ struct ProofPostModal: View {
                         .foregroundColor(.lightGray)
                         .padding(.top, -5)
                 }
-                
+                .padding(.leading)
                 .toolbar {
                     ToolbarItem(placement: .navigationBarLeading, content: {
                         Button("취소") {
