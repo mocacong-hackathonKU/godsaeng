@@ -124,20 +124,31 @@ public class GodSaengService {
 
     @Transactional(readOnly = true)
     public DailyGodSaengsResponse findDailyGodSaeng(Long memberId, LocalDate baseDate) {
+        Member member = memberRepository.findById(memberId).orElseThrow(NotFoundMemberException::new);
+
         YearMonth baseYearMonth = YearMonth.of(baseDate.getYear(), baseDate.getMonth());
 
         LocalDate startOfBaseMonth = baseYearMonth.atDay(1);
         LocalDate endOfBaseMonth = baseYearMonth.atEndOfMonth();
 
-        Date startDate = Date.from(startOfBaseMonth.atStartOfDay().atZone(ZoneId.systemDefault()).toInstant());
+        Date startDate = Date.from(startOfBaseMonth.atStartOfDay().minusMonths(1).atZone(ZoneId.systemDefault()).toInstant());
         Date endDate = Date.from(endOfBaseMonth.atStartOfDay().atZone(ZoneId.systemDefault()).toInstant());
         List<GodSaeng> godSaengs = godSaengRepository.findGodSaengsByBaseTime(memberId, startDate, endDate);
+
+        List<Proof> proofs = proofRepository.findProofWithGodSaengByMemberId(memberId,
+                Date.from(baseDate.atStartOfDay().atZone(ZoneId.systemDefault()).toInstant()),
+                Date.from(baseDate.plusDays(1).atStartOfDay().atZone(ZoneId.systemDefault()).toInstant())
+        );
 
         // 같생 목록을 DailyGodSaengResponse로 변환하여 리스트에 추가
         List<DailyGodSaengResponse> dailyResponses = godSaengs.stream()
                 // 해당 날짜 요일의 같생 목록 필터링
                 .filter(godSaeng -> getValidDailyGodSaeng(godSaeng, baseDate))
-                .map(godSaeng -> new DailyGodSaengResponse(godSaeng.getId(), godSaeng.getTitle(), godSaeng.getStatus()))
+                .map(godSaeng -> new DailyGodSaengResponse(
+                        godSaeng.getId(),
+                        godSaeng.getTitle(),
+                        godSaeng.getStatus(),
+                        proofs.stream().anyMatch(proof -> proof.isSameGodSaeng(godSaeng))))
                 .collect(Collectors.toList());
 
         return new DailyGodSaengsResponse(dailyResponses);

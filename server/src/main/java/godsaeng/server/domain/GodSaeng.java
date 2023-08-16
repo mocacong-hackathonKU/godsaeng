@@ -35,6 +35,9 @@ public class GodSaeng extends BaseTime {
     @OneToMany(mappedBy = "godSaeng", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
     private List<GodSaengWeek> weeks = new ArrayList<>();
 
+    @OneToMany(mappedBy = "godSaeng", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Proof> proofs = new ArrayList<>();
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "member_id")
     private Member owner;

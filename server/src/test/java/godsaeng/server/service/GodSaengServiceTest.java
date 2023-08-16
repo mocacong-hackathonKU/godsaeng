@@ -295,7 +295,7 @@ class GodSaengServiceTest {
                 () -> assertEquals(description, response.getDescription()),
                 () -> assertEquals(0, response.getProgress()),
                 () -> assertEquals(1, response.getMembers().size()),
-                () -> assertTrue(response.isJoined())
+                () -> assertTrue(response.getIsJoined())
         );
 
     }
