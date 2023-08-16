@@ -179,7 +179,6 @@ struct RegisterPage: View {
                         postNewMember()
                     }, label: {
                         Text("완료")
-                            .foregroundColor(.mainGreen)
                     })
                     .disabled(nickname.trimmingCharacters(in: .whitespaces) == "" || isDuplicated == nil || isDuplicated == true || textInputAccepted == false || profileImageData == nil)
                 }

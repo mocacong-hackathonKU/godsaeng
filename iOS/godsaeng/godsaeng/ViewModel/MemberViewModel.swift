@@ -107,8 +107,11 @@ class MemberViewModel: NSObject, ObservableObject {
                     AccessManager.shared.isLoggedIn = true
                 } receiveValue: { data in
                     self.member = data
-                    if let iSRegistered = data.isRegistered {
-                        AccessManager.shared.isRegistered = iSRegistered
+                    if let isRegistered = data.isRegistered {
+                        if isRegistered == true {
+                            AccessManager.shared.isAgreed = true
+                        }
+                        AccessManager.shared.isRegistered = isRegistered
                     }
                     self.member.platform = "apple"
                     //TokenManager에 액세스 토큰 저장
@@ -117,7 +120,6 @@ class MemberViewModel: NSObject, ObservableObject {
                         AccessManager.shared.isLoggedIn = true
                     }
                     print(data.token)
-                    print(data)
                 }
                 .store(in: &self.cancellables)
         }
@@ -265,6 +267,72 @@ class MemberViewModel: NSObject, ObservableObject {
     }
 
     //이미지
+    
+    func fetchMyProfileData(accessToken: String) {
+        requestMyProfileDataFetch(accessToken: accessToken)
+            .sink(receiveCompletion: { result in
+                switch result {
+                case .failure(let error):
+                    print("프로필 조회 비동기 처리 error: \(error)")
+                case .finished:
+                    print("프로필 조회 비동기 처리 종료")
+                }
+            }, receiveValue: { data in
+                self.member.imgUrl = data.imgUrl
+                self.member.nickname = data.nickname
+                self.member.email = data.email
+            })
+            .store(in: &cancellables)
+    }
+    
+    func requestMyProfileDataFetch(accessToken: String) -> Future<Member, Error> {
+        return Future { promise in
+            guard let url = URL(string: "\(requestURL)/members/mypage") else {
+                fatalError("Invalid URL")
+            }
+            
+            var request = URLRequest(url: url)
+            request.httpMethod = "GET"
+            request.addValue("Bearer \(accessToken)", forHTTPHeaderField: "Authorization")
+                        
+            URLSession.shared.dataTaskPublisher(for: request)
+                .subscribe(on: DispatchQueue.global(qos: .background))
+                .receive(on: DispatchQueue.main)
+                .tryMap { data, response -> Data in
+                    guard let httpResponse = response as? HTTPURLResponse else {
+                        throw URLError(.badServerResponse)
+                    }
+                    switch httpResponse.statusCode {
+                    case 200:
+                        print("프로필 조회 상태코드 200")
+                    case 401:
+                        print("프로필 조회 상태코드 401")
+                        AccessManager.shared.tokenExpired = true
+                        AccessManager.shared.isLoggedIn = false
+                    case 500 :
+                        print("서버 에러 500")
+                        AccessManager.shared.serverDown = true
+                        AccessManager.shared.isLoggedIn = false
+                    default:
+                        print("프로필 조회 상태코드: \(httpResponse.statusCode)")
+                    }
+                    return data
+                }
+                .decode(type: Member.self, decoder: JSONDecoder())
+                .sink { completion in
+                    switch completion {
+                    case .finished:
+                        print("프로필 조회 요청 종료")
+                        break
+                    case .failure(let error):
+                        print("프로필 조회 요청 error : \(error)")
+                    }
+                } receiveValue: { data in
+                    promise(.success(data))
+                }
+                .store(in: &self.cancellables)
+        }
+    }
     func updateProfileImage(accessToken: String, imageDataToUpdate: Data?) {
         requestProfileImageDataUpDate(accessToken: accessToken, imageDataToUpdate: imageDataToUpdate)
             .sink(receiveCompletion: { completion in

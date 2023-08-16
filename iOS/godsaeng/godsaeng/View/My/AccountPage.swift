@@ -40,13 +40,6 @@ struct AcountPage: View {
                 .padding(.horizontal)
                 Divider()
                     .padding(.vertical)
-                HStack {
-                    Text("로그아웃 및 회원탈퇴")
-                        .foregroundColor(.gray)
-                        .font(.system(size: 15))
-                        .padding(.leading)
-                    Spacer()
-                }
                 HStack(spacing: 60) {
                     Button(action: {
                         AccessManager.shared.isLoggedIn = false

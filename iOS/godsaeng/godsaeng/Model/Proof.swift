@@ -14,6 +14,6 @@ struct Proof: Codable, Identifiable, Hashable {
     var profileImg: String?
     var date: String?
     var proofImg: String?
-    var proofDetail: String?
+    var proofContent: String?
     
 }
