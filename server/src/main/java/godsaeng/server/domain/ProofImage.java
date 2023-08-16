@@ -21,15 +21,6 @@ public class ProofImage extends BaseTime {
     @Column(name = "img_url", nullable = false)
     private String imgUrl;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "god_saeng_id")
-    private GodSaeng godSaeng;
-
-    public ProofImage(String imgUrl, GodSaeng godSaeng) {
-        this.imgUrl = imgUrl;
-        this.godSaeng = godSaeng;
-    }
-
     public ProofImage(String imgUrl) {
         this.imgUrl = imgUrl;
     }

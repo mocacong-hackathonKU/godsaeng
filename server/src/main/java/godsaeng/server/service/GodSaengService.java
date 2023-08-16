@@ -237,7 +237,7 @@ public class GodSaengService {
         }
 
         String proofImgUrl = awsS3Uploader.uploadImage(proofImg);
-        ProofImage proofImage = new ProofImage(proofImgUrl, godSaeng);
+        ProofImage proofImage = new ProofImage(proofImgUrl);
         proofImageRepository.save(proofImage);
         return proofImage;
     }
