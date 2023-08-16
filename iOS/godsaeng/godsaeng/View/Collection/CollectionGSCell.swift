@@ -18,36 +18,45 @@ struct CollectionGSCell: View {
     var mode: GodsaengCardType
     
     var body: some View {
-            HStack(alignment: .top, spacing: 20) {
-                 Rectangle()
-                     .fill(Color.mainOrange)
-                     .frame(width: 3)
-                 VStack {
-                     HStack(spacing: 10) {
-                         //같생 제목
-                         VStack(alignment: .leading) {
-                             Text(godsaeng.title ?? "")
-                                 .font(.title2.bold())
-                             //같생 요일
-                             if godsaeng.weeks?.count == 7 {
-                                 Text("매일")
-                             } else {
-                                 ForEach(godsaeng.weeks ?? [], id: \.self) { weekday in
-                                     Text(weekday)
-                                 }
-                             }
-                         }
-                         .foregroundColor(.mainOrange)
-                         .font(.system(size: 12))
-                         //같생 설명
-                         if mode == .extended {
-                             Text(godsaeng.description ?? "")
-                                 .foregroundStyle(.secondary)
-                         }
-                     }
-                 }
-                 .padding()
-             }
+        VStack(alignment: .leading) {
+            //전체 카드
+            HStack(alignment: .top) {
+                //구분선
+                Rectangle()
+                    .fill(Color.mainOrange)
+                    .frame(width: 4, height: 70)
+                    .padding(.trailing)
+                //내용
+                VStack(alignment: .leading,spacing: 10) {
+                    //윗줄
+                    HStack {
+                        //같생 제목
+                        VStack(alignment: .leading) {
+                            Text(godsaeng.title ?? "")
+                                .foregroundColor(.black)
+                                .font(.system(size: 20, weight: .semibold))
+                            //같생 요일
+                            VStack {
+                                if godsaeng.weeks?.count == 7 {
+                                    Text("매일")
+                                } else {
+                                    ForEach(godsaeng.weeks ?? [], id: \.self) { weekday in
+                                        Text(weekday)
+                                    }
+                                }
+                            }
+                            .foregroundColor(.mainOrange)
+                            .font(.system(size: 14))
+                        }
+                    }
+                    //아럇줄
+                    //같생 설명
+                    Text(godsaeng.description ?? "")
+                        .font(.system(size: 18))
+                }
+            }
+        }
+        .padding()
     }
 }
 

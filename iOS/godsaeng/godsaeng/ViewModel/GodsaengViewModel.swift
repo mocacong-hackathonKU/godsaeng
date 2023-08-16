@@ -10,6 +10,7 @@ import Combine
 
 class GodSaengViewModel: ObservableObject {
     
+    @Published var godsaengs: Godsaengs = Godsaengs()
     @Published var godsaengList: [Godsaeng] = []
     @Published var monthlyGodsaengList: [Godsaeng] = []
     @Published var dailyGodsaengList: [Godsaeng] = []
@@ -35,7 +36,7 @@ class GodSaengViewModel: ObservableObject {
     }
     func requestgodsaengCreation(accessToken: String, godsaengToCreate: Godsaeng) -> Future<Godsaeng, Error> {
         return Future { promise in
-            guard let url = URL(string: "\(requestURL)/godsaeng") else {
+            guard let url = URL(string: "\(requestURL)/godsaengs") else {
                 fatalError("Invalid URL")
             }
             
@@ -98,14 +99,16 @@ class GodSaengViewModel: ObservableObject {
                 case .failure(let error):
                     print("같생 전체 조회 비동기 error : \(error)")
                 }
-            }, receiveValue: { godsaengListdata in
-                self.godsaengList = godsaengListdata
+            }, receiveValue: { godsaengsData in
+                self.godsaengs = godsaengsData
+                self.godsaengList = godsaengsData.godsaengs ?? []
+                print("조회된 같생 전체 목록 : ", self.godsaengList)
             })
             .store(in: &self.cancellables)
     }
-    func requestGodsaengListFetch(accessToken: String) -> Future<[Godsaeng], Error> {
+    func requestGodsaengListFetch(accessToken: String) -> Future<Godsaengs, Error> {
         return Future { promise in
-            guard let url = URL(string: "\(requestURL)/godsaeng") else {
+            guard let url = URL(string: "\(requestURL)/godsaengs") else {
                 fatalError("같생 전체 조회 Invalid URL")
             }
             var request = URLRequest(url: url)
@@ -135,7 +138,7 @@ class GodSaengViewModel: ObservableObject {
                     }
                     return data
                 }
-                .decode(type: [Godsaeng].self, decoder: JSONDecoder())
+                .decode(type: Godsaengs.self, decoder: JSONDecoder())
                 .sink(receiveCompletion: { completion in
                     switch completion {
                     case .failure(let error):
@@ -168,7 +171,7 @@ class GodSaengViewModel: ObservableObject {
     }
     func requestMonthlyGodsaengFetch(accessToken: String, currentMonth: String) -> Future<[Godsaeng], Error> {
         return Future { promise in
-            guard let url = URL(string: "\(requestURL)/godsaeng?date=\(currentMonth)") else {
+            guard let url = URL(string: "\(requestURL)/godsaengs?date=\(currentMonth)") else {
                 fatalError("같생 월별 조회 Invalid URL")
             }
             var request = URLRequest(url: url)
@@ -231,7 +234,7 @@ class GodSaengViewModel: ObservableObject {
     }
     func requestDailyGodsaengFetch(accessToken: String, currentDate: String) -> Future<[Godsaeng], Error> {
         return Future { promise in
-            guard let url = URL(string: "\(requestURL)/godsaeng?date=\(currentDate)") else {
+            guard let url = URL(string: "\(requestURL)/godsaengs?date=\(currentDate)") else {
                 fatalError("같생 일별 조회 Invalid URL")
             }
             var request = URLRequest(url: url)
@@ -294,7 +297,7 @@ class GodSaengViewModel: ObservableObject {
     }
     func requestGodsaengDetailFetch(accessToken: String, godsaengId: Int) -> Future<Godsaeng, Error> {
         return Future { promise in
-            guard let url = URL(string: "\(requestURL)/godsaeng/\(godsaengId)") else {
+            guard let url = URL(string: "\(requestURL)/godsaengs/\(godsaengId)") else {
                 fatalError("같생 상세 조회 Invalid URL")
             }
             var request = URLRequest(url: url)

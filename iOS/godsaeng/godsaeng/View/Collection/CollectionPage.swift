@@ -14,13 +14,10 @@ struct CollectionPage: View {
     var body: some View {
         VStack {
             Text("# 모집중")
-                .font(.system(size: 24, weight: .bold))
-            RoundedRectangle(cornerRadius: 20)
-                .stroke(Color.lightGray, lineWidth: 5)
-                .frame(width: screenWidth * 0.85, height: 45)
+                .font(.system(size: 26, weight: .bold))
             //같생 전체 목록
             ScrollView {
-                LazyVStack {
+                LazyVStack(spacing: 20) {
                     ForEach(godsaengVM.godsaengList, id: \.self) { godsaeng in
                         NavigationLink(destination: {
                             GodsaengDetailPage(godsaengVM: godsaengVM, godsaeng: godsaeng)
@@ -49,7 +46,6 @@ struct CollectionPage: View {
         .onAppear {
             if let token = try? TokenManager.shared.getToken() {
                 godsaengVM.fetchGodsaengList(accessToken: token)
-                print("같생 모아보기 목록 : ", godsaengVM.godsaengList)
             }
         }
     }
