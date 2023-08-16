@@ -164,7 +164,7 @@ public class GodSaengService {
                                 .filter(date -> date.isAfter(startOfBaseMonth.minusDays(1)))
                                 .filter(date -> date.isBefore(endOfBaseMonth.plusDays(1)))
                                 .map(localDate -> {
-                                    if (localDate.isBefore(LocalDate.now().plusDays(1))) {
+                                    if (localDate.isBefore(LocalDate.now().plusDays(2))) {
                                         List<Proof> proofs = proofRepository.findProofWithGodSaengByMemberId(
                                                 memberId,
                                                 Date.from(localDate.atStartOfDay().atZone(ZoneId.systemDefault()).toInstant()),
