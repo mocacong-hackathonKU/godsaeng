@@ -7,12 +7,10 @@
 
 import SwiftUI
 import PhotosUI
-import SDWebImageSwiftUI
 
 struct ProfileImageEditModal: View {
     
     @ObservedObject var memberVM: MemberViewModel
-    @State var CurrentProfileImage: Image = Image("")
     @State var profileImageDataToUpdate: Data?
     @State var selectedPhotos: [PhotosPickerItem] = []
     @Environment(\.dismiss) private var dismiss
@@ -27,7 +25,8 @@ struct ProfileImageEditModal: View {
                     .font(.system(size: 16))
                     .padding(.bottom, 60)
                 //이미지
-                CurrentProfileImage
+                if let imageData = profileImageDataToUpdate, let uiImage = UIImage(data: imageData) {
+                    Image(uiImage: uiImage)
                         .resizable()
                         .scaledToFit()
                         .frame(width: screenWidth * 0.48)
@@ -58,7 +57,7 @@ struct ProfileImageEditModal: View {
                                     }
                                 }
                         )
-                
+                }
             }
             .toolbar {
                 ToolbarItem(placement: .navigationBarLeading, content: {
@@ -68,45 +67,35 @@ struct ProfileImageEditModal: View {
                 })
                 ToolbarItem(placement: .navigationBarTrailing, content: {
                     Button("저장") {
-                        if let token = try? TokenManager.shared.getToken() {
-                            uploadProfileImage()
-                            dismiss()
-                        }
+                        updateProfileImage()
                     }
                 })
             }
         }
         .onAppear {
-            if let url = URL(string: memberVM.member.imgUrl ?? "") {
-                loadImage(from: url) { image in
-                    if let loadedImage = image {
-                        self.CurrentProfileImage = loadedImage
-                    }
-                }
-            }
+            profileImageDataToUpdate = memberVM.member.imgData
         }
     }
     
-    func loadImage(from url: URL, completion: @escaping (Image?) -> Void) {
-        SDWebImageManager.shared.loadImage(
-            with: url,
-            options: .highPriority,
-            progress: nil) { (image, _, _, _, _, _) in
-                if let uiImage = image {
-                    let swiftUIImage = Image(uiImage: uiImage)
-                    completion(swiftUIImage)
-                } else {
-                    completion(nil)
-                }
-            }
+    func resizeImageMaintainingAspectRatio(image: UIImage, newWidth: CGFloat) -> UIImage {
+        let aspectRatio = image.size.height / image.size.width
+        let newHeight = newWidth * aspectRatio
+        
+        let size = CGSize(width: newWidth, height: newHeight)
+        let renderer = UIGraphicsImageRenderer(size: size)
+        let newImage = renderer.image { _ in
+            image.draw(in: CGRect(origin: .zero, size: size))
+        }
+        return newImage
     }
     
-    func uploadProfileImage() {
+    func updateProfileImage() {
         if let imageDataToResize = profileImageDataToUpdate, let imageToResize = UIImage(data: imageDataToResize) {
             let resizedImage = resizeImageMaintainingAspectRatio(image: imageToResize, newWidth: 200)
             let compressedImageData = resizedImage.jpegData(compressionQuality: 1.0)
+            memberVM.member.imgData = compressedImageData
             if let token = try? TokenManager.shared.getToken() {
-                    memberVM.updateProfileImage(accessToken: token, imageDataToUpdate: profileImageDataToUpdate)
+                memberVM.updateProfileImage(accessToken: token, imageDataToUpdate: compressedImageData)
             }
         }
     }

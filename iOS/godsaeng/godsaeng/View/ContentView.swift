@@ -20,7 +20,7 @@ struct ContentView: View {
     @StateObject var memberVM: MemberViewModel = MemberViewModel()
     
     @State var member: Member = Member()
-    
+
     @State var showLoginRequestAlert: Bool = false
     @State var showServerDownAlert: Bool = false
     

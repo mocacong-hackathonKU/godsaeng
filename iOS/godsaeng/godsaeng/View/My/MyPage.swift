@@ -12,7 +12,6 @@ import SDWebImageSwiftUI
 struct MyPage: View {
     
     @ObservedObject var memberVM: MemberViewModel
-    @State var profileImageDataToUpdate: Data?
     @State var selectedPhotos: [PhotosPickerItem] = []
     @State var showProfileImageEditModal: Bool = false
     
@@ -20,7 +19,8 @@ struct MyPage: View {
         NavigationView {
             VStack {
                 VStack(spacing: 12) {
-                    WebImage(url: URL(string: memberVM.member.imgUrl ?? ""))
+                    if let imageData = memberVM.member.imgData, let uiImage = UIImage(data: imageData) {
+                        Image(uiImage: uiImage)
                         .resizable()
                         .scaledToFill()
                         .frame(width: screenWidth * 0.45, height: screenWidth * 0.45)
@@ -31,6 +31,7 @@ struct MyPage: View {
                                 .stroke(Color.darkGray.opacity(0.23), lineWidth: 0.8)
                                 .foregroundColor(.clear)
                         )
+                    }
                     Button(action: {
                         showProfileImageEditModal = true
                     }, label: {

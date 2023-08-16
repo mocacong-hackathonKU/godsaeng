@@ -108,7 +108,7 @@ struct RegisterPage: View {
                             )
                     }
                 }
-                .padding(.bottom, 30)
+                .padding(.bottom, 20)
                 //닉네임 입력창
                 VStack(alignment: .leading) {
                     VStack(spacing: 6) {
@@ -172,7 +172,7 @@ struct RegisterPage: View {
                 }
                 .padding(.leading)
             }
-            .padding(.top, -70)
+            .padding(.top, -80)
             .toolbar {
                 ToolbarItem(placement: .navigationBarTrailing) {
                     Button(action: {
