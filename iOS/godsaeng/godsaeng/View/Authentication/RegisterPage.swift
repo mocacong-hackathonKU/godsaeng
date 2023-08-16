@@ -28,11 +28,11 @@ struct RegisterPage: View {
                 //헤더 텍스트
                 VStack {
                     Text("회원가입")
-                        .font(.system(size: 27, weight: .bold))
-                        .padding(.bottom, 40)
+                        .font(.system(size: 26, weight: .bold))
+                        .padding(.bottom, 35)
                     VStack(alignment: .leading) {
                         Text("프로필 설정")
-                            .font(.system(size: 22, weight: .bold))
+                            .font(.system(size: 20, weight: .bold))
                             .foregroundColor(.accent4)
                             .padding(.bottom, 7)
                         Text("나를 잘 나타내는 사진과 닉네임을 정해주세요")
@@ -44,8 +44,7 @@ struct RegisterPage: View {
                     }
                     .padding(.leading, -15)
                 }
-                .padding(.top, -60)
-                .padding(.bottom, 50)
+                .padding(.bottom, 45)
                 //프로필 이미지
                 VStack {
                     if let imageData = profileImageData, let uiImage = UIImage(data: imageData) {
@@ -109,7 +108,7 @@ struct RegisterPage: View {
                             )
                     }
                 }
-                .padding(.bottom, 40)
+                .padding(.bottom, 30)
                 //닉네임 입력창
                 VStack(alignment: .leading) {
                     VStack(spacing: 6) {
@@ -173,6 +172,7 @@ struct RegisterPage: View {
                 }
                 .padding(.leading)
             }
+            .padding(.top, -70)
             .toolbar {
                 ToolbarItem(placement: .navigationBarTrailing) {
                     Button(action: {
@@ -205,21 +205,37 @@ struct RegisterPage: View {
             .store(in: &memberVM.cancellables)
     }
     
+    func resizeImageMaintainingAspectRatio(image: UIImage, newWidth: CGFloat) -> UIImage {
+        let aspectRatio = image.size.height / image.size.width
+        let newHeight = newWidth * aspectRatio
+        
+        let size = CGSize(width: newWidth, height: newHeight)
+        let renderer = UIGraphicsImageRenderer(size: size)
+        let newImage = renderer.image { _ in
+            image.draw(in: CGRect(origin: .zero, size: size))
+        }
+        return newImage
+    }
+    
     func postNewMember() {
-        memberVM.member.nickname = self.nickname
-        memberVM.member.imgData = self.profileImageData
-        if let token = try? TokenManager.shared.getToken() {
-            memberVM.requestRegisterToServer(accessToken: token)
-                .sink(receiveCompletion: { result in
-                    switch result {
-                    case .failure(let error):
-                        print("회원가입 error: \(error)")
-                    case .finished:
-                        break
-                    }
-                }, receiveValue: { data in
-                })
-                .store(in: &memberVM.cancellables)
+        if let imageDataToResize = profileImageData, let imageToResize = UIImage(data: imageDataToResize) {
+            let resizedImage = resizeImageMaintainingAspectRatio(image: imageToResize, newWidth: 200)
+            let compressedImageData = resizedImage.jpegData(compressionQuality: 1.0)
+            memberVM.member.nickname = self.nickname
+            memberVM.member.imgData = compressedImageData
+            if let token = try? TokenManager.shared.getToken() {
+                memberVM.requestRegisterToServer(accessToken: token)
+                    .sink(receiveCompletion: { result in
+                        switch result {
+                        case .failure(let error):
+                            print("회원가입 error: \(error)")
+                        case .finished:
+                            break
+                        }
+                    }, receiveValue: { data in
+                    })
+                    .store(in: &memberVM.cancellables)
+            }
         }
     }
 }

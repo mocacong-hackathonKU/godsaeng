@@ -12,7 +12,6 @@ struct CalendarPage: View {
     var body: some View {
         VStack {
             GodsaengCalendar()
-//            Godsaengist()
         }
     }
 }

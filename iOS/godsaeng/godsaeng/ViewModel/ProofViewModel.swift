@@ -15,8 +15,8 @@ class ProofViewModel: ObservableObject {
     @Published private var cancellabels = Set<AnyCancellable>()
     
     //인증 생성
-    func createProof(accessToken: String, proofToCreate: Proof) {
-        requestProofCreation(accessToken: accessToken, proofToCreate: proofToCreate)
+    func createProof(accessToken: String, godsaeng: Godsaeng) {
+        requestProofCreation(accessToken: accessToken, godsaeng: godsaeng)
             .sink(receiveCompletion: { completion in
                 switch completion {
                 case .finished:
@@ -29,21 +29,20 @@ class ProofViewModel: ObservableObject {
             })
             .store(in: &self.cancellabels)
     }
-    func requestProofCreation(accessToken: String, proofToCreate: Proof) -> Future<Proof, Error> {
+    func requestProofCreation(accessToken: String, godsaeng: Godsaeng) -> Future<Proof, Error> {
         return Future { promise in
-            guard let url = URL(string: "\(requestURL)/godsaeng/proof/\(String(describing: proofToCreate.id))") else {
+            guard let url = URL(string: "\(requestURL)/godsaeng/proof/\(String(describing: godsaeng.id))") else {
                 fatalError("유효하지 않은 url")
             }
             
             var request = URLRequest(url: url)
             request.httpMethod = "POST"
-            do {
-                let jsonData = try JSONEncoder().encode(proofToCreate)
-                request.httpBody = jsonData
-                request.addValue("Bearer \(accessToken)", forHTTPHeaderField: "Authorization")
-            } catch {
-                
-            }
+
+            
+            //body
+            
+            
+            
             URLSession.shared.dataTaskPublisher(for: request)
                 .receive(on: DispatchQueue.main)
                 .tryMap { data, response -> Data in

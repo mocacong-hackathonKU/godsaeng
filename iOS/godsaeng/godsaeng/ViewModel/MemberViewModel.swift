@@ -23,7 +23,7 @@ class MemberViewModel: NSObject, ObservableObject {
     @Published var memberDataFetched: Bool = false
     
     var cancellables = Set<AnyCancellable>()
-
+    
     func encdoeNonceSha256(_ input: String) -> String {
         let inputData = Data(input.utf8)
         let hashedData = SHA256.hash(data: inputData)
@@ -124,7 +124,7 @@ class MemberViewModel: NSObject, ObservableObject {
                 .store(in: &self.cancellables)
         }
     }
-
+    
     func checkNicknameDuplicationToServer(nicknameToCheck: String) -> Future<Bool, Error> {
         return Future { promise in
             let targetUrl = "\(requestURL)/members/check-duplicate/nickname?value=\(nicknameToCheck)"
@@ -135,7 +135,7 @@ class MemberViewModel: NSObject, ObservableObject {
             
             var request = URLRequest(url: url)
             request.httpMethod = "GET"
-
+            
             URLSession.shared.dataTaskPublisher(for: request)
                 .subscribe(on: DispatchQueue.global(qos: .background))
                 .receive(on: DispatchQueue.main)
@@ -174,7 +174,7 @@ class MemberViewModel: NSObject, ObservableObject {
                 .store(in: &self.cancellables)
         }
     }
-
+    
     func requestRegisterToServer(accessToken: String) -> Future<Member, Error> {
         return Future { promise in
             guard let url = URL(string: "\(requestURL)/members/oauth") else {
@@ -187,7 +187,7 @@ class MemberViewModel: NSObject, ObservableObject {
             let boundary = UUID().uuidString
             request.addValue("Bearer \(accessToken)", forHTTPHeaderField: "Authorization")
             request.addValue("multipart/form-data; boundary=\(boundary)", forHTTPHeaderField: "Content-Type")
-            let data = self.createRegisterBody(with: ["file": self.member.imgData, "request": self.member], boundary: boundary)
+            let data = self.createRegisterBody(with: ["profileImg": self.member.imgData, "member": self.member], boundary: boundary)
             request.httpBody = data
             
             URLSession.shared.dataTaskPublisher(for: request)
@@ -220,54 +220,53 @@ class MemberViewModel: NSObject, ObservableObject {
                 .store(in: &self.cancellables)
         }
     }
-
-    func deleteMember(accessToken: String) {
-            guard let url = URL(string: "\(requestURL)/members") else {
-                fatalError("Invalid Url")
-            }
-
-            var request = URLRequest(url: url)
-            request.httpMethod = "DELETE"
-            request.addValue("Bearer \(accessToken)", forHTTPHeaderField: "Authorization")
-            
-        URLSession.shared.dataTaskPublisher(for: request)
-                .receive(on: DispatchQueue.main)
-                .tryMap { data, response in
-                    guard let httpResponse = response as? HTTPURLResponse else {
-                        throw URLError(.badServerResponse)
-                    }
-                    
-                    switch httpResponse.statusCode {
-                    case 200:
-                        print("회원탈퇴 응답 상태코드 200")
-                        AccessManager.shared.userLoggedOutOrDeleted = true
-                        AccessManager.shared.isLoggedIn = false
-                    case 401:
-                        print("회원탈퇴 응답 상태코드 401")
-                        AccessManager.shared.tokenExpired = true
-                        AccessManager.shared.isLoggedIn = false
-                    case 500 :
-                        print("서버 에러 500")
-                        AccessManager.shared.serverDown = true
-                        AccessManager.shared.isLoggedIn = false
-                    default:
-                        print("회원탈퇴 응답 상태코드: \(httpResponse.statusCode)")
-                    }
-                }
-                .sink(receiveCompletion: { completion in
-                    switch completion {
-                    case .failure(let error):
-                        print("회원탈퇴 요청 error: \(error)")
-                    case .finished:
-                        print("회원탈퇴 요청 finished")
-                    }
-                }, receiveValue: { _ in
-                })
-                .store(in: &self.cancellables)
-    }
-
-    //이미지
     
+    func deleteMember(accessToken: String) {
+        guard let url = URL(string: "\(requestURL)/members") else {
+            fatalError("Invalid Url")
+        }
+        
+        var request = URLRequest(url: url)
+        request.httpMethod = "DELETE"
+        request.addValue("Bearer \(accessToken)", forHTTPHeaderField: "Authorization")
+        
+        URLSession.shared.dataTaskPublisher(for: request)
+            .receive(on: DispatchQueue.main)
+            .tryMap { data, response in
+                guard let httpResponse = response as? HTTPURLResponse else {
+                    throw URLError(.badServerResponse)
+                }
+                
+                switch httpResponse.statusCode {
+                case 200:
+                    print("회원탈퇴 응답 상태코드 200")
+                    AccessManager.shared.userLoggedOutOrDeleted = true
+                    AccessManager.shared.isLoggedIn = false
+                case 401:
+                    print("회원탈퇴 응답 상태코드 401")
+                    AccessManager.shared.tokenExpired = true
+                    AccessManager.shared.isLoggedIn = false
+                case 500 :
+                    print("서버 에러 500")
+                    AccessManager.shared.serverDown = true
+                    AccessManager.shared.isLoggedIn = false
+                default:
+                    print("회원탈퇴 응답 상태코드: \(httpResponse.statusCode)")
+                }
+            }
+            .sink(receiveCompletion: { completion in
+                switch completion {
+                case .failure(let error):
+                    print("회원탈퇴 요청 error: \(error)")
+                case .finished:
+                    print("회원탈퇴 요청 finished")
+                }
+            }, receiveValue: { _ in
+            })
+            .store(in: &self.cancellables)
+    }
+    
+    //이미지
     func fetchMyProfileData(accessToken: String) {
         requestMyProfileDataFetch(accessToken: accessToken)
             .sink(receiveCompletion: { result in
@@ -294,7 +293,7 @@ class MemberViewModel: NSObject, ObservableObject {
             var request = URLRequest(url: url)
             request.httpMethod = "GET"
             request.addValue("Bearer \(accessToken)", forHTTPHeaderField: "Authorization")
-                        
+            
             URLSession.shared.dataTaskPublisher(for: request)
                 .subscribe(on: DispatchQueue.global(qos: .background))
                 .receive(on: DispatchQueue.main)
@@ -378,7 +377,7 @@ class MemberViewModel: NSObject, ObservableObject {
                         } else if httpResponse.statusCode == 500 {
                             AccessManager.shared.serverDown = true
                             AccessManager.shared.isLoggedIn = false
-                    }else {
+                        }else {
                             promise(.failure(URLError(URLError.Code.badServerResponse)))
                             print("프로필이미지 업데이트 응답 상태코드 : ", httpResponse.statusCode)
                         }
@@ -392,7 +391,7 @@ class MemberViewModel: NSObject, ObservableObject {
     private func createRegisterBody(with parameters: [String: Any], boundary: String) -> Data {
         var body = Data()
         for (key, value) in parameters {
-            if key == "request" {
+            if key == "member" {
                 if let member = value as? Member {
                     do {
                         let jsonEncoder = JSONEncoder()
@@ -419,7 +418,7 @@ class MemberViewModel: NSObject, ObservableObject {
         body.append(Data("--\(boundary)--\r\n".utf8))
         return body
     }
-
+    
     //프로필 수정 바디 생성기
     private func createBody(with parameters: [String: Any], boundary: String) -> Data {
         

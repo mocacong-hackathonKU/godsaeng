@@ -25,7 +25,7 @@ struct CollectionPage: View {
                         NavigationLink(destination: {
                             GodsaengDetailPage(godsaengVM: godsaengVM, godsaeng: godsaeng)
                         }, label: {
-                            GodsaengCell(godsaeng: godsaeng, mode: .extended)
+                            CollectionGSCell(godsaeng: godsaeng, mode: .extended)
                         })
                         
                     }
@@ -49,6 +49,7 @@ struct CollectionPage: View {
         .onAppear {
             if let token = try? TokenManager.shared.getToken() {
                 godsaengVM.fetchGodsaengList(accessToken: token)
+                print("같생 모아보기 목록 : ", godsaengVM.godsaengList)
             }
         }
     }

@@ -18,4 +18,5 @@ struct Godsaeng: Identifiable, Codable, Hashable {
     var progress: Int?
     var status: String?
     var proofs: [Proof]?
+    var isDone: Bool?
 }

@@ -12,7 +12,7 @@ enum GodsaengCardType {
     case extended
 }
 
-struct GodsaengCell: View {
+struct CollectionGSCell: View {
     
     @State var godsaeng: Godsaeng
     var mode: GodsaengCardType
@@ -51,8 +51,3 @@ struct GodsaengCell: View {
     }
 }
 
-struct GodsaengCell_Previews: PreviewProvider {
-    static var previews: some View {
-        GodsaengCell(godsaeng: Godsaeng(title: "같생", description: "우다다다", weeks: ["MON", "TUE"]), mode: .extended)
-    }
-}
