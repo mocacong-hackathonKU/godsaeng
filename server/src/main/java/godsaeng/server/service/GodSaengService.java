@@ -8,8 +8,10 @@ import godsaeng.server.exception.badrequest.*;
 import godsaeng.server.exception.notfound.NotFoundGodSaengException;
 import godsaeng.server.exception.notfound.NotFoundMemberException;
 import godsaeng.server.repository.*;
+import godsaeng.server.service.event.DeleteMemberEvent;
 import godsaeng.server.support.AwsS3Uploader;
 import lombok.RequiredArgsConstructor;
+import org.springframework.context.event.EventListener;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -29,7 +31,7 @@ public class GodSaengService {
     private final GodSaengRepository godSaengRepository;
     private final MemberRepository memberRepository;
     private final GodSaengMemberRepository godSaengMemberRepository;
-    private final ProofRepopsitory proofRepository;
+    private final ProofRepository proofRepository;
     private final ProofImageRepository proofImageRepository;
     private final AwsS3Uploader awsS3Uploader;
 
@@ -89,11 +91,11 @@ public class GodSaengService {
 
         // 같생 기간이 원하는 달에 포함되는 같생들만 filter
         List<GodSaeng> validGodsaengs =
-                getValidGodsaengs(startOfBaseMonth, endOfBaseMonth, godSaengs);
+                getValidMonthlyGodsaengs(startOfBaseMonth, endOfBaseMonth, godSaengs);
 
         // 같생 날짜가 원하는 달에 포함된 날짜와 상태들만 filter
         List<MonthlyGodSaengResponse> responses =
-                getValidGodsaengsDate(startOfBaseMonth, endOfBaseMonth, validGodsaengs);
+                getValidMonthlyGodsaengsDate(startOfBaseMonth, endOfBaseMonth, validGodsaengs);
 
         // 같생이 겹칠 수 있기 때문에 날짜를 기준으로 그룹화
         Map<LocalDate, List<MonthlyGodSaengResponse>> collect = responses.stream()
@@ -120,11 +122,33 @@ public class GodSaengService {
         return new MonthlyGodSaengsResponse(monthlyGodSaengs);
     }
 
+    public DailyGodSaengsResponse findDailyGodSaeng(Long memberId, LocalDate baseDate) {
+        YearMonth baseYearMonth = YearMonth.of(baseDate.getYear(), baseDate.getMonth());
+
+        LocalDate startOfBaseMonth = baseYearMonth.atDay(1);
+        LocalDate endOfBaseMonth = baseYearMonth.atEndOfMonth();
+
+        Date startDate = Date.from(startOfBaseMonth.atStartOfDay().atZone(ZoneId.systemDefault()).toInstant());
+        Date endDate = Date.from(endOfBaseMonth.atStartOfDay().atZone(ZoneId.systemDefault()).toInstant());
+        List<GodSaeng> godSaengs = godSaengRepository.findGodSaengsByBaseTime(memberId, startDate, endDate);
+
+        // 같생 목록을 DailyGodSaengResponse로 변환하여 리스트에 추가
+        List<DailyGodSaengResponse> dailyResponses = godSaengs.stream()
+                // 해당 날짜 요일의 같생 목록 필터링
+                .filter(godSaeng -> getValidDailyGodSaeng(godSaeng, baseDate))
+                .map(godSaeng -> new DailyGodSaengResponse(godSaeng.getId(), godSaeng.getTitle(), godSaeng.getStatus()))
+                .collect(Collectors.toList());
+
+        return new DailyGodSaengsResponse(dailyResponses);
+    }
+
     private boolean hasProceedGodSaeng(List<GodSaengStatus> statuses) {
         return statuses.size() > 1 && statuses.contains(GodSaengStatus.PROGRESSING);
     }
 
-    private List<MonthlyGodSaengResponse> getValidGodsaengsDate(LocalDate startOfBaseMonth, LocalDate endOfBaseMonth, List<GodSaeng> validGodsaengs) {
+    private List<MonthlyGodSaengResponse> getValidMonthlyGodsaengsDate(LocalDate startOfBaseMonth,
+                                                                       LocalDate endOfBaseMonth,
+                                                                       List<GodSaeng> validGodsaengs) {
         return validGodsaengs.stream()
                 .flatMap(validGodsaeng ->
                         validGodsaeng.getDoingDate().stream()
@@ -134,15 +158,23 @@ public class GodSaengService {
                 .collect(Collectors.toList());
     }
 
-    private List<GodSaeng> getValidGodsaengs(LocalDate startOfBaseMonth, LocalDate endOfBaseMonth, List<GodSaeng> godSaengs) {
+    private List<GodSaeng> getValidMonthlyGodsaengs(LocalDate startOfBaseMonth,
+                                                    LocalDate endOfBaseMonth, List<GodSaeng> godSaengs) {
         return godSaengs.stream()
                 .filter(godSaeng -> godSaeng.getClosedDate().isAfter(startOfBaseMonth))
                 .filter(godSaeng -> godSaeng.getOpenedDate().isBefore(endOfBaseMonth))
                 .collect(Collectors.toList());
     }
 
+    private boolean getValidDailyGodSaeng(GodSaeng godSaeng, LocalDate baseDate) {
+        List<LocalDate> doingDate = godSaeng.getDoingDate();
+
+        return doingDate.stream().anyMatch(date -> date.isEqual(baseDate));
+    }
+
     @Transactional
-    public ProofSaveResponse saveProof(Long memberId, Long godSaengId, MultipartFile proofImg, ProofSaveRequest request) {
+    public ProofSaveResponse saveProof(Long memberId, Long godSaengId, MultipartFile proofImg,
+                                       ProofSaveRequest request) {
         Member member = memberRepository.findById(memberId)
                 .orElseThrow(NotFoundMemberException::new);
         GodSaeng godSaeng = godSaengRepository.findById(godSaengId)
@@ -192,5 +224,15 @@ public class GodSaengService {
                 throw new DuplicateProofException();
             }
         }
+    }
+
+    @EventListener
+    public void updateGodSaengWhenMemberDelete(DeleteMemberEvent event) {
+        Long memberId = event.getMember().getId();
+        godSaengRepository.findAllByOwnerId(memberId)
+                .forEach(GodSaeng::removeOwner);
+        godSaengMemberRepository.findAllGodSaengMemberByMemberId(memberId)
+                .forEach(GodSaengMember::removeMember);
+        proofRepository.deleteAllByMemberId(memberId);
     }
 }

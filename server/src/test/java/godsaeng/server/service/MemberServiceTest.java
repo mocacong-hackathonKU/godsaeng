@@ -9,8 +9,9 @@ import godsaeng.server.dto.response.MyPageResponse;
 import godsaeng.server.exception.badrequest.DuplicateMemberException;
 import godsaeng.server.exception.badrequest.DuplicateNicknameException;
 import godsaeng.server.exception.notfound.NotFoundMemberException;
-import godsaeng.server.repository.MemberProfileImageRepository;
+import godsaeng.server.repository.GodSaengRepository;
 import godsaeng.server.repository.MemberRepository;
+import godsaeng.server.repository.ProofRepository;
 import godsaeng.server.support.AwsS3Uploader;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -21,6 +22,8 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.mock.web.MockMultipartFile;
 
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.List;
@@ -36,12 +39,19 @@ public class MemberServiceTest {
     @Autowired
     private MemberRepository memberRepository;
     @Autowired
-    private MemberProfileImageRepository memberProfileImageRepository;
+    private ProofRepository proofRepository;
+    @Autowired
+    private GodSaengRepository godSaengRepository;
     @Autowired
     private MemberService memberService;
+    @Autowired
+    private GodSaengService godSaengService;
 
     @MockBean
     private AwsS3Uploader awsS3Uploader;
+
+    @PersistenceContext
+    private EntityManager em;
 
     @BeforeEach
     void setUp() {
@@ -205,5 +215,17 @@ public class MemberServiceTest {
                 () -> Assertions.assertThat(actual.getImgUrl()).isEqualTo(expected),
                 () -> Assertions.assertThat(actual.getMemberProfileImage().getIsUsed()).isTrue()
         );
+    }
+
+    @Test
+    @DisplayName("회원을 정상적으로 탈퇴한다")
+    void deleteMember() {
+        String email = "dlawotn3@naver.com";
+        Member savedMember = memberRepository.save(new Member(email, Platform.KAKAO, "11111"));
+
+        memberService.delete(savedMember.getId());
+
+        List<Member> actualMemberList = memberRepository.findAll();
+        assertThat(actualMemberList.size()).isEqualTo(0);
     }
 }

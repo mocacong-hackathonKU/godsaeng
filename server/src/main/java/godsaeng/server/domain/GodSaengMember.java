@@ -32,4 +32,8 @@ public class GodSaengMember extends BaseTime {
         this.godSaeng = godSaeng;
         this.member = member;
     }
+
+    public static void removeMember(GodSaengMember godSaengMember) {
+        godSaengMember.member = null;
+    }
 }

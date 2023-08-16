@@ -12,7 +12,7 @@ import godsaeng.server.exception.badrequest.InvalidProofMemberException;
 import godsaeng.server.exception.notfound.NotFoundGodSaengException;
 import godsaeng.server.repository.GodSaengRepository;
 import godsaeng.server.repository.MemberRepository;
-import godsaeng.server.repository.ProofRepopsitory;
+import godsaeng.server.repository.ProofRepository;
 import godsaeng.server.support.AwsS3Uploader;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -46,7 +46,7 @@ class GodSaengServiceTest {
     @Autowired
     private MemberRepository memberRepository;
     @Autowired
-    private ProofRepopsitory proofRepository;
+    private ProofRepository proofRepository;
 
     @MockBean
     private AwsS3Uploader awsS3Uploader;
@@ -177,6 +177,7 @@ class GodSaengServiceTest {
 
         // 테스트에 대한 고민 필요
     }
+
     @DisplayName("같생에 인증 글을 올릴 수 있다")
     @Test
     void saveProof() throws IOException {
