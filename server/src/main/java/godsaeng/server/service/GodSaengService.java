@@ -95,7 +95,7 @@ public class GodSaengService {
 
         // 같생 날짜가 원하는 달에 포함된 날짜와 상태들만 filter
         List<MonthlyGodSaengResponse> responses =
-                getValidMonthlyGodsaengsDate(startOfBaseMonth, endOfBaseMonth, validGodsaengs);
+                getValidMonthlyGodsaengsDate(startOfBaseMonth, endOfBaseMonth, validGodsaengs, memberId);
 
         // 같생이 겹칠 수 있기 때문에 날짜를 기준으로 그룹화
         Map<LocalDate, List<MonthlyGodSaengResponse>> collect = responses.stream()
@@ -107,14 +107,14 @@ public class GodSaengService {
         // 겹칠 때 상태가 다른 경우는 하나만 PROCEEDING인 경우 밖에 없으므로 그 때만 예외처리
         for (LocalDate localDate : collect.keySet()) {
             List<MonthlyGodSaengResponse> monthlyGodSaengResponses = collect.get(localDate);
-            List<GodSaengStatus> statuses = monthlyGodSaengResponses.stream()
-                    .map(MonthlyGodSaengResponse::getStauts).collect(Collectors.toList());
+            List<Boolean> booleans = monthlyGodSaengResponses.stream()
+                    .map(MonthlyGodSaengResponse::getIsDone).collect(Collectors.toList());
 
-            if (hasProceedGodSaeng(statuses)) {
-                monthlyGodSaengs.add(new MonthlyGodSaengResponse(localDate, GodSaengStatus.PROGRESSING));
+            if (booleans.stream().anyMatch(bool -> bool.equals(false))) {
+                monthlyGodSaengs.add(new MonthlyGodSaengResponse(localDate, false));
                 continue;
             }
-            monthlyGodSaengs.add(monthlyGodSaengResponses.get(0));
+            monthlyGodSaengs.add(new MonthlyGodSaengResponse(localDate, true));
         }
 
         monthlyGodSaengs.sort(Comparator.comparing(MonthlyGodSaengResponse::getDay));
@@ -154,20 +154,27 @@ public class GodSaengService {
         return new DailyGodSaengsResponse(dailyResponses);
     }
 
-    private boolean hasProceedGodSaeng(List<GodSaengStatus> statuses) {
-        return statuses.size() > 1 && statuses.contains(GodSaengStatus.PROGRESSING);
-    }
-
     private List<MonthlyGodSaengResponse> getValidMonthlyGodsaengsDate(LocalDate startOfBaseMonth,
                                                                        LocalDate endOfBaseMonth,
-                                                                       List<GodSaeng> validGodsaengs) {
+                                                                       List<GodSaeng> validGodsaengs,
+                                                                       Long memberId) {
         return validGodsaengs.stream()
                 .flatMap(validGodsaeng ->
                         validGodsaeng.getDoingDate().stream()
                                 .filter(date -> date.isAfter(startOfBaseMonth.minusDays(1)))
                                 .filter(date -> date.isBefore(endOfBaseMonth.plusDays(1)))
-                                .map(localDate -> new MonthlyGodSaengResponse(localDate, validGodsaeng.getStatus())))
-                .collect(Collectors.toList());
+                                .map(localDate -> {
+                                    if (localDate.isBefore(LocalDate.now())) {
+                                        List<Proof> proofs = proofRepository.findProofWithGodSaengByMemberId(
+                                                memberId,
+                                                Date.from(localDate.atStartOfDay().atZone(ZoneId.systemDefault()).toInstant()),
+                                                Date.from(localDate.plusDays(1).atStartOfDay().atZone(ZoneId.systemDefault()).toInstant()));
+
+                                        boolean isDone = proofs.stream().anyMatch(proof -> proof.isSameGodSaeng(validGodsaeng));
+                                        return new MonthlyGodSaengResponse(localDate, isDone);
+                                    }
+                                    return new MonthlyGodSaengResponse(localDate, false);
+                                })).collect(Collectors.toList());
     }
 
     private List<GodSaeng> getValidMonthlyGodsaengs(LocalDate startOfBaseMonth,
@@ -230,7 +237,7 @@ public class GodSaengService {
         }
 
         String proofImgUrl = awsS3Uploader.uploadImage(proofImg);
-        ProofImage proofImage = new ProofImage(proofImgUrl, godSaeng);
+        ProofImage proofImage = new ProofImage(proofImgUrl);
         proofImageRepository.save(proofImage);
         return proofImage;
     }
