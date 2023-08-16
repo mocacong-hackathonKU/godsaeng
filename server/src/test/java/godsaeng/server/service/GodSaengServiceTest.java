@@ -177,6 +177,7 @@ class GodSaengServiceTest {
 
         // 테스트에 대한 고민 필요
     }
+
     @DisplayName("같생에 인증 글을 올릴 수 있다")
     @Test
     void saveProof() throws IOException {

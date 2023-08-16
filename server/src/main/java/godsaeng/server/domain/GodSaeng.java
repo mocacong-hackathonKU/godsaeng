@@ -32,7 +32,7 @@ public class GodSaeng extends BaseTime {
     @Column(name = "description")
     private String description;
 
-    @OneToMany(mappedBy = "godSaeng", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "godSaeng", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
     private List<GodSaengWeek> weeks = new ArrayList<>();
 
     @ManyToOne(fetch = FetchType.LAZY)
