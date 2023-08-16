@@ -10,13 +10,14 @@ import SwiftUI
 struct CollectionPage: View {
     
     @StateObject var godsaengVM: GodSaengViewModel = GodSaengViewModel()
+    @State var showGSPostModal: Bool = false
     
     var body: some View {
         VStack(alignment: .leading) {
                 Text("# 모집중")
                     .font(.system(size: 26, weight: .bold))
                     .padding(.leading)
-                    .padding(.bottom)
+                    .padding(.bottom, 20)
 
             //같생 전체 목록
             ScrollView {
@@ -32,20 +33,24 @@ struct CollectionPage: View {
                 }
             }
             Button(action: {
-                //같생 생성 트리거 on
+                showGSPostModal = true
             }, label: {
                 RoundedRectangle(cornerRadius: 20)
                     .foregroundColor(.mainGreen)
-                    .frame(width: screenWidth * 0.85, height: 45)
+                    .frame(width: screenWidth * 0.89, height: 50)
                     .overlay (
                         Text("새로운 같생 만들기")
-                            .font(.system(size: 15, weight: .semibold))
+                            .font(.system(size: 17, weight: .semibold))
                             .foregroundColor(.white)
                     )
             })
-            .padding()
+            .padding(.top)
         }
         .padding()
+        .sheet(isPresented: $showGSPostModal) {
+            GodsaengPostModal()
+                .presentationDetents([.large, .fraction(0.6)])
+        }
         .onAppear {
             if let token = try? TokenManager.shared.getToken() {
                 godsaengVM.fetchGodsaengList(accessToken: token)

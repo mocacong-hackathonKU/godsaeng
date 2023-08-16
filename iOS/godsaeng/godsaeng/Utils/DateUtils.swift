@@ -8,6 +8,21 @@
 import Foundation
 
 
+//요일 한국어->영어
+func KoreandayToEnglishDay(days: [String]) -> [String] {
+    let translationDict: [String: String] = [
+        "월": "MON",
+        "화": "TUE",
+        "수": "WED",
+        "목": "THR",
+        "금": "FRI",
+        "토": "SAT",
+        "일": "SUN"
+    ]
+    
+    return days.compactMap { translationDict[$0] }
+}
+
 //요일 영어->한국어 번역
 func translateDays(days: [String]) -> [String] {
     let translationDict: [String: String] = [
