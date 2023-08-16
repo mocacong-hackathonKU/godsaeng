@@ -20,7 +20,7 @@ import java.time.LocalDate;
 @Tag(name = "Godsaengs", description = "같생")
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/godsaeng")
+@RequestMapping("/godsaengs")
 public class GodSaengController {
 
     private final GodSaengService godSaengService;
@@ -28,8 +28,8 @@ public class GodSaengController {
     @Operation(summary = "같생 등록")
     @SecurityRequirement(name = "JWT")
     @PostMapping
-    public ResponseEntity<GodSaengSaveResponse> save(@LoginUserId Long memberId
-            , @RequestBody GodSaengSaveRequest request) {
+    public ResponseEntity<GodSaengSaveResponse> save(@LoginUserId Long memberId,
+                                                     @RequestBody GodSaengSaveRequest request) {
         GodSaengSaveResponse response = godSaengService.save(memberId, request);
         return ResponseEntity.ok(response);
     }
