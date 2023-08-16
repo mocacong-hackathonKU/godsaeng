@@ -27,41 +27,40 @@ struct RegisterPage: View {
     var body: some View {
         NavigationView {
             VStack {
+                //헤더 텍스트
                 VStack {
-                Text("회원가입")
-                    .font(.system(size: 27, weight: .bold))
-                    .padding(.top, -20)
-                    .padding(.bottom, 45)
+                    Text("회원가입")
+                        .font(.system(size: 27, weight: .bold))
+                        .padding(.bottom, 40)
                     VStack(alignment: .leading) {
                         Text("프로필 설정")
                             .font(.system(size: 22, weight: .bold))
                             .foregroundColor(.accent4)
                             .padding(.bottom, 7)
                         Text("나를 잘 나타내는 사진과 닉네임을 정해주세요")
-                            .font(.system(size: 16, weight: .semibold))
+                            .font(.system(size: 18, weight: .bold))
                             .foregroundColor(.darkGray)
                         Text("프로필은 같생을 함께할 사람들에게 보여집니다")
-                            .font(.system(size: 14))
+                            .font(.system(size: 16))
                             .foregroundColor(.darkGray)
                     }
-                    .padding(.leading, -70)
+                    .padding(.leading, -15)
                 }
-                .padding(.bottom, 35)
+                .padding(.top, -60)
+                .padding(.bottom, 50)
+                //프로필 이미지
                 VStack {
-                    //이미지
                     if let imageData = profileImageData, let uiImage = UIImage(data: imageData) {
                         Image(uiImage: uiImage)
                             .resizable()
                             .scaledToFit()
-                            .frame(width: screenWidth * 0.48)
+                            .frame(width: screenWidth * 0.48, height: screenWidth * 0.48)
                             .clipShape(Circle())
-                            .padding(.top, -50)
                             .overlay(
                                 PhotosPicker(selection: $selectedPhotos, maxSelectionCount: 1, matching: .images) {
                                     Circle()
+                                        .stroke(Color.darkGray.opacity(0.6), lineWidth: 1)
                                         .foregroundColor(.clear)
-                                        .frame(width: 300)
-                                        .offset(y: -30)
                                 }
                                     .onChange(of: selectedPhotos) { newItem in
                                         guard let item = selectedPhotos.first else {
@@ -87,13 +86,10 @@ struct RegisterPage: View {
                             .scaledToFit()
                             .frame(width: screenWidth * 0.48)
                             .clipShape(Circle())
-                            .padding(.top, -50)
                             .overlay(
                                 PhotosPicker(selection: $selectedPhotos, maxSelectionCount: 1, matching: .images) {
                                     Circle()
                                         .foregroundColor(.clear)
-                                        .frame(width: 300)
-                                        .offset(y: -30)
                                 }
                                     .onChange(of: selectedPhotos) { newItem in
                                         guard let item = selectedPhotos.first else {
@@ -116,33 +112,13 @@ struct RegisterPage: View {
                     }
                 }
                 .padding(.bottom, 40)
+                //닉네임 입력창
                 VStack(alignment: .leading) {
-                    TextField("닉네잉 (변경불가)", text: $nickname)
-                    Rectangle()
-                        .foregroundColor(.lightGray)
-                        .frame(width: 340, height: 3)
-                    VStack(alignment: .leading) {
-                        Text("닉네임은 한글과 영어 2~6자로 입력해주세요")
-                        Text("중복된 닉네임입니다")
-                    }
-                    .font(.system(size: 13))
-                    .foregroundColor(.alertRed)
-                }
-                .padding(.leading, 30)
-                
-                VStack(alignment: .leading, spacing: 10) {
-                    //닉네임 레이블
-                    HStack(spacing: 17) {
-                        Text("예시) 프로카공러")
-                            .font(.system(size: 15))
-                            .foregroundColor(.black.opacity(0.7))
-                        Spacer()
-                    }
-                    //닉네임 입력창
-                    TextField("닉네잉 (변경불가)", text: $nickname)
-                    Rectangle()
-                        .foregroundColor(.lightGray)
-                        .frame(width: 340, height: 3)                            .onAppear {
+                    VStack(spacing: 6) {
+                        TextField("닉네임 (변경불가)", text: $nickname)
+                            .font(.system(size: 18, weight: .semibold))
+                            .padding(.leading, 5)
+                            .onAppear {
                                 UIApplication.shared.hideKeyboard()
                             }
                             .onChange(of: nickname, perform: { newValue in
@@ -173,28 +149,31 @@ struct RegisterPage: View {
                                     textInputAccepted = true
                                 }
                             }
-                    
-                    VStack(alignment: .leading) {
+                        Rectangle()
+                            .frame(width: screenWidth * 0.9, height: 3)
+                            .foregroundColor(.lightGray)
+                            .padding(.top, -5)
+                    }
+                    VStack {
                         if nickname.count < 2 || nickname.count > 5 || nicknameHasNumber == true || nicknameHasSpecial == true {
-                            Text("닉네임은 한글, 영어로만 구성된 2~5자여야 합니다")
-                                .font(.system(size: 13))
-                                .foregroundColor(.alertRed)
+                            Text("닉네임은 한글과 영어 2~5자로 입력해주세요")
                         } else {
                             if isDuplicated != nil {
                                 if isDuplicated == true{
                                     Text("중복된 닉네임입니다")
-                                        .font(.system(size: 13))
-                                        .foregroundColor(.alertRed)
                                 } else if isDuplicated == false {
                                     Text("사용할 수 있는 닉네임입니다")
-                                        .font(.system(size: 13))
+                                        .font(.system(size: 14))
                                         .foregroundColor(.mainGreen)
                                 }
                             }
                         }
                     }
-                    .padding(.bottom, 40)
+                    .padding(.leading, 4)
+                    .font(.system(size: 14))
+                    .foregroundColor(.alertRed)
                 }
+                .padding(.leading)
             }
             .toolbar {
                 ToolbarItem(placement: .navigationBarTrailing) {

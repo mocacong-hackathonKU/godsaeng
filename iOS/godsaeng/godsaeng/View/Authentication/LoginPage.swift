@@ -20,7 +20,7 @@ struct LoginPage: View {
                 memberVM.loginApple()
             }, label: {
                 AppleDefaultIcon()
-                    .padding(.top, 114)
+                    .padding(.top, 60)
             })
         }
     }
@@ -34,27 +34,13 @@ struct LoginPage: View {
                 HStack {
                     Image(systemName: "apple.logo")
                         .foregroundColor(.white)
-                        .font(.system(size: 19))
+                        .font(.system(size: 18))
                         .offset(y: -1.5)
                     Text("Apple")
                         .foregroundColor(.white)
                         .font(.system(size: 17))
                 }
             )
-//        RoundedRectangle(cornerRadius: 6.3)
-//            .frame(width: screenWidth * 0.8, height: 48)
-//            .foregroundColor(.black)
-//            .overlay(
-//                HStack {
-//                    Image(systemName: "apple.logo")
-//                        .foregroundColor(.white)
-//                        .font(.system(size: 19))
-//                        .offset(y: -1.5)
-//                    Text("Login with Apple")
-//                        .foregroundColor(.white)
-//                        .font(.system(size: 17))
-//                }
-//            )
     }
 }
 

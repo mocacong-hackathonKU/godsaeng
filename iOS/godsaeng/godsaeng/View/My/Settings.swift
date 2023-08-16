@@ -21,7 +21,7 @@ struct SettingPage: View {
                         BlockCell(icon: "person", label: "계정 정보")
                     })
                     Button(action: {
-                        if let url = URL(string: "https://www.notion.so/mocacong/Q-A-2c8e8ad6c2604245ba1610fdbcfcc7e2") {
+                        if let url = URL(string: "https://www.notion.so/officialgodsaeng/Q-A-78a570b79615460eb9690bd3e2fd60f6") {
                             UIApplication.shared.open(url)
                         }
                     }, label: {
@@ -29,28 +29,28 @@ struct SettingPage: View {
                         
                     })
                     Button(action: {
-                        if let url = URL(string: "https://www.notion.so/mocacong/78a169a2532a4e9e94fe2ae2da41c6a4") {
+                        if let url = URL(string: "https://www.notion.so/officialgodsaeng/3b9dec26a9b542fea5ab03fd2185028d") {
                             UIApplication.shared.open(url)
                         }
                     }, label: {
                         BlockCell(icon: "doc.text.magnifyingglass", label: "이용약관")
                     })
                     Button(action: {
-                        if let url = URL(string: "https://www.notion.so/mocacong/ef1c29e4c9954d3e907936e955a1b8a0") {
+                        if let url = URL(string: "https://www.notion.so/officialgodsaeng/18d3a35bc6d94dd085e50633d01522cc") {
                             UIApplication.shared.open(url)
                         }
                     }, label: {
-                        BlockCell(icon: "lock", label: "개인정보처리방침")
+                        BlockCell(icon: "lock", label: "개인정보 처리 방침")
                     })
                     Button(action: {
-                        if let url = URL(string: "https://www.notion.so/mocacong/053df0bda1674234a5252d8bc82a4b7b") {
+                        if let url = URL(string: "https://www.notion.so/officialgodsaeng/920cca7ca8ef4aab89af2eb6bd2703e6") {
                             UIApplication.shared.open(url)
                         }
                     }, label: {
-                        BlockCell(icon: "lock", label: "개인정보수집및이용동의서")
+                        BlockCell(icon: "lock", label: "개인정보 수집 및 이용 동의서")
                     })
                     Button(action: {
-                        if let url = URL(string: "https://www.notion.so/mocacong/e83a984e6d644772b4f819d40fd8dc72") {
+                        if let url = URL(string: "https://www.notion.so/officialgodsaeng/67024362edca49c5a446edf89567e6a4") {
                             UIApplication.shared.open(url)
                         }
                     }, label: {

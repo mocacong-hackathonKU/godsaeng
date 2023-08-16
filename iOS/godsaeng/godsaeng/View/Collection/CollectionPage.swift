@@ -22,7 +22,12 @@ struct CollectionPage: View {
             ScrollView {
                 LazyVStack {
                     ForEach(godsaengVM.godsaengList, id: \.self) { godsaeng in
-                        GodsaengCard(godsaeng: godsaeng, mode: .extended)
+                        NavigationLink(destination: {
+                            GodsaengDetailPage(godsaengVM: godsaengVM, godsaeng: godsaeng)
+                        }, label: {
+                            GodsaengCell(godsaeng: godsaeng, mode: .extended)
+                        })
+                        
                     }
                 }
             }

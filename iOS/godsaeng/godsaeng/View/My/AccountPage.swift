@@ -71,7 +71,7 @@ struct AcountPage: View {
         .alert(isPresented: $showAlert) {
             Alert(
                 title: Text("회원 탈퇴"),
-                message: Text("프로필, 내가 참여한 같생이 사라집니다"),
+                message: Text("프로필, 내가 참여한 같생 기록이 사라집니다"),
                 primaryButton: .destructive(Text("취소")),
                 secondaryButton: .cancel(Text("탈퇴"),action: {
                     AccessManager.shared.isAgreed = false

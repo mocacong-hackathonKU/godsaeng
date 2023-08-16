@@ -175,6 +175,11 @@ class MemberViewModel: NSObject, ObservableObject {
         }
     }
 
+    
+    
+    
+    
+    
     func requestRegisterToServer(memberToRegister: Member) -> Future<Member, Error> {
         return Future { promise in
             guard let url = URL(string: "\(requestURL)/members/oauth") else {
@@ -223,6 +228,66 @@ class MemberViewModel: NSObject, ObservableObject {
         }
     }
     
+    func requestRegisterToServer(profileImageDataToUplpad: Data?) -> Future<UserInfo, Error> {
+        return Future { promise in
+            
+            guard let socialType = self.user.oAuthProvider else
+            {
+                fatalError("Invalid socialType")
+            }
+            guard let url = URL(string: "\(requestURL)/users/\(socialType)") else {
+                fatalError("Invalid URL")
+            }
+            
+            print(self.accessToken)
+            var request = URLRequest(url: url)
+            request.httpMethod = "POST"
+            let boundary = UUID().uuidString
+            request.addValue("Bearer \(self.accessToken)", forHTTPHeaderField: "Authorization")
+            request.addValue("multipart/form-data; boundary=\(boundary)", forHTTPHeaderField: "Content-Type")
+            let bodyData = self.createBody(with: ["profileImage": profileImageDataToUplpad, "userData": self.unwrappedUser], boundary: boundary)
+            request.httpBody = bodyData
+            
+            URLSession.shared.dataTaskPublisher(for: request)
+                .receive(on: DispatchQueue.main)
+                .tryMap { data, response -> Data in
+                    guard let httpResponse = response as? HTTPURLResponse else {
+                        throw NetworkError.badServerResponse
+                    }
+                    print("회원가입 응답 상태코드 : ", httpResponse.statusCode)
+                    switch httpResponse.statusCode {
+                    case 201:
+                        print("회원가입 성공")
+                        self.isRegistered = true
+                        return data
+                    case 400:
+                        print("닉네임 중복")
+                        throw NetworkError.nicknameDuplicated
+                    default:
+                        throw URLError(URLError.Code.badServerResponse)
+                    }
+                }
+                .decode(type: UserInfo.self, decoder: JSONDecoder())
+                .sink(receiveCompletion: { completion in
+                    switch completion {
+                    case .failure(let error):
+                        promise(.failure(error))
+                    case .finished:
+                        break
+                    }
+                }, receiveValue: { userData in
+                    promise(.success(userData))
+                })
+                .store(in: &self.cancellables)
+        }
+    }
+    
+    
+    
+    
+    
+    
+    
     func deleteMember(accessToken: String) {
             guard let url = URL(string: "\(requestURL)/members") else {
                 fatalError("Invalid Url")
@@ -268,8 +333,15 @@ class MemberViewModel: NSObject, ObservableObject {
                 .store(in: &self.cancellables)
     }
     
-    //이미지
     
+    
+    
+    
+    
+    
+    
+    
+    //이미지
     func updateProfileImage(accessToken: String, imageDataToUpdate: Data?) {
         requestProfileImageDataUpDate(accessToken: accessToken, imageDataToUpdate: imageDataToUpdate)
             .sink(receiveCompletion: { completion in

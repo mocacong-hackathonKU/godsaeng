@@ -22,11 +22,10 @@ struct AgreementPage: View {
     var fontSize: CGFloat = 18
     
     var body: some View {
-        NavigationView {
             VStack {
                 VStack(alignment: .leading) {
                     Text("같생")
-                        .font(.system(size: 33, weight: .bold))
+                        .font(.system(size: 36, weight: .bold))
                         .foregroundColor(.mainOrange)
                     VStack(alignment: .leading) {
                         Text("서비스 이용을 위해")
@@ -34,10 +33,11 @@ struct AgreementPage: View {
                     }
                     .font(.system(size: 23))
                 }
-                .padding(.top, -30)
-                .padding(.leading, -30)
-                .padding(.bottom, 50)
+                .padding(.top, -70)
+                .padding(.bottom, 70)
+                .offset(x: -40)
                 VStack {
+                    //모두 동의
                     HStack {
                         Spacer()
                         Text("모두 동의")
@@ -65,21 +65,23 @@ struct AgreementPage: View {
                         })
                     }
                     Divider()
-                        .padding(.vertical)
-                    VStack(alignment: .leading, spacing: 25) {
+                        .padding(.bottom)
+                    //동의 사항
+                    VStack(alignment: .leading, spacing: 20) {
+                        //이용약관 동의
                         HStack {
                             Text("이용약관 동의")
                                 .foregroundColor(.accent5)
-                                .font(.system(size: fontSize, weight: .semibold))
+                                .font(.system(size: fontSize, weight: .medium))
                             Spacer()
                             Button(action: {
-                                if let url = URL(string: "https://www.notion.so/mocacong/78a169a2532a4e9e94fe2ae2da41c6a4") {
+                                if let url = URL(string: "https://www.notion.so/officialgodsaeng/3b9dec26a9b542fea5ab03fd2185028d") {
                                     UIApplication.shared.open(url)
                                 }
                             }, label: {
                                 Text("내용보기")
                                     .foregroundColor(.darkGray)
-                                    .font(.system(size: 14))
+                                    .font(.system(size: 16))
                             })
                             Button(action: {
                                 withAnimation(.spring()) {
@@ -92,7 +94,7 @@ struct AgreementPage: View {
                                     .overlay {
                                         Image(systemName: utilizationContractChecked == true ? "checkmark" : "")
                                             .foregroundColor(.alertRed)
-                                            .font(.system(size: 15, weight: .semibold))
+                                            .font(.system(size: 16, weight: .semibold))
                                     }
                             })
                         }
@@ -100,16 +102,16 @@ struct AgreementPage: View {
                         HStack {
                             Text("개인정보 수집 및 이용 동의")
                                 .foregroundColor(.accent5)
-                                .font(.system(size: fontSize, weight: .semibold))
+                                .font(.system(size: fontSize, weight: .medium))
                             Spacer()
                             Button(action: {
-                                if let url = URL(string: "https://www.notion.so/mocacong/053df0bda1674234a5252d8bc82a4b7b") {
+                                if let url = URL(string: "https://www.notion.so/officialgodsaeng/920cca7ca8ef4aab89af2eb6bd2703e6") {
                                     UIApplication.shared.open(url)
                                 }
                             }, label: {
                                 Text("내용보기")
                                     .foregroundColor(.darkGray)
-                                    .font(.system(size: 14))
+                                    .font(.system(size: 15))
                             })
                             Button(action: {
                                 withAnimation(.spring()) {
@@ -128,9 +130,13 @@ struct AgreementPage: View {
                         }
                     }
                 }
-                .padding(.bottom, 30)
+                .padding()
+                .padding(.bottom, 70)
+                //가입하기 버튼
                 Button(action: {
                     accessManager.isAgreed = true
+                    print(AccessManager.shared.isAgreed)
+                    print(AccessManager.shared.isRegistered)
                 }, label: {
                     RoundedRectangle(cornerRadius: 20)
                         .foregroundColor(allChecked == true ? .mainGreen : .gray.opacity(0.5))
@@ -143,18 +149,6 @@ struct AgreementPage: View {
                 })
                 .disabled(allChecked == false)
             }
-            .toolbar {
-                ToolbarItem(placement: .navigationBarLeading, content: {
-                    Button(action: {
-                        AccessManager.shared.isAgreed = false
-                        AccessManager.shared.isLoggedIn = false
-                    }, label: {
-                        Text("취소")
-                            .foregroundColor(.darkGray)
-                    })
-                })
-            }
-        }
     }
 }
 

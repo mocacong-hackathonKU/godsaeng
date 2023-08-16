@@ -12,6 +12,7 @@ struct godsaengApp: App {
     var body: some Scene {
         WindowGroup {
             ContentView()
-        }
+                .navigationViewStyle(StackNavigationViewStyle())
+                .environmentObject(AccessManager.shared)        }
     }
 }

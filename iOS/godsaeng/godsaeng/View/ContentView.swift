@@ -15,6 +15,8 @@ var screenHeight = UIScreen.main.bounds.height
 
 struct ContentView: View {
     
+    @EnvironmentObject var accessManager: AccessManager
+    
     @StateObject var memberVM: MemberViewModel = MemberViewModel()
     
     @State var member: Member = Member()
@@ -24,12 +26,12 @@ struct ContentView: View {
     
     var body: some View {
         VStack {
-            if AccessManager.shared.isLoggedIn == true {
-                if AccessManager.shared.isRegistered == false && AccessManager.shared.isAgreed == false {
+            if AccessManager.shared.isLoggedIn {
+                if AccessManager.shared.isAgreed == false {
                     AgreementPage()
-                } else if AccessManager.shared.isRegistered == false && AccessManager.shared.isAgreed == true {
+                } else if AccessManager.shared.isAgreed == true && AccessManager.shared.isRegistered == false {
                     RegisterPage(memberVM: memberVM, memberToRegister: $member)
-                } else if AccessManager.shared.isRegistered == true {
+                } else {
                     TabView {
                         CalendarPage()
                             .tabItem({
@@ -50,6 +52,7 @@ struct ContentView: View {
                 LoginPage(memberVM: memberVM)
             }
         }
+
         .onChange(of: AccessManager.shared.tokenExpired, perform: { newValue in
             if newValue == true {
                 showLoginRequestAlert = true
