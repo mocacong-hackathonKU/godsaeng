@@ -68,4 +68,12 @@ public class MemberController {
         memberService.updateProfileImage(memberId, multipartFile);
         return ResponseEntity.ok().build();
     }
+
+    @Operation(summary = "회원탈퇴")
+    @SecurityRequirement(name = "JWT")
+    @DeleteMapping
+    public ResponseEntity<Void> delete(@LoginUserId Long memberId) {
+        memberService.delete(memberId);
+        return ResponseEntity.ok().build();
+    }
 }

@@ -104,4 +104,8 @@ public class GodSaeng extends BaseTime {
         }
         return doingDates;
     }
+
+    public void removeOwner() {
+        this.owner = null;
+    }
 }
