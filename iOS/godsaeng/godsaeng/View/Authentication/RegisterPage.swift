@@ -12,9 +12,7 @@ import UIKit
 struct RegisterPage: View {
     
     @ObservedObject var memberVM: MemberViewModel
-    
-    @Binding var memberToRegister: Member
-    
+        
     @State var nickname: String = ""
     @State var profileImageData: Data?
     @State var selectedPhotos: [PhotosPickerItem] = []
@@ -59,7 +57,7 @@ struct RegisterPage: View {
                             .overlay(
                                 PhotosPicker(selection: $selectedPhotos, maxSelectionCount: 1, matching: .images) {
                                     Circle()
-                                        .stroke(Color.darkGray.opacity(0.6), lineWidth: 1)
+                                        .stroke(Color.darkGray.opacity(0.4), lineWidth: 1)
                                         .foregroundColor(.clear)
                                 }
                                     .onChange(of: selectedPhotos) { newItem in
@@ -183,7 +181,7 @@ struct RegisterPage: View {
                         Text("완료")
                             .foregroundColor(.mainGreen)
                     })
-                    .disabled(nickname.trimmingCharacters(in: .whitespaces) == "" || isDuplicated == nil || isDuplicated == true || textInputAccepted == false)
+                    .disabled(nickname.trimmingCharacters(in: .whitespaces) == "" || isDuplicated == nil || isDuplicated == true || textInputAccepted == false || profileImageData == nil)
                 }
             }
         }
@@ -209,10 +207,10 @@ struct RegisterPage: View {
     }
     
     func postNewMember() {
-        memberToRegister.nickname = self.nickname
-        memberToRegister.imgData = self.profileImageData
-        if memberToRegister.nickname != nil && memberToRegister.imgData != nil {
-            memberVM.requestRegisterToServer(memberToRegister: memberToRegister)
+        memberVM.member.nickname = self.nickname
+        memberVM.member.imgData = self.profileImageData
+        if let token = try? TokenManager.shared.getToken() {
+            memberVM.requestRegisterToServer(accessToken: token)
                 .sink(receiveCompletion: { result in
                     switch result {
                     case .failure(let error):

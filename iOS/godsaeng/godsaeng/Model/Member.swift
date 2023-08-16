@@ -12,6 +12,7 @@ struct Member: Hashable, Codable, Identifiable {
     var email: String?
     var nickname: String?
     var platform: String?
+    var platformId: String?
     var token: String?
     var isRegistered: Bool?
     var result: Bool?

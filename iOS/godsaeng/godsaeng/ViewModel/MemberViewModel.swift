@@ -117,6 +117,7 @@ class MemberViewModel: NSObject, ObservableObject {
                         AccessManager.shared.isLoggedIn = true
                     }
                     print(data.token)
+                    print(data)
                 }
                 .store(in: &self.cancellables)
         }
@@ -132,10 +133,7 @@ class MemberViewModel: NSObject, ObservableObject {
             
             var request = URLRequest(url: url)
             request.httpMethod = "GET"
-            
-            print(request)
 
-                        
             URLSession.shared.dataTaskPublisher(for: request)
                 .subscribe(on: DispatchQueue.global(qos: .background))
                 .receive(on: DispatchQueue.main)
@@ -175,12 +173,7 @@ class MemberViewModel: NSObject, ObservableObject {
         }
     }
 
-    
-    
-    
-    
-    
-    func requestRegisterToServer(memberToRegister: Member) -> Future<Member, Error> {
+    func requestRegisterToServer(accessToken: String) -> Future<Member, Error> {
         return Future { promise in
             guard let url = URL(string: "\(requestURL)/members/oauth") else {
                 fatalError("Invalid URL")
@@ -188,12 +181,12 @@ class MemberViewModel: NSObject, ObservableObject {
             
             var request = URLRequest(url: url)
             request.httpMethod = "POST"
-            do {
-                let jsonData = try JSONEncoder().encode(memberToRegister)
-                request.httpBody = jsonData
-                request.addValue("application/json", forHTTPHeaderField: "Content-Type")
-            } catch {
-            }
+            
+            let boundary = UUID().uuidString
+            request.addValue("Bearer \(accessToken)", forHTTPHeaderField: "Authorization")
+            request.addValue("multipart/form-data; boundary=\(boundary)", forHTTPHeaderField: "Content-Type")
+            let data = self.createRegisterBody(with: ["file": self.member.imgData, "request": self.member], boundary: boundary)
+            request.httpBody = data
             
             URLSession.shared.dataTaskPublisher(for: request)
                 .subscribe(on: DispatchQueue.global(qos: .background))
@@ -221,73 +214,11 @@ class MemberViewModel: NSObject, ObservableObject {
                     promise(.success(self.member))
                 } receiveValue: { data in
                     self.member.id = data.id
-                    self.member.nickname = memberToRegister.nickname
-                    print("memberVM의 member의 닉네임 : ", self.member.nickname)
                 }
                 .store(in: &self.cancellables)
         }
     }
-    
-    func requestRegisterToServer(profileImageDataToUplpad: Data?) -> Future<UserInfo, Error> {
-        return Future { promise in
-            
-            guard let socialType = self.user.oAuthProvider else
-            {
-                fatalError("Invalid socialType")
-            }
-            guard let url = URL(string: "\(requestURL)/users/\(socialType)") else {
-                fatalError("Invalid URL")
-            }
-            
-            print(self.accessToken)
-            var request = URLRequest(url: url)
-            request.httpMethod = "POST"
-            let boundary = UUID().uuidString
-            request.addValue("Bearer \(self.accessToken)", forHTTPHeaderField: "Authorization")
-            request.addValue("multipart/form-data; boundary=\(boundary)", forHTTPHeaderField: "Content-Type")
-            let bodyData = self.createBody(with: ["profileImage": profileImageDataToUplpad, "userData": self.unwrappedUser], boundary: boundary)
-            request.httpBody = bodyData
-            
-            URLSession.shared.dataTaskPublisher(for: request)
-                .receive(on: DispatchQueue.main)
-                .tryMap { data, response -> Data in
-                    guard let httpResponse = response as? HTTPURLResponse else {
-                        throw NetworkError.badServerResponse
-                    }
-                    print("회원가입 응답 상태코드 : ", httpResponse.statusCode)
-                    switch httpResponse.statusCode {
-                    case 201:
-                        print("회원가입 성공")
-                        self.isRegistered = true
-                        return data
-                    case 400:
-                        print("닉네임 중복")
-                        throw NetworkError.nicknameDuplicated
-                    default:
-                        throw URLError(URLError.Code.badServerResponse)
-                    }
-                }
-                .decode(type: UserInfo.self, decoder: JSONDecoder())
-                .sink(receiveCompletion: { completion in
-                    switch completion {
-                    case .failure(let error):
-                        promise(.failure(error))
-                    case .finished:
-                        break
-                    }
-                }, receiveValue: { userData in
-                    promise(.success(userData))
-                })
-                .store(in: &self.cancellables)
-        }
-    }
-    
-    
-    
-    
-    
-    
-    
+
     func deleteMember(accessToken: String) {
             guard let url = URL(string: "\(requestURL)/members") else {
                 fatalError("Invalid Url")
@@ -332,15 +263,7 @@ class MemberViewModel: NSObject, ObservableObject {
                 })
                 .store(in: &self.cancellables)
     }
-    
-    
-    
-    
-    
-    
-    
-    
-    
+
     //이미지
     func updateProfileImage(accessToken: String, imageDataToUpdate: Data?) {
         requestProfileImageDataUpDate(accessToken: accessToken, imageDataToUpdate: imageDataToUpdate)
@@ -397,6 +320,39 @@ class MemberViewModel: NSObject, ObservableObject {
         }
     }
     
+    //회원가입 바디 생성기
+    private func createRegisterBody(with parameters: [String: Any], boundary: String) -> Data {
+        var body = Data()
+        for (key, value) in parameters {
+            if key == "request" {
+                if let member = value as? Member {
+                    do {
+                        let jsonEncoder = JSONEncoder()
+                        let jsonData = try jsonEncoder.encode(member)
+                        body.append(Data("--\(boundary)\r\n".utf8))
+                        body.append(Data("Content-Disposition: form-data; name=\"\(key)\"\r\n".utf8))
+                        body.append(Data("Content-Type: application/json\r\n\r\n".utf8))
+                        body.append(jsonData)
+                        body.append(Data("\r\n".utf8))
+                        
+                    } catch {
+                        print("Error encoding Memeber: \(error)")
+                    }
+                }
+            } else if let image = value as? Data {
+                body.append(Data("--\(boundary)\r\n".utf8))
+                body.append(Data("Content-Disposition: form-data; name=\"\(key)\"; filename=\"image.jpg\"\r\n".utf8))
+                body.append(Data("Content-Type: image/jpeg\r\n\r\n".utf8))
+                body.append(image)
+                body.append(Data("\r\n".utf8))
+            }
+        }
+        
+        body.append(Data("--\(boundary)--\r\n".utf8))
+        return body
+    }
+
+    //프로필 수정 바디 생성기
     private func createBody(with parameters: [String: Any], boundary: String) -> Data {
         
         var body = Data()

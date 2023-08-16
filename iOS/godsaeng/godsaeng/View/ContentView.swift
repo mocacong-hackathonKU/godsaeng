@@ -30,7 +30,7 @@ struct ContentView: View {
                 if AccessManager.shared.isAgreed == false {
                     AgreementPage()
                 } else if AccessManager.shared.isAgreed == true && AccessManager.shared.isRegistered == false {
-                    RegisterPage(memberVM: memberVM, memberToRegister: $member)
+                    RegisterPage(memberVM: memberVM)
                 } else {
                     TabView {
                         CalendarPage()
