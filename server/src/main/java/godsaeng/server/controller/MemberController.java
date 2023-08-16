@@ -37,9 +37,9 @@ public class MemberController {
 
     @Operation(summary = "OAuth 회원가입")
     @PostMapping("/oauth")
-    public ResponseEntity<OAuthMemberSignUpResponse> signUp(@RequestPart @Valid OAuthMemberSignUpRequest request,
-                                                            @RequestPart MultipartFile file) {
-        OAuthMemberSignUpResponse response = memberService.signUpByOAuthMember(request, file);
+    public ResponseEntity<OAuthMemberSignUpResponse> signUp(@RequestPart @Valid OAuthMemberSignUpRequest member,
+                                                            @RequestPart MultipartFile profileImg) {
+        OAuthMemberSignUpResponse response = memberService.signUpByOAuthMember(member, profileImg);
         return ResponseEntity.ok(response);
     }
 
