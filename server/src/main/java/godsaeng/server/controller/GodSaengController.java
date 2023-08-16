@@ -2,10 +2,7 @@ package godsaeng.server.controller;
 
 import godsaeng.server.dto.request.GodSaengSaveRequest;
 import godsaeng.server.dto.request.ProofSaveRequest;
-import godsaeng.server.dto.response.GodSaengSaveResponse;
-import godsaeng.server.dto.response.GodSaengsResponse;
-import godsaeng.server.dto.response.MonthlyGodSaengsResponse;
-import godsaeng.server.dto.response.ProofSaveResponse;
+import godsaeng.server.dto.response.*;
 import godsaeng.server.security.auth.LoginUserId;
 import godsaeng.server.service.GodSaengService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -55,11 +52,24 @@ public class GodSaengController {
 
     @Operation(summary = "같생 월간 조회")
     @SecurityRequirement(name = "JWT")
-    @PostMapping("/monthly")
+    @GetMapping("/monthly")
     public ResponseEntity<MonthlyGodSaengsResponse> findMonthlyGodSaeng(@LoginUserId Long memberId,
-                                                    @RequestParam("date") @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate date) {
+                                                    @RequestParam("date")
+                                                    @DateTimeFormat(pattern = "yyyy-MM-dd")
+                                                    LocalDate date) {
         MonthlyGodSaengsResponse monthlyGodSaeng = godSaengService.findMonthlyGodSaeng(memberId, date);
         return ResponseEntity.ok(monthlyGodSaeng);
+    }
+
+    @Operation(summary = "같생 일간 조회")
+    @SecurityRequirement(name = "JWT")
+    @GetMapping("/daily")
+    public ResponseEntity<DailyGodSaengsResponse> findDailyGodSaeng(@LoginUserId Long memberId,
+                                                                    @RequestParam("date")
+                                                                    @DateTimeFormat(pattern = "yyyy-MM-dd")
+                                                                    LocalDate date) {
+        DailyGodSaengsResponse dailyGodSaeng = godSaengService.findDailyGodSaeng(memberId, date);
+        return ResponseEntity.ok(dailyGodSaeng);
     }
 
     @Operation(summary = "같생 인증 등록")
@@ -68,9 +78,9 @@ public class GodSaengController {
             MediaType.MULTIPART_FORM_DATA_VALUE})
     public ResponseEntity<ProofSaveResponse> saveProof(@LoginUserId Long memberId,
                                                        @PathVariable Long godSaengId,
-                                                       @RequestPart ProofSaveRequest request,
+                                                       @RequestPart ProofSaveRequest proof,
                                                        @RequestPart MultipartFile proofImg) {
-        ProofSaveResponse response = godSaengService.saveProof(memberId, godSaengId, proofImg, request);
+        ProofSaveResponse response = godSaengService.saveProof(memberId, godSaengId, proofImg, proof);
         return ResponseEntity.ok(response);
     }
 }
