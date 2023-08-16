@@ -27,7 +27,7 @@ import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.when;
 
 @SpringBootTest
-public class AuthServiceTest {
+public class AuthAcceptanceTest {
 
     @Autowired
     private MemberRepository memberRepository;
