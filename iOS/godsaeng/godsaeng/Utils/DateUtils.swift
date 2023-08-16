@@ -7,14 +7,13 @@
 
 import Foundation
 
-
 //요일 한국어->영어
 func KoreandayToEnglishDay(days: [String]) -> [String] {
     let translationDict: [String: String] = [
         "월": "MON",
         "화": "TUE",
         "수": "WED",
-        "목": "THR",
+        "목": "THU",
         "금": "FRI",
         "토": "SAT",
         "일": "SUN"

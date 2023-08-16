@@ -19,7 +19,7 @@ struct CollectionPage: View {
                     Text("# 모집중")
                         .font(.system(size: 26, weight: .bold))
                         .padding(.leading)
-                        .padding(.bottom, 20)
+                        .padding()
                     //같생 전체 목록
                     ScrollView {
                         LazyVStack(alignment: .leading, spacing: 5) {
@@ -46,7 +46,7 @@ struct CollectionPage: View {
                                 .foregroundColor(.white)
                         )
                 })
-                .padding(.top)
+                .padding()
             }
         }
         .sheet(isPresented: $showGSPostModal) {

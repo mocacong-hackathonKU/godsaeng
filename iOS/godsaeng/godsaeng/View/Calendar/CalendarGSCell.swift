@@ -10,30 +10,37 @@ import SwiftUI
 struct CalendarGSCell: View {
     
     @State var godsaeng: Godsaeng
+    @State var showProofPostModal: Bool = false
     
     var body: some View {
         ZStack {
             RoundedRectangle(cornerRadius: 10)
-                .stroke(Color.lightGray, lineWidth: 1.2)
-                .frame(width: screenWidth * 0.85, height: 65)
+                .stroke(Color.darkGray.opacity(0.2), lineWidth: 2)
+                .frame(width: screenWidth * 0.92, height: 90)
                 .foregroundColor(.clear)
             HStack {
                 Text(godsaeng.title ?? "")
-                    .font(.system(size: 34, weight: .bold))
+                    .font(.system(size: 20, weight: .bold))
+                    .padding(.leading)
+                Spacer()
                 Button(action: {
-                    
+                    showProofPostModal = true
                 }, label: {
-                    RoundedRectangle(cornerRadius: 20)
-                        .frame(width: 68, height: 25)
+                    RoundedRectangle(cornerRadius: 25)
+                        .frame(width: 80, height: 30)
                         .foregroundColor(godsaeng.isDone ?? true ? .mainGreen : .mainOrange)
                         .overlay (
                             Text("인증하기")
                                 .foregroundColor(.white)
-                                .font(.system(size: 14, weight: .medium))
+                                .font(.system(size: 16, weight: .semibold))
                         )
                 })
+                .padding(.trailing)
             }
-            .frame(width: screenWidth * 0.85, height: 65)
+            .frame(width: screenWidth * 0.9, height: 100)
+        }
+        .sheet(isPresented: $showProofPostModal) {
+            ProofPostModal(godsaeng: $godsaeng)
         }
     }
 }

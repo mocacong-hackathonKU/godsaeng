@@ -20,7 +20,7 @@ struct GodsaengCalendar: View {
     
     var body: some View {
         ScrollView {
-            VStack(spacing: 35) {
+            VStack(spacing: 30) {
                 HStack {
                     //달력 헤더
                     Button {
@@ -43,11 +43,9 @@ struct GodsaengCalendar: View {
                     Button {
                         currentMonth += 1
                     } label: {
-                        Image("ArrowRight")
+                        Image("ArrowRigth")
                     }
                 }
-                .padding(.horizontal, 20)
-                
                 //요일
                 HStack(spacing: 0) {
                     ForEach(days, id: \.self){ day in
@@ -57,7 +55,6 @@ struct GodsaengCalendar: View {
                             .frame(maxWidth: .infinity)
                     }
                 }
-                
                 //날짜들
                 let columns = Array(repeating: GridItem(.flexible()), count: 7)
                 LazyVGrid(columns: columns, spacing: 5) {
@@ -75,21 +72,24 @@ struct GodsaengCalendar: View {
                                     targetDate = value.date
                                 }
                             Rectangle()
-                                .frame(width: 35, height: 2.5)
+                                .frame(width: 36.5, height: 3.2)
                                 .foregroundColor(checkIsDone(value: value) == "true" ? .mainGreen : (checkIsDone(value: value)) == "false" ? .mainOrange : .clear)
                                 .offset(y: -19)
                         }
                     }
                 }
-                
+                .padding(.bottom, -10)
                 //일별 같생 리스트
-                ForEach(godsaengVM.dailyGodsaengList, id: \.self) { godsaeng in
-                    CalendarGSCell(godsaeng: godsaeng)
+                VStack(spacing: 10) {
+                    ForEach(godsaengVM.dailyGodsaengList, id: \.self) { godsaeng in
+                        CalendarGSCell(godsaeng: godsaeng)
+                    }
                 }
             }
-            .padding(.vertical, 30)
+            .padding(.top)
+            .padding()
         }
-        .padding()
+        .padding(.top)
         .onAppear {
             if let token = try? TokenManager.shared.getToken() {
                 godsaengVM.fetchMonthlyGodsaengList(accessToken: token, currentMonth: convertDateToString(date: currentDate))

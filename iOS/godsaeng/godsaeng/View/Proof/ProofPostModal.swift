@@ -6,39 +6,145 @@
 //
 
 import SwiftUI
+import PhotosUI
 
 struct ProofPostModal: View {
     
     @Environment(\.dismiss) private var dismiss
-    @ObservedObject var godsaengVM: GodSaengViewModel
     @StateObject var proofVM: ProofViewModel = ProofViewModel()
-    @State var proofImg: Data?
+    @Binding var godsaeng: Godsaeng
+    @State var proofToPost: Proof = Proof()
+    @State var proofImgData: Data?
+    @State var selectedPhotos: [PhotosPickerItem] = []
     @State var content: String = ""
+    @State var textInputAccepted: Bool = false
     
     var body: some View {
-        VStack {
-                Image("ProofImgTemplate")
-                    .resizable()
-                    .scaledToFit()
-                    .frame(width: screenWidth * 0.85)
-            }
-        .toolbar {
-            ToolbarItem(placement: .navigationBarLeading, content: {
-                Button("취소") {
-                    dismiss()
-                }
-            })
-            ToolbarItem(placement: .navigationBarTrailing, content: {
-                Button("저장") {
-                    if let token = try? TokenManager.shared.getToken() {
-                        proofVM.createProof(accessToken: token, godsaeng: godsaengVM.godsaeng)
+        NavigationView {
+            VStack {
+                //이미지
+                VStack {
+                    if let imageData = proofImgData, let uiImage = UIImage(data: imageData) {
+                        Image(uiImage: uiImage)
+                            .resizable()
+                            .scaledToFit()
+                            .frame(width: screenWidth * 0.88)
+                            .clipShape(RoundedRectangle(cornerRadius: 10))
+                            .overlay(
+                                PhotosPicker(selection: $selectedPhotos, maxSelectionCount: 1, matching: .images) {
+                                    Circle()
+                                        .stroke(Color.darkGray.opacity(0.4), lineWidth: 1)
+                                        .foregroundColor(.clear)
+                                }
+                                    .onChange(of: selectedPhotos) { newItem in
+                                        guard let item = selectedPhotos.first else {
+                                            return
+                                        }
+                                        item.loadTransferable(type: Data.self) { result in
+                                            switch result {
+                                            case .success(let data):
+                                                if let data = data {
+                                                    self.proofImgData = data
+                                                } else {
+                                                    print("data is nil")
+                                                }
+                                            case .failure(let failure):
+                                                fatalError("\(failure)")
+                                            }
+                                        }
+                                    }
+                            )
+                    } else {
+                        Image("ProofImgTemplate")
+                            .resizable()
+                            .scaledToFit()
+                            .frame(width: screenWidth * 0.88)
+                            .clipShape(RoundedRectangle(cornerRadius: 10))
+                            .overlay(
+                                PhotosPicker(selection: $selectedPhotos, maxSelectionCount: 1, matching: .images) {
+                                    Circle()
+                                        .foregroundColor(.clear)
+                                }
+                                    .onChange(of: selectedPhotos) { newItem in
+                                        guard let item = selectedPhotos.first else {
+                                            return
+                                        }
+                                        item.loadTransferable(type: Data.self) { result in
+                                            switch result {
+                                            case .success(let data):
+                                                if let data = data {
+                                                    self.proofImgData = data
+                                                } else {
+                                                    print("data is nil")
+                                                }
+                                            case .failure(let failure):
+                                                fatalError("\(failure)")
+                                            }
+                                        }
+                                    }
+                            )
                     }
-                    dismiss()
                 }
-                .disabled(content.trimmingCharacters(in: .whitespaces) == "" || content.count > 25)
-            })
+                //내용
+                VStack{
+                    TextField("인증 내용을 이벽해주세요 (25자 제한)", text: $content)
+                        .font(.system(size: 15, weight: .semibold))
+                        .padding(.leading, 5)
+                        .onAppear {
+                            UIApplication.shared.hideKeyboard()
+                        }
+                        .onChange(of: content) { val in
+                            if val.count <= 25 {
+                                textInputAccepted = true
+                            } else {
+                                textInputAccepted = false
+                            }
+                        }
+                    Rectangle()
+                        .frame(width: screenWidth * 0.9, height: 3)
+                        .foregroundColor(.lightGray)
+                        .padding(.top, -5)
+                }
+                
+                .toolbar {
+                    ToolbarItem(placement: .navigationBarLeading, content: {
+                        Button("취소") {
+                            dismiss()
+                        }
+                    })
+                    ToolbarItem(placement: .navigationBarTrailing) {
+                        Button("저장") {
+                            postProof()
+                        }
+                        .disabled(content.trimmingCharacters(in: .whitespaces) == "" || textInputAccepted == false || proofImgData == nil)
+                    }
+                }
+            }
         }
-
+    }
+    
+    func resizeImageMaintainingAspectRatio(image: UIImage, newWidth: CGFloat) -> UIImage {
+        let aspectRatio = image.size.height / image.size.width
+        let newHeight = newWidth * aspectRatio
+        
+        let size = CGSize(width: newWidth, height: newHeight)
+        let renderer = UIGraphicsImageRenderer(size: size)
+        let newImage = renderer.image { _ in
+            image.draw(in: CGRect(origin: .zero, size: size))
+        }
+        return newImage
+    }
+    
+    func postProof() {
+        proofToPost.content = content
+        if let imageDataToResize = proofImgData, let imageToResize = UIImage(data: imageDataToResize) {
+            let resizedImage = resizeImageMaintainingAspectRatio(image: imageToResize, newWidth: 200)
+            let compressedImageData = resizedImage.jpegData(compressionQuality: 1.0)
+            if let token = try? TokenManager.shared.getToken() {
+                proofVM.createProof(accessToken: token, godsaeng: godsaeng, proofToPost: proofToPost, proofImgData: compressedImageData)
+            }
+            dismiss()
+        }
     }
 }
 
