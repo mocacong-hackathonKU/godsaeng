@@ -84,8 +84,8 @@ public class GodSaengService {
         LocalDate startOfBaseMonth = baseYearMonth.atDay(1);
         LocalDate endOfBaseMonth = baseYearMonth.atEndOfMonth();
 
-        Date startDate = Date.from(startOfBaseMonth.minusMonths(1).atStartOfDay().atZone(ZoneId.systemDefault()).toInstant());
-        Date endDate = Date.from(endOfBaseMonth.atStartOfDay().atZone(ZoneId.systemDefault()).toInstant());
+        Date startDate = Date.from(startOfBaseMonth.minusMonths(1).atStartOfDay().atZone(ZoneId.of("Asia/Seoul")).toInstant());
+        Date endDate = Date.from(endOfBaseMonth.atStartOfDay().atZone(ZoneId.of("Asia/Seoul")).toInstant());
 
         List<GodSaeng> godSaengs = godSaengRepository.findGodSaengsByBaseTime(memberId, startDate, endDate);
 
@@ -131,13 +131,13 @@ public class GodSaengService {
         LocalDate startOfBaseMonth = baseYearMonth.atDay(1);
         LocalDate endOfBaseMonth = baseYearMonth.atEndOfMonth();
 
-        Date startDate = Date.from(startOfBaseMonth.atStartOfDay().minusMonths(1).atZone(ZoneId.systemDefault()).toInstant());
-        Date endDate = Date.from(endOfBaseMonth.atStartOfDay().atZone(ZoneId.systemDefault()).toInstant());
+        Date startDate = Date.from(startOfBaseMonth.atStartOfDay().minusMonths(1).atZone(ZoneId.of("Asia/Seoul")).toInstant());
+        Date endDate = Date.from(endOfBaseMonth.atStartOfDay().atZone(ZoneId.of("Asia/Seoul")).toInstant());
         List<GodSaeng> godSaengs = godSaengRepository.findGodSaengsByBaseTime(memberId, startDate, endDate);
 
         List<Proof> proofs = proofRepository.findProofWithGodSaengByMemberId(memberId,
-                Date.from(baseDate.atStartOfDay().atZone(ZoneId.systemDefault()).toInstant()),
-                Date.from(baseDate.plusDays(1).atStartOfDay().atZone(ZoneId.systemDefault()).toInstant())
+                Date.from(baseDate.atStartOfDay().atZone(ZoneId.of("Asia/Seoul")).toInstant()),
+                Date.from(baseDate.plusDays(1).atStartOfDay().atZone(ZoneId.of("Asia/Seoul")).toInstant())
         );
 
         // 같생 목록을 DailyGodSaengResponse로 변환하여 리스트에 추가
@@ -164,16 +164,15 @@ public class GodSaengService {
                                 .filter(date -> date.isAfter(startOfBaseMonth.minusDays(1)))
                                 .filter(date -> date.isBefore(endOfBaseMonth.plusDays(1)))
                                 .map(localDate -> {
-                                    if (localDate.isBefore(LocalDate.now().plusDays(2))) {
-                                        List<Proof> proofs = proofRepository.findProofWithGodSaengByMemberId(
-                                                memberId,
-                                                Date.from(localDate.atStartOfDay().atZone(ZoneId.systemDefault()).toInstant()),
-                                                Date.from(localDate.plusDays(1).atStartOfDay().atZone(ZoneId.systemDefault()).toInstant()));
 
-                                        boolean isDone = proofs.stream().anyMatch(proof -> proof.isSameGodSaeng(validGodsaeng));
-                                        return new MonthlyGodSaengResponse(localDate, isDone);
-                                    }
-                                    return new MonthlyGodSaengResponse(localDate, false);
+                                    List<Proof> proofs = proofRepository.findProofWithGodSaengByMemberId(
+                                            memberId,
+                                            Date.from(localDate.atStartOfDay().atZone(ZoneId.of("Asia/Seoul")).toInstant()),
+                                            Date.from(localDate.plusDays(1).atStartOfDay().atZone(ZoneId.of("Asia/Seoul")).toInstant()));
+
+                                    boolean isDone = proofs.stream().anyMatch(proof -> proof.isSameGodSaeng(validGodsaeng));
+                                    return new MonthlyGodSaengResponse(localDate, isDone);
+
 
                                 })).collect(Collectors.toList());
     }
