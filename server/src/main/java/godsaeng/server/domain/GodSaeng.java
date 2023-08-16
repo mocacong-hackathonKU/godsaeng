@@ -12,7 +12,6 @@ import java.time.temporal.TemporalAdjusters;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 @Entity
 @Table(name = "god_saeng")
@@ -33,7 +32,7 @@ public class GodSaeng extends BaseTime {
     @Column(name = "description")
     private String description;
 
-    @OneToMany(mappedBy = "godSaeng", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "godSaeng", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
     private List<GodSaengWeek> weeks = new ArrayList<>();
 
     @ManyToOne(fetch = FetchType.LAZY)
@@ -79,8 +78,8 @@ public class GodSaeng extends BaseTime {
     }
 
     public LocalDate getOpenedDate() {
-        LocalDate now = LocalDate.now();
-        return now.with(TemporalAdjusters.next(DayOfWeek.MONDAY));
+        LocalDate baseTime = super.getCreatedTime().toLocalDateTime().toLocalDate();
+        return baseTime.with(TemporalAdjusters.next(DayOfWeek.MONDAY));
     }
 
     public LocalDate getClosedDate() {

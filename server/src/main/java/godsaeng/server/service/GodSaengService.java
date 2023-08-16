@@ -118,15 +118,20 @@ public class GodSaengService {
     }
 
     public DailyGodSaengsResponse findDailyGodSaeng(Long memberId, LocalDate baseDate) {
-        Date startDate = Date.from(baseDate.atStartOfDay().atZone(ZoneId.systemDefault()).toInstant());
-        Date endDate = Date.from(baseDate.plusDays(1).atStartOfDay()
-                .atZone(ZoneId.systemDefault()).toInstant());
+        YearMonth baseYearMonth = YearMonth.of(baseDate.getYear(), baseDate.getMonth());
+
+        LocalDate startOfBaseMonth = baseYearMonth.atDay(1);
+        LocalDate endOfBaseMonth = baseYearMonth.atEndOfMonth();
+
+        Date startDate = Date.from(startOfBaseMonth.atStartOfDay().atZone(ZoneId.systemDefault()).toInstant());
+        Date endDate = Date.from(endOfBaseMonth.atStartOfDay().atZone(ZoneId.systemDefault()).toInstant());
         List<GodSaeng> godSaengs = godSaengRepository.findGodSaengsByBaseTime(memberId, startDate, endDate);
 
         // 같생 목록을 DailyGodSaengResponse로 변환하여 리스트에 추가
         List<DailyGodSaengResponse> dailyResponses = godSaengs.stream()
-                .map(godSaeng -> new DailyGodSaengResponse(godSaeng.getId(), godSaeng.getTitle(),
-                        GodSaengStatus.PROCEEDING))
+                // 해당 날짜 요일의 같생 목록 필터링
+                .filter(godSaeng -> getValidDailyGodSaeng(godSaeng, baseDate))
+                .map(godSaeng -> new DailyGodSaengResponse(godSaeng.getId(), godSaeng.getTitle(), godSaeng.getStatus()))
                 .collect(Collectors.toList());
 
         return new DailyGodSaengsResponse(dailyResponses);
@@ -137,7 +142,8 @@ public class GodSaengService {
     }
 
     private List<MonthlyGodSaengResponse> getValidMonthlyGodsaengsDate(LocalDate startOfBaseMonth,
-                                                                       LocalDate endOfBaseMonth, List<GodSaeng> validGodsaengs) {
+                                                                       LocalDate endOfBaseMonth,
+                                                                       List<GodSaeng> validGodsaengs) {
         return validGodsaengs.stream()
                 .flatMap(validGodsaeng ->
                         validGodsaeng.getDoingDate().stream()
@@ -153,6 +159,12 @@ public class GodSaengService {
                 .filter(godSaeng -> godSaeng.getClosedDate().isAfter(startOfBaseMonth))
                 .filter(godSaeng -> godSaeng.getOpenedDate().isBefore(endOfBaseMonth))
                 .collect(Collectors.toList());
+    }
+
+    private boolean getValidDailyGodSaeng(GodSaeng godSaeng, LocalDate baseDate) {
+        List<LocalDate> doingDate = godSaeng.getDoingDate();
+
+        return doingDate.stream().anyMatch(date -> date.isEqual(baseDate));
     }
 
     @Transactional
