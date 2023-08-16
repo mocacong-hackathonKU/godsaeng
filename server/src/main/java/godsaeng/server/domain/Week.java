@@ -1,13 +1,10 @@
 package godsaeng.server.domain;
 
-import godsaeng.server.exception.badrequest.InvalidPlatformException;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import java.time.DayOfWeek;
-import java.util.Arrays;
-import java.util.Objects;
 
 @NoArgsConstructor
 @AllArgsConstructor
