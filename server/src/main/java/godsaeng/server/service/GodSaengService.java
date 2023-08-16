@@ -82,7 +82,7 @@ public class GodSaengService {
         LocalDate startOfBaseMonth = baseYearMonth.atDay(1);
         LocalDate endOfBaseMonth = baseYearMonth.atEndOfMonth();
 
-        Date startDate = Date.from(startOfBaseMonth.atStartOfDay().atZone(ZoneId.systemDefault()).toInstant());
+        Date startDate = Date.from(startOfBaseMonth.minusMonths(1).atStartOfDay().atZone(ZoneId.systemDefault()).toInstant());
         Date endDate = Date.from(endOfBaseMonth.atStartOfDay().atZone(ZoneId.systemDefault()).toInstant());
 
         List<GodSaeng> godSaengs = godSaengRepository.findGodSaengsByBaseTime(memberId, startDate, endDate);
@@ -99,7 +99,7 @@ public class GodSaengService {
         Map<LocalDate, List<MonthlyGodSaengResponse>> collect = responses.stream()
                 .collect(Collectors.groupingBy(MonthlyGodSaengResponse::getDay, Collectors.toList()));
 
-        List<MonthlyGodSaengResponse> monthlyGodSaengResponse = new ArrayList<>();
+        List<MonthlyGodSaengResponse> monthlyGodSaengs = new ArrayList<>();
 
         // 그룹화 했을 때 겹친다면 PROCEEDING을 가장 우선시 해서 넘김
         // 겹칠 때 상태가 다른 경우는 하나만 PROCEEDING인 경우 밖에 없으므로 그 때만 예외처리
@@ -109,16 +109,19 @@ public class GodSaengService {
                     .map(MonthlyGodSaengResponse::getStauts).collect(Collectors.toList());
 
             if (hasProceedGodSaeng(statuses)) {
-                monthlyGodSaengResponse.add(new MonthlyGodSaengResponse(localDate, GodSaengStatus.PROCEEDING));
+                monthlyGodSaengs.add(new MonthlyGodSaengResponse(localDate, GodSaengStatus.PROGRESSING));
                 continue;
             }
-            monthlyGodSaengResponse.add(monthlyGodSaengResponses.get(0));
+            monthlyGodSaengs.add(monthlyGodSaengResponses.get(0));
         }
-        return new MonthlyGodSaengsResponse(monthlyGodSaengResponse);
+
+        monthlyGodSaengs.sort(Comparator.comparing(MonthlyGodSaengResponse::getDay));
+
+        return new MonthlyGodSaengsResponse(monthlyGodSaengs);
     }
 
     private boolean hasProceedGodSaeng(List<GodSaengStatus> statuses) {
-        return statuses.size() > 1 && statuses.contains(GodSaengStatus.PROCEEDING);
+        return statuses.size() > 1 && statuses.contains(GodSaengStatus.PROGRESSING);
     }
 
     private List<MonthlyGodSaengResponse> getValidGodsaengsDate(LocalDate startOfBaseMonth, LocalDate endOfBaseMonth, List<GodSaeng> validGodsaengs) {

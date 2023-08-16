@@ -6,8 +6,10 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
+import java.sql.Timestamp;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.temporal.TemporalAdjusters;
 import java.util.ArrayList;
 import java.util.List;
@@ -70,17 +72,17 @@ public class GodSaeng extends BaseTime {
     public GodSaengStatus getStatus() {
         LocalDate now = LocalDate.now();
         if (now.isAfter(getClosedDate())) {
-            return GodSaengStatus.DONE;
+            return GodSaengStatus.CLOSED;
         }
         if (now.isBefore(getOpenedDate())) {
-            return GodSaengStatus.BEFORE;
+            return GodSaengStatus.WAITING;
         }
-        return GodSaengStatus.PROCEEDING;
+        return GodSaengStatus.PROGRESSING;
     }
 
     public LocalDate getOpenedDate() {
-        LocalDate now = LocalDate.now();
-        return now.with(TemporalAdjusters.next(DayOfWeek.MONDAY));
+        LocalDate baseTime = super.getCreatedTime().toLocalDateTime().toLocalDate();
+        return baseTime.with(TemporalAdjusters.next(DayOfWeek.MONDAY));
     }
 
     public LocalDate getClosedDate() {
