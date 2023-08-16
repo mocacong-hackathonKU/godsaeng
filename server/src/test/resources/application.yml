@@ -15,7 +15,7 @@ spring:
         default_batch_fetch_size: 100
   redis:
     host: localhost
-    port: 16379
+    port: 6379
   h2:
     console:
       enabled: true
