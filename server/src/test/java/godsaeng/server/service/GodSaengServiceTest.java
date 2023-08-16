@@ -3,6 +3,7 @@ package godsaeng.server.service;
 import godsaeng.server.domain.*;
 import godsaeng.server.dto.request.GodSaengSaveRequest;
 import godsaeng.server.dto.request.ProofSaveRequest;
+import godsaeng.server.dto.response.GodSaengDetailResponse;
 import godsaeng.server.dto.response.GodSaengSaveResponse;
 import godsaeng.server.dto.response.GodSaengsResponse;
 import godsaeng.server.dto.response.MonthlyGodSaengsResponse;
@@ -31,8 +32,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.when;
 
 @SpringBootTest
@@ -272,5 +272,31 @@ class GodSaengServiceTest {
         assertThrows(DuplicateProofException.class,
                 () -> godSaengService.saveProof(savedMember.getId(), savedGodSaeng.getId(), mockMultipartFile,
                         request));
+    }
+
+    @DisplayName("같생 상세 조회를 할 수 있다.")
+    @Test
+    void findGodSaengDetail() {
+        List<Week> weeks = new ArrayList<>();
+        weeks.add(Week.MON);
+        weeks.add(Week.TUE);
+        String title = "아침 6시 반 기상 갓생 살기";
+        String description = "아침 6시 반 기상 후 유의미한 일을 하고 인증해야합니다.";
+
+        String email = "dlawotn3@naver.com";
+        Member savedMember = memberRepository.save(new Member(email, Platform.KAKAO, "11111"));
+        GodSaengSaveResponse savedGodSaeng = godSaengService.save(savedMember.getId(),
+                new GodSaengSaveRequest(title, description, weeks));
+
+        GodSaengDetailResponse response = godSaengService.findGodSaengDetail(savedMember.getId(), savedGodSaeng.getId());
+
+        assertAll(
+                () -> assertEquals(title, response.getTitle()),
+                () -> assertEquals(description, response.getDescription()),
+                () -> assertEquals(0, response.getProgress()),
+                () -> assertEquals(1, response.getMembers().size()),
+                () -> assertTrue(response.isJoined())
+        );
+
     }
 }

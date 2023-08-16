@@ -122,6 +122,7 @@ public class GodSaengService {
         return new MonthlyGodSaengsResponse(monthlyGodSaengs);
     }
 
+    @Transactional(readOnly = true)
     public DailyGodSaengsResponse findDailyGodSaeng(Long memberId, LocalDate baseDate) {
         YearMonth baseYearMonth = YearMonth.of(baseDate.getYear(), baseDate.getMonth());
 
@@ -170,6 +171,25 @@ public class GodSaengService {
         List<LocalDate> doingDate = godSaeng.getDoingDate();
 
         return doingDate.stream().anyMatch(date -> date.isEqual(baseDate));
+    }
+
+    @Transactional(readOnly = true)
+    public GodSaengDetailResponse findGodSaengDetail(Long memberId, Long godSaengId) {
+        Member member = memberRepository.findById(memberId)
+                .orElseThrow(NotFoundMemberException::new);
+        GodSaeng godSaeng = godSaengRepository.findById(godSaengId).orElseThrow();
+        List<Member> members = memberRepository.findMembersByGodSaengId(godSaengId);
+        List<Proof> proofs = proofRepository.findProofsWithMemberByGodSaengId(godSaengId);
+
+        boolean isJoined = members.stream().anyMatch(user -> user.getId().equals(member.getId()));
+
+        int progress = getProgress(godSaeng, members, proofs);
+
+        return GodSaengDetailResponse.from(godSaeng, members, proofs, progress, isJoined);
+    }
+
+    private int getProgress(GodSaeng godSaeng, List<Member> members, List<Proof> proofs) {
+        return (proofs.size() * 100) / (members.size() * GodSaeng.DOING_WEEKS * godSaeng.getWeeks().size());
     }
 
     @Transactional

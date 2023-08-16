@@ -83,4 +83,13 @@ public class GodSaengController {
         ProofSaveResponse response = godSaengService.saveProof(memberId, godSaengId, proofImg, proof);
         return ResponseEntity.ok(response);
     }
+
+    @Operation(summary = "같생 상세 조회")
+    @SecurityRequirement(name = "JWT")
+    @GetMapping(value = "/{godSaengId}")
+    public ResponseEntity<GodSaengDetailResponse> saveProof(@LoginUserId Long memberId,
+                                                       @PathVariable Long godSaengId) {
+        GodSaengDetailResponse response = godSaengService.findGodSaengDetail(memberId, godSaengId);
+        return ResponseEntity.ok(response);
+    }
 }
