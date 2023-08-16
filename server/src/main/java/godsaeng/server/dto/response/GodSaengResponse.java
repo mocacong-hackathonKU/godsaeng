@@ -13,5 +13,5 @@ public class GodSaengResponse {
     private Long id;
     private String title;
     private String description;
-    private List<Week> week;
+    private List<Week> weeks;
 }

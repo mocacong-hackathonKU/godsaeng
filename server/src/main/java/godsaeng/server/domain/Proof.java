@@ -7,7 +7,9 @@ import lombok.NoArgsConstructor;
 import javax.persistence.*;
 
 @Entity
-@Table(name = "proof")
+@Table(name = "proof", uniqueConstraints = {
+        @UniqueConstraint(columnNames = {"god_saeng_id", "member_id"})
+})
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Proof extends BaseTime {
@@ -41,5 +43,9 @@ public class Proof extends BaseTime {
 
     public static void removeMember(Proof proof) {
         proof.member = null;
+    }
+
+    public boolean isSameGodSaeng(GodSaeng godSaeng) {
+        return godSaeng.getId().equals(this.godSaeng.getId());
     }
 }
