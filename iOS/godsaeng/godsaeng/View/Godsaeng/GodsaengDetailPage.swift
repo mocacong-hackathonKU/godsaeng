@@ -21,7 +21,7 @@ struct GodsaengDetailPage: View {
             Text(godsaeng.openDate ?? "")
             Text(godsaeng.closeDate ?? "")
             //같생 요일
-            WeekDateCell(weekDate: godsaeng.weeks ?? [])
+            WeekDayCell()
             //같생 설명
             Text(godsaeng.description ?? "")
             //같생 참여자
@@ -53,33 +53,24 @@ struct GodsaengDetailPage: View {
     }
     
     @ViewBuilder
-    func WeekDateCell(weekDate: [String]) -> some View {
+    func WeekDayCell() -> some View {
+        let weekdays = ["월", "화", "수", "목", "금", "토", "일"]
+        var koreanWeeks = translateDays(days: godsaengVM.godsaeng.weeks ?? [])
         
-        let weekDates = ["월", "화", "수", "목", "금", "토", "일"]
-        
-        HStack {
-            ForEach(weekDates, id: \.self) { day in
-                if weekDate.contains(day) {
-                    Circle()
-                        .frame(width: 30, height: 30)
-                        .foregroundColor(.mainOrange)
-                        .overlay(
-                            Text(day)
-                                .foregroundColor(.white)
-                        )
-                } else {
-                    Circle()
-                        .frame(width: 30, height: 30)
-                        .foregroundColor(.lightGray)
-                        .overlay(
-                            Text(day)
-                                .foregroundColor(.black)
-                        )
-                }
+        HStack(spacing: 10) {
+            ForEach(weekdays, id: \.self) { day in
+                Circle()
+                    .frame(width: 41, height: 41)
+                    .foregroundColor(koreanWeeks.contains(day) ? .mainOrange : .darkGray.opacity(0.2))
+                    .overlay(
+                        Text(day)
+                            .font(.system(size: 15, weight: .semibold))
+                            .foregroundColor(koreanWeeks.contains(day) ? .white : .black)
+                    )
             }
         }
     }
-
+    
     
     @ViewBuilder
     func MemberCell(member: Member) -> some View {
@@ -91,5 +82,4 @@ struct GodsaengDetailPage: View {
             Text(member.nickname ?? "알 수 없음")
         }
     }
-    
 }

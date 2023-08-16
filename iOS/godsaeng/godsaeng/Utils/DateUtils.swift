@@ -105,3 +105,9 @@ func convertDateToString(date: Date) -> String {
     formatter.dateFormat = "yyyy-MM-dd"
     return formatter.string(from: date)
 }
+
+func getFirstDayOfMonth(date: Date) -> Date {
+    let calendar = Calendar.current
+    let components = calendar.dateComponents([.year, .month], from: date)
+    return calendar.date(from: components) ?? Date()
+}

@@ -13,8 +13,10 @@ struct GodsaengCalendar: View {
     
     @State var currentDate: Date = Date()
     @State var currentMonth: Int = 0
+    @State var targetMonth: Date = Date()
+    @State var targetDate: Date = Date()
+
     let days: [String] = ["Mon","Tue","Wed","Thu","Fri","Sat", "Sun"]
-//    var godsaengs: [Godsaeng] = []
     
     var body: some View {
         ScrollView {
@@ -22,7 +24,7 @@ struct GodsaengCalendar: View {
                 HStack {
                     //달력 헤더
                     Button {
-                            currentMonth -= 1
+                        currentMonth -= 1
                     } label: {
                         Image("ArrowLeft")
                     }
@@ -39,16 +41,16 @@ struct GodsaengCalendar: View {
                     .offset(y: -12)
                     Spacer()
                     Button {
-                            currentMonth += 1
+                        currentMonth += 1
                     } label: {
-                        Image("ArrowRigth")
+                        Image("ArrowRight")
                     }
                 }
                 .padding(.horizontal, 20)
                 
                 //요일
                 HStack(spacing: 0) {
-                    ForEach(days, id: \.self){day in
+                    ForEach(days, id: \.self){ day in
                         Text(day)
                             .font(.callout)
                             .fontWeight(.semibold)
@@ -70,44 +72,43 @@ struct GodsaengCalendar: View {
                                 )
                                 .onTapGesture {
                                     currentDate = value.date
+                                    targetDate = value.date
                                 }
                             Rectangle()
-                                .frame(width: 29, height: 2.5)
+                                .frame(width: 35, height: 2.5)
                                 .foregroundColor(checkIsDone(value: value) == "true" ? .mainGreen : (checkIsDone(value: value)) == "false" ? .mainOrange : .clear)
-                                .offset(y: -10)
+                                .offset(y: -19)
                         }
                     }
                 }
                 
-                //오늘의 같생 목록
-//                VStack(spacing: 24) {
-//
-//                    if let task = tasks.first(where: { task in
-//                        return isSameDay(date1: task.taskDate, date2: currentDate)
-//                    }) {
-//                        ForEach(task.task) { task in
-//
-//                        }
-//                    }
-//                    else{
-//                        Text("모아보기에서 같생에 참여할 수 있어요!")
-//                    }
-//                }
-//                .padding()
+                //일별 같생 리스트
+                ForEach(godsaengVM.dailyGodsaengList, id: \.self) { godsaeng in
+                    CalendarGSCell(godsaeng: godsaeng)
+                }
             }
             .padding(.vertical, 30)
         }
         .padding()
-        //월 업데이트
         .onAppear {
             if let token = try? TokenManager.shared.getToken() {
-                godsaengVM.fetchMonthlyGodsaengList(accessToken: token, currentMonth: "2023-08-01")
+                godsaengVM.fetchMonthlyGodsaengList(accessToken: token, currentMonth: convertDateToString(date: currentDate))
+                godsaengVM.fetchDailyGodsaengList(accessToken: token, currentDate: convertDateToString(date: currentDate))
             }
         }
-        .onChange(of: currentMonth) { newValue in
-            currentDate = getCurrentMonth(currentMonth: currentMonth)
-            let currentDateString = convertDateToString(date: currentDate)
-            print("currentDate : ", currentDateString)
+        .onChange(of: currentMonth) { _ in
+            let firstDayOfMonth = getFirstDayOfMonth(date: getCurrentMonth(currentMonth: currentMonth))
+            targetMonth = firstDayOfMonth
+        }
+        .onChange(of: targetMonth) { newValue in
+            if let token = try? TokenManager.shared.getToken() {
+                godsaengVM.fetchMonthlyGodsaengList(accessToken: token, currentMonth: convertDateToString(date: newValue))
+            }
+        }
+        .onChange(of: targetDate) { newValue in
+            if let token = try? TokenManager.shared.getToken() {
+                godsaengVM.fetchDailyGodsaengList(accessToken: token, currentDate: convertDateToString(date: newValue))
+            }
         }
     }
     
@@ -125,6 +126,7 @@ struct GodsaengCalendar: View {
         .padding(.vertical, 9)
         .frame(height: 60, alignment: .top)
     }
+
 
     func checkIsDone(value: DateValue) -> String {
         

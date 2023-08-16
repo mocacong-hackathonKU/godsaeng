@@ -174,7 +174,6 @@ class GodSaengViewModel: ObservableObject {
             }, receiveValue: { data in
                 self.monthlyGodsaengs = data
                 self.monthlyGodsaengList = data.monthlyGodsaengs ?? []
-                print(data)
             })
             .store(in: &self.cancellables)
     }
@@ -186,9 +185,7 @@ class GodSaengViewModel: ObservableObject {
             var request = URLRequest(url: url)
             request.httpMethod = "GET"
             request.addValue("Bearer \(accessToken)", forHTTPHeaderField: "Authorization")
-                        
-            print(request)
-            
+                                    
             URLSession.shared.dataTaskPublisher(for: request)
                 .subscribe(on: DispatchQueue.global(qos: .background))
                 .receive(on: DispatchQueue.main)
@@ -238,14 +235,16 @@ class GodSaengViewModel: ObservableObject {
                 case .failure(let error):
                     print("같생 일별 조회 비동기 error : \(error)")
                 }
-            }, receiveValue: { dailyGodsaengListData in
-                self.dailyGodsaengList = dailyGodsaengListData
+            }, receiveValue: { data in
+                self.dailyGodsaengs = data
+                self.dailyGodsaengList = data.dailyGodsaengs ?? []
+                print(data)
             })
             .store(in: &self.cancellables)
     }
-    func requestDailyGodsaengFetch(accessToken: String, currentDate: String) -> Future<[Godsaeng], Error> {
+    func requestDailyGodsaengFetch(accessToken: String, currentDate: String) -> Future<DailyGodsaengs, Error> {
         return Future { promise in
-            guard let url = URL(string: "\(requestURL)/godsaengs?date=\(currentDate)") else {
+            guard let url = URL(string: "\(requestURL)/godsaengs/daily?date=\(currentDate)") else {
                 fatalError("같생 일별 조회 Invalid URL")
             }
             var request = URLRequest(url: url)
@@ -275,7 +274,7 @@ class GodSaengViewModel: ObservableObject {
                     }
                     return data
                 }
-                .decode(type: [Godsaeng].self, decoder: JSONDecoder())
+                .decode(type: DailyGodsaengs.self, decoder: JSONDecoder())
                 .sink(receiveCompletion: { completion in
                     switch completion {
                     case .failure(let error):
