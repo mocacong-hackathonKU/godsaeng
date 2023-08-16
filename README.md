@@ -49,9 +49,11 @@
 - `Logging`: Logback, AWS Cloudwatch, AWS Lambda, Slack API
 - `API Docs`: SpringDoc Swagger 3
 <br>
+
 **iOS**
 - Swift UI + Combine + MVVM 패턴을 통한 아키텍처 개선
 <br>
+
 **Android**
 - Android MVVM 패턴 적용
 
