@@ -13,6 +13,9 @@ spring:
         show_sql: true
         format_sql: true
         default_batch_fetch_size: 100
+  redis:
+    host: ${REDIS_HOST}
+    port: ${REDIS_PORT}
   servlet:
     multipart:
       max-file-size: 10MB # 파일 하나 당 최대 사이즈
