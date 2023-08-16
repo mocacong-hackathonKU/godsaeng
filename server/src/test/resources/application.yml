@@ -46,3 +46,7 @@ cloud:
     credentials:
       access-key: test
       secret-key: test
+
+slack:
+  webhook:
+    url: test
