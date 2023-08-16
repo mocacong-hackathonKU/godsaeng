@@ -65,12 +65,15 @@ public class MemberService {
     }
 
     @Transactional
-    public OAuthMemberSignUpResponse signUpByOAuthMember(OAuthMemberSignUpRequest request) {
+    public OAuthMemberSignUpResponse signUpByOAuthMember(OAuthMemberSignUpRequest request, MultipartFile profileImg) {
         Platform platform = Platform.from(request.getPlatform());
         Member member = memberRepository.findByPlatformAndPlatformId(platform, request.getPlatformId())
                 .orElseThrow(NotFoundMemberException::new);
 
-        member.registerOAuthMember(request.getEmail(), request.getNickname());
+        String profileImgUrl = awsS3Uploader.uploadImage(profileImg);
+        MemberProfileImage memberProfileImage = new MemberProfileImage(profileImgUrl, true);
+        memberProfileImageRepository.save(memberProfileImage);
+        member.registerOAuthMember(request.getEmail(), request.getNickname(), memberProfileImage);
         return new OAuthMemberSignUpResponse(member.getId());
     }
 

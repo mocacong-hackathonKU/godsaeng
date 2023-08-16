@@ -72,8 +72,9 @@ public class Member extends BaseTime {
         this(email, password, nickname, null, Platform.GODSAENG, null);
     }
 
-    public void registerOAuthMember(String email, String nickname) {
+    public void registerOAuthMember(String email, String nickname, MemberProfileImage memberProfileImage) {
         validateNickname(nickname);
+        updateProfileImgUrl(memberProfileImage);
         this.nickname = nickname;
         if (email != null) {
             this.email = email;
