@@ -71,8 +71,8 @@ public class MemberController {
     @Operation(summary = "회원탈퇴")
     @SecurityRequirement(name = "JWT")
     @DeleteMapping
-    public ResponseEntity<Void> delete(@LoginUserId String email) {
-        memberService.delete(email);
+    public ResponseEntity<Void> delete(@LoginUserId Long memberId) {
+        memberService.delete(memberId);
         return ResponseEntity.ok().build();
     }
 }

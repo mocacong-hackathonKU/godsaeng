@@ -109,4 +109,11 @@ public class MemberService {
         memberProfileImageRepository.save(memberProfileImage);
         member.updateProfileImgUrl(memberProfileImage);
     }
+
+    @Transactional
+    public void delete(Long memberId){
+        Member findMember = memberRepository.findById(memberId)
+                .orElseThrow(NotFoundMemberException::new);
+        memberRepository.delete(findMember);
+    }
 }
