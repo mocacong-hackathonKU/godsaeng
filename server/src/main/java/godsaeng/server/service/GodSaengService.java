@@ -152,7 +152,7 @@ public class GodSaengService {
         validateProofCondition(member, godSaeng);
 
         try {
-            String content = request.getProofContent();
+            String content = request.getContent();
             ProofImage proofImage = saveProofImage(godSaengId, proofImg);
             Proof proof = new Proof(content, godSaeng, proofImage, member);
             return new ProofSaveResponse(proofRepository.save(proof).getId());
