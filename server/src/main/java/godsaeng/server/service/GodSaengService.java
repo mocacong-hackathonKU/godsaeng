@@ -203,7 +203,6 @@ public class GodSaengService {
                 .forEach(GodSaeng::removeOwner);
         godSaengMemberRepository.findAllGodSaengMemberByMemberId(memberId)
                 .forEach(GodSaengMember::removeMember);
-        proofRepository.findAllByMemberId(memberId)
-                .forEach(Proof::removeMember);
+        proofRepository.deleteAllByMemberId(memberId);
     }
 }

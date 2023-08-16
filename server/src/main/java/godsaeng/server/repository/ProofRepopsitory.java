@@ -11,5 +11,5 @@ import java.util.Optional;
 public interface ProofRepopsitory extends JpaRepository<Proof, Long> {
     Optional<Proof> findTopByMemberAndGodSaengOrderByCreatedTimeDesc(Member member, GodSaeng godSaeng);
 
-    List<Proof> findAllByMemberId(Long memberId);
+    List<Proof> deleteAllByMemberId(Long memberId);
 }
