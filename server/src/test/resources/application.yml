@@ -13,7 +13,9 @@ spring:
         format_sql: true
         show_sql: true
         default_batch_fetch_size: 100
-
+  redis:
+    host: localhost
+    port: 6379
   h2:
     console:
       enabled: true
@@ -37,7 +39,7 @@ oauth:
 cloud:
   aws:
     s3:
-      bucket: testtesttesttesttestttesttt
+      bucket: testtesttesttesttestttestt
     region:
       static: ap-northeast-2
       auto: false
