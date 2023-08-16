@@ -16,4 +16,5 @@ struct Member: Hashable, Codable, Identifiable {
     var isRegistered: Bool?
     var result: Bool?
     var imgUrl: String?
+    var imgData: Data?
 }

@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import UIKit
 
 let requestURL = Bundle.main.object(forInfoDictionaryKey: "REQUEST_URL") as? String ?? ""
 
@@ -15,6 +16,9 @@ var screenHeight = UIScreen.main.bounds.height
 struct ContentView: View {
     
     @StateObject var memberVM: MemberViewModel = MemberViewModel()
+    
+    @State var member: Member = Member()
+    
     @State var showLoginRequestAlert: Bool = false
     @State var showServerDownAlert: Bool = false
     
@@ -24,7 +28,7 @@ struct ContentView: View {
                 if AccessManager.shared.isRegistered == false && AccessManager.shared.isAgreed == false {
                     AgreementPage()
                 } else if AccessManager.shared.isRegistered == false && AccessManager.shared.isAgreed == true {
-                    RegisterPage()
+                    RegisterPage(memberVM: memberVM, memberToRegister: $member)
                 } else if AccessManager.shared.isRegistered == true {
                     TabView {
                         CalendarPage()
@@ -68,5 +72,21 @@ struct ContentView: View {
 struct ContentView_Previews: PreviewProvider {
     static var previews: some View {
         ContentView()
+    }
+}
+
+extension UIApplication {
+    func hideKeyboard() {
+        guard let window = windows.first else { return }
+        let tapRecognizer = UITapGestureRecognizer(target: window, action: #selector(UIView.endEditing))
+        tapRecognizer.cancelsTouchesInView = false
+        tapRecognizer.delegate = self
+        window.addGestureRecognizer(tapRecognizer)
+    }
+}
+
+extension UIApplication: UIGestureRecognizerDelegate {
+    public func gestureRecognizer(_ gestureRecognizer: UIGestureRecognizer, shouldRecognizeSimultaneouslyWith otherGestureRecognizer: UIGestureRecognizer) -> Bool {
+        return false
     }
 }
