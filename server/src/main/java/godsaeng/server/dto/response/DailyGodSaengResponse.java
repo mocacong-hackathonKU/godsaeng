@@ -11,6 +11,6 @@ public class DailyGodSaengResponse {
 
     private long id;
     private String title;
-    private GodSaengStatus stauts;
+    private GodSaengStatus status;
     private Boolean isDone;
 }

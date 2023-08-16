@@ -7,9 +7,7 @@ import lombok.NoArgsConstructor;
 import javax.persistence.*;
 
 @Entity
-@Table(name = "proof", uniqueConstraints = {
-        @UniqueConstraint(columnNames = {"god_saeng_id", "member_id"})
-})
+@Table(name = "proof")
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Proof extends BaseTime {
