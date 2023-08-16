@@ -1,5 +1,5 @@
 package godsaeng.server.domain;
 
 public enum GodSaengStatus {
-    BEFORE, PROCEEDING, DONE
+    WAITING, PROGRESSING, CLOSED
 }
