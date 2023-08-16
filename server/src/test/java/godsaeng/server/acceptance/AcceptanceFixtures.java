@@ -1,6 +1,7 @@
 package godsaeng.server.acceptance;
 
 import godsaeng.server.dto.request.AuthLoginRequest;
+import godsaeng.server.dto.request.GodSaengSaveRequest;
 import godsaeng.server.dto.request.MemberSignUpRequest;
 import godsaeng.server.dto.response.TokenResponse;
 import io.restassured.RestAssured;
@@ -37,6 +38,17 @@ public class AcceptanceFixtures {
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .auth().oauth2(token)
                 .when().get("/members/mypage")
+                .then().log().all()
+                .statusCode(HttpStatus.OK.value())
+                .extract();
+    }
+
+    public static ExtractableResponse<Response> 같생_등록(String token, GodSaengSaveRequest request) {
+        return RestAssured.given().log().all()
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .auth().oauth2(token)
+                .body(request)
+                .when().post("/godsaengs")
                 .then().log().all()
                 .statusCode(HttpStatus.OK.value())
                 .extract();

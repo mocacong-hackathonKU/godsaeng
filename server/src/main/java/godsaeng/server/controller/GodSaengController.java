@@ -20,7 +20,7 @@ import java.time.LocalDate;
 @Tag(name = "Godsaengs", description = "같생")
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/godsaeng")
+@RequestMapping("/godsaengs")
 public class GodSaengController {
 
     private final GodSaengService godSaengService;
