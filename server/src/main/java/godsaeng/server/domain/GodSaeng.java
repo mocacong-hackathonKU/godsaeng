@@ -19,7 +19,7 @@ import java.util.stream.Collectors;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class GodSaeng extends BaseTime {
 
-    private static final int DOING_WEEKS = 2;
+    public static final int DOING_WEEKS = 2;
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
