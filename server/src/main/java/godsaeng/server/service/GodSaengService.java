@@ -177,7 +177,7 @@ public class GodSaengService {
     public GodSaengDetailResponse findGodSaengDetail(Long memberId, Long godSaengId) {
         Member member = memberRepository.findById(memberId)
                 .orElseThrow(NotFoundMemberException::new);
-        GodSaeng godSaeng = godSaengRepository.findById(godSaengId).orElseThrow();
+        GodSaeng godSaeng = godSaengRepository.findById(godSaengId).orElseThrow(NotFoundGodSaengException::new);
         List<Member> members = memberRepository.findMembersByGodSaengId(godSaengId);
         List<Proof> proofs = proofRepository.findProofsWithMemberByGodSaengId(godSaengId);
 

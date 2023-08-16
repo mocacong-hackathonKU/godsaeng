@@ -299,4 +299,13 @@ class GodSaengServiceTest {
         );
 
     }
+
+    @DisplayName("존재하지 않는 같생 상세 조회를 하면 예외를 반환한다.")
+    @Test
+    void findNotExistGodSaeng() {
+        String email = "dlawotn3@naver.com";
+        Member savedMember = memberRepository.save(new Member(email, Platform.KAKAO, "11111"));
+
+        assertThrows(NotFoundGodSaengException.class, () -> godSaengService.findGodSaengDetail(savedMember.getId(), 1L));
+    }
 }
