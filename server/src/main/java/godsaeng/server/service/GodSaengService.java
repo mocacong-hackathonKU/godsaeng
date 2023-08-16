@@ -31,7 +31,7 @@ public class GodSaengService {
     private final GodSaengRepository godSaengRepository;
     private final MemberRepository memberRepository;
     private final GodSaengMemberRepository godSaengMemberRepository;
-    private final ProofRepopsitory proofRepository;
+    private final ProofRepository proofRepository;
     private final ProofImageRepository proofImageRepository;
     private final AwsS3Uploader awsS3Uploader;
 
