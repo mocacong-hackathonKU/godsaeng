@@ -3,11 +3,11 @@
 서로 응원하며 모두의 노력으로 달성하는 챌린지 앱 없을까? 고민했다면 같생!  
 
 <p align="center">
-  <img width="18%" height="400" alt="image" src="https://github.com/mocacong-hackathonKU/godsaeng/assets/69844138/7e70954b-1419-4878-96e0-c65abc518830">
-  <img width="18%" height="400" alt="image" src="https://github.com/mocacong-hackathonKU/godsaeng/assets/69844138/d408b3c3-32e2-4498-9963-d75af1ae5714">
-  <img width="18%" height="400 alt="image" src="https://github.com/mocacong-hackathonKU/godsaeng/assets/69844138/ddfbc744-3db6-4fd1-b02c-33a1598f6e98">
-  <img width="18%" height="400" alt="image" src="https://github.com/mocacong-hackathonKU/godsaeng/assets/69844138/d73b8c0c-2ec0-4b1e-a3fe-f7f669344498">
-  <img width="18%" height="400"" alt="image" src="https://github.com/mocacong-hackathonKU/godsaeng/assets/69844138/84d5675a-16b0-4bf3-b1fe-fb27261af0c9">
+  <img width="19%" height="400" alt="image" src="https://github.com/mocacong-hackathonKU/godsaeng/assets/69844138/7e70954b-1419-4878-96e0-c65abc518830">
+  <img width="19%" height="400" alt="image" src="https://github.com/mocacong-hackathonKU/godsaeng/assets/69844138/d408b3c3-32e2-4498-9963-d75af1ae5714">
+  <img width="19%" height="400 alt="image" src="https://github.com/mocacong-hackathonKU/godsaeng/assets/69844138/ddfbc744-3db6-4fd1-b02c-33a1598f6e98">
+  <img width="19%" height="400" alt="image" src="https://github.com/mocacong-hackathonKU/godsaeng/assets/69844138/d73b8c0c-2ec0-4b1e-a3fe-f7f669344498">
+  <img width="19%" height="400"" alt="image" src="https://github.com/mocacong-hackathonKU/godsaeng/assets/69844138/84d5675a-16b0-4bf3-b1fe-fb27261af0c9">
 </p>
 
 
