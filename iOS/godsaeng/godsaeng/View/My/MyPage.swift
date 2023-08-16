@@ -18,30 +18,50 @@ struct MyPage: View {
     var body: some View {
         NavigationView {
             VStack {
-                VStack(spacing: 12) {
+                VStack(spacing: 0) {
                     if let imageData = memberVM.member.imgData, let uiImage = UIImage(data: imageData) {
                         Image(uiImage: uiImage)
-                        .resizable()
-                        .scaledToFill()
-                        .frame(width: screenWidth * 0.45, height: screenWidth * 0.45)
-                        .clipShape(Circle())
-                        .clipped()
-                        .overlay(
-                            Circle()
-                                .stroke(Color.darkGray.opacity(0.23), lineWidth: 0.8)
-                                .foregroundColor(.clear)
-                        )
+                            .resizable()
+                            .scaledToFill()
+                            .frame(width: screenWidth * 0.45, height: screenWidth * 0.45)
+                            .clipShape(Circle())
+                            .clipped()
+                            .overlay(
+                                Circle()
+                                    .stroke(Color.darkGray.opacity(0.23), lineWidth: 0.8)
+                                    .foregroundColor(.clear)
+                            )
+                    } else {
+                        Image("DefaultProfile")
+                            .resizable()
+                            .scaledToFill()
+                            .frame(width: screenWidth * 0.45, height: screenWidth * 0.45)
+                            .clipShape(Circle())
+                            .clipped()
+                            .overlay(
+                                Circle()
+                                    .stroke(Color.darkGray.opacity(0.23), lineWidth: 0.8)
+                                    .foregroundColor(.clear)
+                            )
                     }
-                    Button(action: {
-                        showProfileImageEditModal = true
-                    }, label: {
-                        Image(systemName: "pencil.circle.fill")
-                            .font(.system(size: 20))
-                    })
-                    .offset(x: 50, y: -10)
-                    Text(memberVM.member.nickname ?? "알 수 없음")
+                    Image(systemName: "pencil.circle.fill")
+                        .font(.system(size: 34))
                         .foregroundColor(.black)
-                        .font(.system(size: 20, weight: .medium))
+                        .offset(x: 50, y: -30)
+                        .onTapGesture {
+                            showProfileImageEditModal = true
+                        }
+                    if let nickname = memberVM.member.nickname {
+                        Text(memberVM.member.nickname ?? "")
+                            .foregroundColor(.black)
+                            .font(.system(size: 20, weight: .semibold))
+                            .offset(y: -10)
+                    } else {
+                        Text("같생러")
+                            .foregroundColor(.clear)
+                            .font(.system(size: 20, weight: .semibold))
+                            .offset(y: -10)
+                    }
                 }
                 .padding(.bottom, -35)
                 //설정페이지
