@@ -18,4 +18,6 @@ struct Member: Hashable, Codable, Identifiable {
     var result: Bool?
     var imgUrl: String?
     var imgData: Data?
+    var name: String?
+    var profile: String?
 }

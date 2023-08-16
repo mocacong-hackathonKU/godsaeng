@@ -25,6 +25,38 @@ class GodSaengViewModel: ObservableObject {
     
     var cancellables = Set<AnyCancellable>()
     
+    func joinGodsaeng(accessToken: String, godsaengToJoin: Godsaeng) {
+
+            guard let godsaengId = godsaengToJoin.id, let url = URL(string: "\(requestURL)/godsaengs/attend/\(godsaengId)") else {
+                fatalError("Invalid URL")
+            }
+            
+            var request = URLRequest(url: url)
+            request.httpMethod = "POST"
+            request.addValue("Bearer \(accessToken)", forHTTPHeaderField: "Authorization")
+            
+            URLSession.shared.dataTask(with: request) { (data, response, error) in
+                DispatchQueue.main.async {
+                    if let error = error {
+                        print("같생 참여 error : \(error)")
+                    } else if let httpResponse = response as? HTTPURLResponse {
+                        if httpResponse.statusCode == 200 {
+                            print("같생 참여 응답 상태코드 : ", httpResponse.statusCode)
+                        } else if httpResponse.statusCode == 401 {
+                            AccessManager.shared.tokenExpired = true
+                            AccessManager.shared.isLoggedIn = false
+                        } else if httpResponse.statusCode == 500 {
+                            AccessManager.shared.serverDown = true
+                            AccessManager.shared.isLoggedIn = false
+                    } else {
+                            print("같생 참여 응답 상태코드 : ", httpResponse.statusCode)
+                        }
+                    }
+                }
+            }.resume()
+    }
+
+    
     //같생 작성
     func creatGodsaeng(accessToken: String, godsaengToCreate: Godsaeng) {
                 
@@ -220,6 +252,7 @@ class GodSaengViewModel: ObservableObject {
                     }
                 }, receiveValue: { data in
                     promise(.success(data))
+                    print("월간조회 데이터 : ", data)
                 })
                 .store(in: &self.cancellables)
         }
@@ -348,6 +381,7 @@ class GodSaengViewModel: ObservableObject {
                     }
                 }, receiveValue: { data in
                     promise(.success(data))
+                    print("같생 상세조회 데이터 : ", data)
                 })
                 .store(in: &self.cancellables)
         }

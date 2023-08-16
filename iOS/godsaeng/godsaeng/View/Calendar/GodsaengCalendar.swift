@@ -16,7 +16,7 @@ struct GodsaengCalendar: View {
     @State var targetMonth: Date = Date()
     @State var targetDate: Date = Date()
 
-    let days: [String] = ["Mon","Tue","Wed","Thu","Fri","Sat", "Sun"]
+    let days: [String] = ["SUN", "Mon","Tue","Wed","Thu","Fri", "Sat"]
     
     var body: some View {
         ScrollView {
@@ -46,6 +46,7 @@ struct GodsaengCalendar: View {
                         Image("ArrowRigth")
                     }
                 }
+                .padding(.horizontal)
                 //요일
                 HStack(spacing: 0) {
                     ForEach(days, id: \.self){ day in
@@ -65,16 +66,24 @@ struct GodsaengCalendar: View {
                                     Circle()
                                         .fill(.black)
                                         .opacity(isSameDay(date1: value.date, date2: currentDate) ? 1 : 0)
-                                        .offset(y: -11)
+                                        .offset(y: -5)
                                 )
                                 .onTapGesture {
                                     currentDate = value.date
                                     targetDate = value.date
                                 }
-                            Rectangle()
-                                .frame(width: 36.5, height: 3.2)
-                                .foregroundColor(checkIsDone(value: value) == "true" ? .mainGreen : (checkIsDone(value: value)) == "false" ? .mainOrange : .clear)
-                                .offset(y: -19)
+
+                            if let lineColor = checkIsDone(value: value), value.day != -1 {
+                                Rectangle()
+                                    .frame(width: 36.5, height: 3.2)
+                                    .foregroundColor(lineColor)
+                                    .offset(y: -9)
+                            } else {
+                                Rectangle()
+                                    .frame(width: 36.5, height: 3.2)
+                                    .foregroundColor(.clear)
+                                    .offset(y: -19)
+                            }
                         }
                     }
                 }
@@ -124,27 +133,22 @@ struct GodsaengCalendar: View {
             }
         }
         .padding(.vertical, 9)
-        .frame(height: 60, alignment: .top)
+        .frame(height: 50, alignment: .top)
     }
 
 
-    func checkIsDone(value: DateValue) -> String {
-        
-        var isDone: String = ""
-        
+    func checkIsDone(value: DateValue) -> Color? {
         let matchingGodsaeng = godsaengVM.monthlyGodsaengList.first {
             $0.day == convertDateToString(date: value.date)
         }
         if let godsaeng = matchingGodsaeng {
             if godsaeng.isDone == true {
-                isDone = "true"
+                return .mainGreen
             } else if godsaeng.isDone == false {
-                isDone = "false"
-            } else {
-                isDone = "none"
+                return .mainOrange
             }
         }
-        return isDone
+        return nil
     }
 }
 

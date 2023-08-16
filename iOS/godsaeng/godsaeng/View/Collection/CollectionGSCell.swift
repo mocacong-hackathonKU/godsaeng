@@ -52,7 +52,7 @@ struct CollectionGSCell: View {
                     .padding(.top, 1)
                     //아럇줄
                     //같생 설명
-                    Text(godsaeng.description ?? "")
+                    Text(godsaeng.description?.prefix(25) ?? "")
                         .font(.system(size: 15))
                         .foregroundColor(.accent4)
                 }

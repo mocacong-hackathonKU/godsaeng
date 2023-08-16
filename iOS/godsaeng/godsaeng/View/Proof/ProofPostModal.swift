@@ -21,7 +21,7 @@ struct ProofPostModal: View {
     
     var body: some View {
         NavigationView {
-            VStack(spacing: 25) {
+            VStack(spacing: 40) {
                 //이미지
                 VStack {
                     if let imageData = proofImgData, let uiImage = UIImage(data: imageData) {
@@ -86,9 +86,9 @@ struct ProofPostModal: View {
                     }
                 }
                 //내용
-                VStack{
+                VStack {
                     TextField("인증을 설명해주세요 (25자 제한)", text: $content)
-                        .font(.system(size: 16, weight: .semibold))
+                        .font(.system(size: 18, weight: .semibold))
                         .onAppear {
                             UIApplication.shared.hideKeyboard()
                         }
@@ -104,19 +104,20 @@ struct ProofPostModal: View {
                         .foregroundColor(.lightGray)
                         .padding(.top, -5)
                 }
-                .padding(.leading)
-                .toolbar {
-                    ToolbarItem(placement: .navigationBarLeading, content: {
-                        Button("취소") {
-                            dismiss()
-                        }
-                    })
-                    ToolbarItem(placement: .navigationBarTrailing) {
-                        Button("저장") {
-                            postProof()
-                        }
-                        .disabled(content.trimmingCharacters(in: .whitespaces) == "" || textInputAccepted == false || proofImgData == nil)
+                .padding(.leading, 20)
+            }
+            .padding(.top, -39)
+            .toolbar {
+                ToolbarItem(placement: .navigationBarLeading, content: {
+                    Button("취소") {
+                        dismiss()
                     }
+                })
+                ToolbarItem(placement: .navigationBarTrailing) {
+                    Button("저장") {
+                        postProof()
+                    }
+                    .disabled(content.trimmingCharacters(in: .whitespaces) == "" || textInputAccepted == false || proofImgData == nil)
                 }
             }
         }

@@ -15,7 +15,7 @@ struct CalendarGSCell: View {
     var body: some View {
         ZStack {
             RoundedRectangle(cornerRadius: 10)
-                .stroke(Color.darkGray.opacity(0.2), lineWidth: 2)
+                .stroke(godsaeng.isDone ?? true ? Color.mainGreen.opacity(0.2) : Color.darkGray.opacity(0.2), lineWidth: 1.5)
                 .frame(width: screenWidth * 0.92, height: 90)
                 .foregroundColor(.clear)
             HStack {
@@ -24,17 +24,20 @@ struct CalendarGSCell: View {
                     .padding(.leading)
                 Spacer()
                 Button(action: {
-                    showProofPostModal = true
+                    if godsaeng.isDone ?? false == false {
+                        showProofPostModal = true
+                    }
                 }, label: {
                     RoundedRectangle(cornerRadius: 25)
                         .frame(width: 80, height: 30)
                         .foregroundColor(godsaeng.isDone ?? true ? .mainGreen : .mainOrange)
                         .overlay (
-                            Text("인증하기")
+                            Text(godsaeng.isDone ?? true ? "인증완료" : "인증하기")
                                 .foregroundColor(.white)
                                 .font(.system(size: 16, weight: .semibold))
                         )
                 })
+                .disabled(godsaeng.isDone == true)
                 .padding(.trailing)
             }
             .frame(width: screenWidth * 0.9, height: 100)

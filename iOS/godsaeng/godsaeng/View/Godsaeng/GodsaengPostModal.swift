@@ -57,7 +57,7 @@ struct GodsaengPostModal: View {
                         TextEditor(text: $description)
                             .onChange(of: description) { val in
                                 //닉네임 개수 검사
-                                if val.count <= 100 {
+                                if val.count <= 25 {
                                     textInputAccepted = true
                                 } else {
                                     textInputAccepted = false

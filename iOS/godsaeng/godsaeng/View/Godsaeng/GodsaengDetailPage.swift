@@ -12,39 +12,87 @@ struct GodsaengDetailPage: View {
     
     @ObservedObject var godsaengVM: GodSaengViewModel
     @State var godsaeng: Godsaeng
+    @State var localIsJoined: Bool = false
     
     var body: some View {
         VStack {
-            //같생 제목
-            Text(godsaengVM.godsaeng.title ?? "")
-            //같생 기간
-            Text(godsaeng.openDate ?? "")
-            Text(godsaeng.closeDate ?? "")
-            //같생 요일
-            WeekDayCell()
-            //같생 설명
-            Text(godsaeng.description ?? "")
-            //같생 참여자
-            ScrollView {
-                HStack(spacing: 12) {
-                    ForEach(godsaengVM.godsaeng.members ?? []) { member in
-                        MemberCell(member: member)
+            VStack {
+                VStack(spacing: 0) {
+                    Text(godsaengVM.godsaeng.title ?? "")
+                        .font(.system(size: 26, weight: .bold))
+                        .padding(.leading)
+                        .padding()
+                        .padding(.top)
+                    Text(godsaengVM.godsaeng.description ?? "")
+                        .font(.system(size: 15))
+                        .foregroundColor(.accent5)
+                }
+                VStack {
+                    HStack(spacing: 0) {
+                        Text(godsaengVM.godsaeng.openDate ?? "")
+                        Text("부터")
+                            .padding(.trailing, 4)
+                        Text(godsaengVM.godsaeng.closeDate ?? "")
+                        Text("까지")
                     }
+                    .font(.system(size: 13))
+                    .foregroundColor(.accent5)
+                    WeekDayCell()
+                        .padding(.bottom)
+                }
+                .padding(.bottom)
+                //같생 전체 목록
+                HStack {
+                    Text("총")
+                        .padding(.leading)
+                    if let memberCount = godsaengVM.godsaeng.members?.count {
+                        Text(String(describing: memberCount))
+                            .bold()
+                    }
+                    Text("명의 같생이 함께해요")
+                    Spacer()
+                }
+                .foregroundColor(.accent5)
+                .font(.system(size: 20))
+                
+                ScrollView(.horizontal) {
+                    HStack {
+                        ForEach(godsaengVM.godsaeng.members ?? [], id: \.self) { member in
+                            MemberCell(member: member)
+                        }
+                    }
+                    .padding(.horizontal)
+                }
+                ScrollView {
+                    LazyVStack(spacing: 5) {
+                        ForEach(godsaengVM.godsaeng.proofs ?? [], id: \.self) { proof in
+                            ProofCell(proof: proof)
+                        }
+                    }
+                    .padding(.vertical)
                 }
             }
-            //같생 진척도
-            VStack(alignment: .leading) {
-                RoundedRectangle(cornerRadius: 5)
-                    .frame(width: screenWidth * 9, height: 10)
-                    .foregroundColor(.lightGray)
-                    .overlay(
-                        RoundedRectangle(cornerRadius: 5)
-                            .frame(width: screenWidth * 9 * CGFloat((godsaeng.progress ?? 0)/100) , height: 10)
+            if let isJoined = godsaengVM.godsaeng.isJoined {
+                if !isJoined && !localIsJoined{
+                    Button(action: {
+                        joinGodsaeng()
+                        localIsJoined = true
+                    }, label: {
+                        RoundedRectangle(cornerRadius: 20)
                             .foregroundColor(.mainGreen)
-                    )
+                            .frame(width: screenWidth * 0.89, height: 50)
+                            .overlay (
+                                Text("함께하기")
+                                    .font(.system(size: 17, weight: .semibold))
+                                    .foregroundColor(.white)
+                            )
+                    })
+                    .padding()
+                }
             }
-            //인증셀 리스트
+
         }
+
         .onAppear {
             if let token = try? TokenManager.shared.getToken() {
                 godsaengVM.fetchGodsaengDetail(accessToken: token, godsaengId: godsaeng.id ?? 0)
@@ -64,22 +112,54 @@ struct GodsaengDetailPage: View {
                     .foregroundColor(koreanWeeks.contains(day) ? .mainOrange : .darkGray.opacity(0.2))
                     .overlay(
                         Text(day)
-                            .font(.system(size: 15, weight: .semibold))
+                            .font(.system(size: 16, weight: .semibold))
                             .foregroundColor(koreanWeeks.contains(day) ? .white : .black)
                     )
             }
         }
     }
     
-    
     @ViewBuilder
     func MemberCell(member: Member) -> some View {
-        VStack {
-            WebImage(url: URL(string: member.imgUrl ?? ""))
+        VStack(spacing: 0) {
+            WebImage(url: URL(string: member.profile ?? ""))
                 .resizable()
-                .clipShape(RoundedRectangle(cornerRadius: 6))
-                .frame(width: 35, height: 35)
-            Text(member.nickname ?? "알 수 없음")
+                .scaledToFill()
+                .frame(width: 40, height: 40)
+                .clipShape(RoundedRectangle(cornerRadius: 10))
+            
+            Text(member.name ?? "알 수 없음")
+                .font(.system(size: 13))
         }
     }
+    
+    @ViewBuilder
+    func ProofCell(proof: Proof) -> some View {
+        VStack(spacing: 8) {
+            HStack {
+                WebImage(url: URL(string: proof.profileImg ?? ""))
+                    .resizable()
+                    .scaledToFill()
+                    .frame(width: 45, height: 45)
+                    .clipShape(RoundedRectangle(cornerRadius: 10))
+                    .padding(.leading)
+                Text(proof.nickname ?? "")
+                Spacer()
+            }
+            WebImage(url: URL(string: proof.proofImg ?? ""))
+                .resizable()
+                .scaledToFit()
+                .frame(width: screenWidth * 0.88)
+                .clipShape(RoundedRectangle(cornerRadius: 10))
+            Text(proof.content ?? "")
+        }
+    }
+    
+    func joinGodsaeng() {
+        if let token = try? TokenManager.shared.getToken() {
+            godsaengVM.joinGodsaeng(accessToken: token, godsaengToJoin: godsaeng)
+        }
+    }
+    
+    
 }

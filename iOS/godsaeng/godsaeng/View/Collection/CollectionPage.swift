@@ -20,6 +20,7 @@ struct CollectionPage: View {
                         .font(.system(size: 26, weight: .bold))
                         .padding(.leading)
                         .padding()
+                        .padding(.top)
                     //같생 전체 목록
                     ScrollView {
                         LazyVStack(alignment: .leading, spacing: 5) {
@@ -48,6 +49,7 @@ struct CollectionPage: View {
                 })
                 .padding()
             }
+            .padding(.leading, 6)
         }
         .sheet(isPresented: $showGSPostModal) {
             GodsaengPostModal()
