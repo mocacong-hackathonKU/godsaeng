@@ -20,7 +20,7 @@ public class GodSaengDetailResponse {
     private List<GodSaengMemberResponse> members;
     private int progress;
     private GodSaengStatus status;
-    private boolean isJoined;
+    private Boolean isJoined;
     private List<ProofResponse> proofs;
 
     public static GodSaengDetailResponse from(GodSaeng godSaeng, List<Member> members, List<Proof> proofs, int progress, boolean isJoined) {
