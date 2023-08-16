@@ -13,25 +13,25 @@ struct CollectionPage: View {
     @State var showGSPostModal: Bool = false
     
     var body: some View {
+
         VStack(alignment: .leading) {
                 Text("# 모집중")
                     .font(.system(size: 26, weight: .bold))
                     .padding(.leading)
                     .padding(.bottom, 20)
-
-            //같생 전체 목록
-            ScrollView {
-                LazyVStack(alignment: .leading, spacing: 5) {
-                    ForEach(godsaengVM.godsaengList, id: \.self) { godsaeng in
-                        NavigationLink(destination: {
-                            GodsaengDetailPage(godsaengVM: godsaengVM, godsaeng: godsaeng)
-                        }, label: {
-                            CollectionGSCell(godsaeng: godsaeng, mode: .extended)
-                        })
-                        
+                //같생 전체 목록
+                ScrollView {
+                    LazyVStack(alignment: .leading, spacing: 5) {
+                        ForEach(godsaengVM.godsaengList, id: \.self) { godsaeng in
+                            NavigationLink(destination: {
+                                GodsaengDetailPage(godsaengVM: godsaengVM, godsaeng: godsaeng)
+                            }, label: {
+                                CollectionGSCell(godsaeng: godsaeng, mode: .extended)
+                            })
+                            
+                        }
                     }
                 }
-            }
             Button(action: {
                 showGSPostModal = true
             }, label: {

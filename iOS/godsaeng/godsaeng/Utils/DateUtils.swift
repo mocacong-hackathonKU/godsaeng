@@ -83,6 +83,12 @@ func extractDate(currentMonth: Int) -> [DateValue] {
     return days
 }
 
+func getMonthFromDate(date: Date) -> String {
+    let formatter = DateFormatter()
+    formatter.dateFormat = "M"
+    return formatter.string(from: date)
+}
+
 extension Date {
     func getAllDates() -> [Date] {
         let calendar = Calendar.current
@@ -92,4 +98,10 @@ extension Date {
             return calendar.date(byAdding: .day, value: day - 1, to: startDate)!
         }
     }
+}
+
+func convertDateToString(date: Date) -> String {
+    let formatter = DateFormatter()
+    formatter.dateFormat = "yyyy-MM-dd"
+    return formatter.string(from: date)
 }

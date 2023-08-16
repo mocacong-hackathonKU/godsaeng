@@ -16,7 +16,8 @@ struct Godsaeng: Identifiable, Codable, Hashable {
     var weeks: [String]?
     var members: [Member]?
     var progress: Int?
-    var status: String?
+    var status: String?     //WAITING, PROGRESSING, CLOSED
     var proofs: [Proof]?
     var isDone: Bool?
+    var day: String?        //월별 같생 조회 시 해당 날짜 yyyy-mm-dd
 }

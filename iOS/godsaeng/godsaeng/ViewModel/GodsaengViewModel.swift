@@ -12,20 +12,27 @@ class GodSaengViewModel: ObservableObject {
     
     @Published var godsaengs: Godsaengs = Godsaengs()
     @Published var godsaengList: [Godsaeng] = []
+    
+    @Published var monthlyGodsaengs: MonthlyGodsaengs = MonthlyGodsaengs()
     @Published var monthlyGodsaengList: [Godsaeng] = []
+    
+    @Published var dailyGodsaengs: DailyGodsaengs = DailyGodsaengs()
     @Published var dailyGodsaengList: [Godsaeng] = []
+    
     @Published var godsaeng: Godsaeng = Godsaeng()
+    
+    @Published var isFetching: Bool = false
     
     var cancellables = Set<AnyCancellable>()
     
     //같생 작성
     func creatGodsaeng(accessToken: String, godsaengToCreate: Godsaeng) {
+                
         requestgodsaengCreation(accessToken: accessToken, godsaengToCreate: godsaengToCreate)
             .sink(receiveCompletion: { completion in
                 switch completion {
                 case .finished:
-                    print("같생 생성 비동기 성공")
-                    
+                    print("같생 생성 비동기 종료")
                 case .failure(let error):
                     print("같생 생성 비동기 에러 : \(error)")
                 }
@@ -160,24 +167,28 @@ class GodSaengViewModel: ObservableObject {
             .sink(receiveCompletion: { completion in
                 switch completion {
                 case .finished:
-                    print("같생 조회 비동기 성공")
+                    print("같생 월별 조회 비동기 성공")
                 case .failure(let error):
-                    print("같생 조회 비동기 error : \(error)")
+                    print("같생 월별 조회 비동기 error : \(error)")
                 }
-            }, receiveValue: { monthlyGodsaengListData in
-                self.monthlyGodsaengList = monthlyGodsaengListData
+            }, receiveValue: { data in
+                self.monthlyGodsaengs = data
+                self.monthlyGodsaengList = data.monthlyGodsaengs ?? []
+                print(data)
             })
             .store(in: &self.cancellables)
     }
-    func requestMonthlyGodsaengFetch(accessToken: String, currentMonth: String) -> Future<[Godsaeng], Error> {
+    func requestMonthlyGodsaengFetch(accessToken: String, currentMonth: String) -> Future<MonthlyGodsaengs, Error> {
         return Future { promise in
-            guard let url = URL(string: "\(requestURL)/godsaengs?date=\(currentMonth)") else {
+            guard let url = URL(string: "\(requestURL)/godsaengs/monthly?date=\(currentMonth)") else {
                 fatalError("같생 월별 조회 Invalid URL")
             }
             var request = URLRequest(url: url)
             request.httpMethod = "GET"
             request.addValue("Bearer \(accessToken)", forHTTPHeaderField: "Authorization")
                         
+            print(request)
+            
             URLSession.shared.dataTaskPublisher(for: request)
                 .subscribe(on: DispatchQueue.global(qos: .background))
                 .receive(on: DispatchQueue.main)
@@ -201,7 +212,7 @@ class GodSaengViewModel: ObservableObject {
                     }
                     return data
                 }
-                .decode(type: [Godsaeng].self, decoder: JSONDecoder())
+                .decode(type: MonthlyGodsaengs.self, decoder: JSONDecoder())
                 .sink(receiveCompletion: { completion in
                     switch completion {
                     case .failure(let error):
