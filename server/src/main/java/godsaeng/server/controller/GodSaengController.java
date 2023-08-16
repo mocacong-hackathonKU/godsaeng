@@ -66,9 +66,9 @@ public class GodSaengController {
     @GetMapping("/daily")
     public ResponseEntity<DailyGodSaengsResponse> findDailyGodSaeng(@LoginUserId Long memberId,
                                                                     @RequestParam("date")
-                                                                        @DateTimeFormat(pattern = "yyyy-MM-dd")
-                                                                        LocalDate date) {
-        MonthlyGodSaengsResponse dailyGodSaeng = godSaengService.findDailyGodSaeng(memberId, date);
+                                                                    @DateTimeFormat(pattern = "yyyy-MM-dd")
+                                                                    LocalDate date) {
+        DailyGodSaengsResponse dailyGodSaeng = godSaengService.findDailyGodSaeng(memberId, date);
         return ResponseEntity.ok(dailyGodSaeng);
     }
 
