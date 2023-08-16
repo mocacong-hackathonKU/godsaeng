@@ -8,8 +8,10 @@ import godsaeng.server.exception.badrequest.*;
 import godsaeng.server.exception.notfound.NotFoundGodSaengException;
 import godsaeng.server.exception.notfound.NotFoundMemberException;
 import godsaeng.server.repository.*;
+import godsaeng.server.service.event.DeleteMemberEvent;
 import godsaeng.server.support.AwsS3Uploader;
 import lombok.RequiredArgsConstructor;
+import org.springframework.context.event.EventListener;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -192,5 +194,16 @@ public class GodSaengService {
                 throw new DuplicateProofException();
             }
         }
+    }
+
+    @EventListener
+    public void updateGodSaengWhenMemberDelete(DeleteMemberEvent event) {
+        Long memberId = event.getMember().getId();
+        godSaengRepository.findAllByOwnerId(memberId)
+                .forEach(GodSaeng::removeOwner);
+        godSaengMemberRepository.findAllGodSaengMemberByMemberId(memberId)
+                .forEach(GodSaengMember::removeMember);
+        proofRepository.findAllByMemberId(memberId)
+                .forEach(Proof::removeMember);
     }
 }

@@ -5,13 +5,22 @@ import godsaeng.server.domain.MemberProfileImage;
 import godsaeng.server.domain.Platform;
 import godsaeng.server.dto.request.MemberSignUpRequest;
 import godsaeng.server.dto.request.OAuthMemberSignUpRequest;
-import godsaeng.server.dto.response.*;
-import godsaeng.server.exception.badrequest.*;
+import godsaeng.server.dto.response.IsDuplicateNicknameResponse;
+import godsaeng.server.dto.response.MemberSignUpResponse;
+import godsaeng.server.dto.response.MyPageResponse;
+import godsaeng.server.dto.response.OAuthMemberSignUpResponse;
+import godsaeng.server.exception.badrequest.DuplicateMemberException;
+import godsaeng.server.exception.badrequest.DuplicateNicknameException;
+import godsaeng.server.exception.badrequest.InvalidNicknameException;
+import godsaeng.server.exception.badrequest.InvalidPasswordException;
 import godsaeng.server.exception.notfound.NotFoundMemberException;
+import godsaeng.server.repository.GodSaengRepository;
 import godsaeng.server.repository.MemberProfileImageRepository;
 import godsaeng.server.repository.MemberRepository;
+import godsaeng.server.service.event.DeleteMemberEvent;
 import godsaeng.server.support.AwsS3Uploader;
 import lombok.RequiredArgsConstructor;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -28,9 +37,12 @@ public class MemberService {
 
     private final MemberRepository memberRepository;
     private final MemberProfileImageRepository memberProfileImageRepository;
+    private final GodSaengRepository godSaengRepository;
     private final AwsS3Uploader awsS3Uploader;
 
     private final PasswordEncoder passwordEncoder;
+
+    private final ApplicationEventPublisher applicationEventPublisher;
 
     @Transactional
     public MemberSignUpResponse signUp(MemberSignUpRequest request) {
@@ -111,9 +123,11 @@ public class MemberService {
     }
 
     @Transactional
-    public void delete(Long memberId){
+    public void delete(Long memberId) {
         Member findMember = memberRepository.findById(memberId)
                 .orElseThrow(NotFoundMemberException::new);
+        applicationEventPublisher.publishEvent(new DeleteMemberEvent(findMember));
+
         memberRepository.delete(findMember);
     }
 }

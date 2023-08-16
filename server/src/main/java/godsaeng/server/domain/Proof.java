@@ -38,4 +38,8 @@ public class Proof extends BaseTime {
         this.proofImage = proofImage;
         this.member = member;
     }
+
+    public static void removeMember(Proof proof) {
+        proof.member = null;
+    }
 }
