@@ -7,6 +7,21 @@
 
 import Foundation
 
+
+//요일 영어->한국어 번역
+func translateDays(days: [String]) -> [String] {
+    let translationDict: [String: String] = [
+        "MON": "월",
+        "TUE": "화",
+        "WED": "수",
+        "THU": "목",
+        "FRI": "금",
+        "SAT": "토",
+        "SUN": "일"
+    ]
+    return days.compactMap { translationDict[$0] }
+}
+
 //같은 날인지 검사
 func isSameDay(date1: Date,date2: Date) -> Bool {
     let calendar = Calendar.current

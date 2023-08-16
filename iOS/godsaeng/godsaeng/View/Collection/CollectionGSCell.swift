@@ -18,45 +18,46 @@ struct CollectionGSCell: View {
     var mode: GodsaengCardType
     
     var body: some View {
-        VStack(alignment: .leading) {
             //전체 카드
-            HStack(alignment: .top) {
+        HStack(alignment: .top) {
                 //구분선
                 Rectangle()
                     .fill(Color.mainOrange)
-                    .frame(width: 4, height: 70)
-                    .padding(.trailing)
+                    .frame(width: 2.5, height: 65)
+                    .padding(.trailing, 10)
                 //내용
-                VStack(alignment: .leading,spacing: 10) {
+                VStack(alignment: .leading, spacing: 10) {
                     //윗줄
-                    HStack {
-                        //같생 제목
-                        VStack(alignment: .leading) {
+                    //같생 제목
+                    VStack(alignment: .leading) {
+                        HStack(spacing: 20) {
                             Text(godsaeng.title ?? "")
-                                .foregroundColor(.black)
-                                .font(.system(size: 20, weight: .semibold))
+                                .foregroundColor(.accent4)
+                                .font(.system(size: 20, weight: .bold))
                             //같생 요일
-                            VStack {
+                            HStack {
                                 if godsaeng.weeks?.count == 7 {
                                     Text("매일")
                                 } else {
-                                    ForEach(godsaeng.weeks ?? [], id: \.self) { weekday in
+                                    var koreanWeekdays = translateDays(days: godsaeng.weeks ?? [])
+                                    ForEach(koreanWeekdays, id: \.self) { weekday in
                                         Text(weekday)
                                     }
                                 }
                             }
                             .foregroundColor(.mainOrange)
-                            .font(.system(size: 14))
+                            .font(.system(size: 15.5, weight: .medium))
                         }
                     }
+                    .padding(.top, 1)
                     //아럇줄
                     //같생 설명
                     Text(godsaeng.description ?? "")
-                        .font(.system(size: 18))
+                        .font(.system(size: 15))
+                        .foregroundColor(.accent4)
                 }
             }
-        }
-        .padding()
+            .padding()
     }
 }
 

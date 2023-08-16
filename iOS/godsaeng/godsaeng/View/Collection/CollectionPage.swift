@@ -12,12 +12,15 @@ struct CollectionPage: View {
     @StateObject var godsaengVM: GodSaengViewModel = GodSaengViewModel()
     
     var body: some View {
-        VStack {
-            Text("# 모집중")
-                .font(.system(size: 26, weight: .bold))
+        VStack(alignment: .leading) {
+                Text("# 모집중")
+                    .font(.system(size: 26, weight: .bold))
+                    .padding(.leading)
+                    .padding(.bottom)
+
             //같생 전체 목록
             ScrollView {
-                LazyVStack(spacing: 20) {
+                LazyVStack(alignment: .leading, spacing: 5) {
                     ForEach(godsaengVM.godsaengList, id: \.self) { godsaeng in
                         NavigationLink(destination: {
                             GodsaengDetailPage(godsaengVM: godsaengVM, godsaeng: godsaeng)
@@ -40,7 +43,7 @@ struct CollectionPage: View {
                             .foregroundColor(.white)
                     )
             })
-            .padding(.bottom)
+            .padding()
         }
         .padding()
         .onAppear {
