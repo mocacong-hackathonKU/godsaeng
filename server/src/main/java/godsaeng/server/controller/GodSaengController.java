@@ -68,9 +68,9 @@ public class GodSaengController {
             MediaType.MULTIPART_FORM_DATA_VALUE})
     public ResponseEntity<ProofSaveResponse> saveProof(@LoginUserId Long memberId,
                                                        @PathVariable Long godSaengId,
-                                                       @RequestPart ProofSaveRequest request,
+                                                       @RequestPart ProofSaveRequest proof,
                                                        @RequestPart MultipartFile proofImg) {
-        ProofSaveResponse response = godSaengService.saveProof(memberId, godSaengId, proofImg, request);
+        ProofSaveResponse response = godSaengService.saveProof(memberId, godSaengId, proofImg, proof);
         return ResponseEntity.ok(response);
     }
 }
