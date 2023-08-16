@@ -1,6 +1,5 @@
 package godsaeng.server.dto.response;
 
-import godsaeng.server.domain.GodSaengStatus;
 import lombok.*;
 
 import java.time.LocalDate;
@@ -12,5 +11,5 @@ import java.time.LocalDate;
 public class MonthlyGodSaengResponse {
 
     private LocalDate day;
-    private GodSaengStatus stauts;
+    private Boolean isDone;
 }
