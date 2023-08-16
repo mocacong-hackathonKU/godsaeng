@@ -16,27 +16,25 @@ struct GodsaengCalendar: View {
     var body: some View {
         ScrollView {
             VStack(spacing: 35) {
-                
-                //달력 헤더
-                VStack(spacing: 5) {
-                    
-                    //년도
-                    Text(getYearAndMonth(currentDate: currentDate)[0])
-                        .font(.system(size: 25, weight: .semibold))
-                    
-                    //월
-                    Text(getYearAndMonth(currentDate: currentDate)[1])
-                        .font(.system(size: 30, weight: .bold))
-                        .foregroundColor(.mainOrange)
-                }
-                
-                //월 이동 버튼
                 HStack {
+                    //달력 헤더
                     Button {
                             currentMonth -= 1
                     } label: {
                         Image("ArrowLeft")
                     }
+                    Spacer()
+                    VStack(spacing: 0) {
+                        
+                        //년도
+                        Text(getYearAndMonth(currentDate: currentDate)[0])
+                            .font(.system(size: 16, weight: .medium))
+                        //월
+                        Text(getYearAndMonth(currentDate: currentDate)[1])
+                            .font(.system(size: 45, weight: .bold))
+                            .foregroundColor(.mainOrange)
+                    }
+                    .offset(y: -12)
                     Spacer()
                     Button {
                             currentMonth += 1
@@ -58,15 +56,14 @@ struct GodsaengCalendar: View {
                 
                 //날짜들
                 let columns = Array(repeating: GridItem(.flexible()), count: 7)
-                LazyVGrid(columns: columns,spacing: 15) {
+                LazyVGrid(columns: columns, spacing: 5) {
                     ForEach(extractDate(currentMonth: currentMonth)) { value in
-
                         CardView(value: value)
                             .background(
-
                                 Circle()
                                     .fill(.black)
                                     .opacity(isSameDay(date1: value.date, date2: currentDate) ? 1 : 0)
+                                    .offset(y: -9)
                             )
                             .onTapGesture {
                                 currentDate = value.date
@@ -90,6 +87,7 @@ struct GodsaengCalendar: View {
 //                }
 //                .padding()
             }
+            .padding(.vertical, 30)
         }
         .padding()
         .onChange(of: currentMonth) { newValue in
@@ -99,11 +97,11 @@ struct GodsaengCalendar: View {
     }
     
     @ViewBuilder
-    func CardView(value: DateValue)->some View{
+    func CardView(value: DateValue) -> some View {
 
         VStack{
 
-            if value.day != -1{
+            if value.day != -1 {
 
 //                if let godsaeng = godsaengs.first(where: { task in
 //

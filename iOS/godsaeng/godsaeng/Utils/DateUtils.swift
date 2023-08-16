@@ -48,10 +48,10 @@ func isSameDay(date1: Date,date2: Date) -> Bool {
 func getYearAndMonth(currentDate: Date) -> [String] {
     
     let calendar = Calendar.current
-    let month = calendar.component(.month, from: currentDate) - 1
+    let month = calendar.component(.month, from: currentDate)
     let year = calendar.component(.year, from: currentDate)
     
-    return ["\(year)", calendar.monthSymbols[month]]
+    return ["\(year)", "\(month)"]
 }
 
 //현재 월 구하기
