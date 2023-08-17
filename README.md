@@ -51,11 +51,16 @@
 <br>
 
 **iOS**
-- Swift UI + Combine + MVVM 패턴을 통한 아키텍처 개선
+- `Language`: Swift
+- `Architecture Design`: MVVM
+- `View`: SwiftUI framework
+- `서버 통신`: Combine + URL session
+- `사진 라이브러리`: PhotosUI
 <br>
 
 **Android**
-- Android MVVM 패턴 적용
+- `Language`: Kotlin
+- `Architecture Design`: MVVM
 
 - - - 
 
