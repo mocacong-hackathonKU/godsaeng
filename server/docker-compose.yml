@@ -3,7 +3,7 @@ services:
   app:
     container_name: app
     user: "1000:1000"
-    image: godsaeng/godsaeng
+    image: jisu0708/gather-up
     expose:
       - "8080"
     ports:  # host - container 포트 매핑
