@@ -1,7 +1,5 @@
 package godsaeng.server.support;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -11,7 +9,6 @@ import javax.persistence.PersistenceContext;
 import javax.persistence.Table;
 import javax.persistence.metamodel.Type;
 import java.util.List;
-import java.util.Objects;
 import java.util.stream.Collectors;
 
 @Component
@@ -23,9 +20,6 @@ public class DatabaseCleaner {
 
     @PersistenceContext
     EntityManager entityManager;
-
-    @Autowired
-    private RedisTemplate<String, Object> redisTemplate;
 
     private List<String> tableNames;
 
@@ -52,10 +46,5 @@ public class DatabaseCleaner {
         }
         entityManager.createNativeQuery(String.format(FOREIGN_KEY_RULE_UPDATE_FORMAT, "TRUE"))
                 .executeUpdate();
-
-        /* Redis Cache 제거 */
-        Objects.requireNonNull(redisTemplate.getConnectionFactory())
-                .getConnection()
-                .flushAll();
     }
 }

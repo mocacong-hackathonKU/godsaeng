@@ -1,7 +1,6 @@
 package godsaeng.server.acceptance;
 
 import godsaeng.server.support.DatabaseCleanerCallback;
-import godsaeng.server.support.TestRedisConfig;
 import io.restassured.RestAssured;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -11,7 +10,6 @@ import org.springframework.context.annotation.Import;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @ExtendWith(DatabaseCleanerCallback.class)
-@Import(TestRedisConfig.class)
 public class AcceptanceTest {
 
     @LocalServerPort
