@@ -39,7 +39,7 @@ oauth:
 cloud:
   aws:
     s3:
-      bucket: testtesttesttesttestttestt
+      bucket: testtesttesttesttestttest
     region:
       static: ap-northeast-2
       auto: false
