@@ -1,4 +1,4 @@
-name: Java CD with Gradle and Docker Test
+name: Java CD with Gradle and Docker
 
 on:
   push:
